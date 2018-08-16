@@ -15,9 +15,6 @@
 		520F38DD21229C990081B956 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520F38C021229C990081B956 /* UIViewExtensions.swift */; };
 		520F38E921229CA10081B956 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 520F38E821229CA10081B956 /* README.md */; };
 		520F38EF21229FDA0081B956 /* AutoLayoutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520F38EE21229FDA0081B956 /* AutoLayoutController.swift */; };
-		52ED72292124F5E800D41AAE /* UITableViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ED72282124F5E800D41AAE /* UITableViewExtension.swift */; };
-		52ED722B2124F63200D41AAE /* CGFloatExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ED722A2124F63200D41AAE /* CGFloatExtensions.swift */; };
-		52ED722D2124F66A00D41AAE /* NSObjectExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52ED722C2124F66A00D41AAE /* NSObjectExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,9 +28,6 @@
 		520F38C021229C990081B956 /* UIViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		520F38E821229CA10081B956 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		520F38EE21229FDA0081B956 /* AutoLayoutController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoLayoutController.swift; sourceTree = "<group>"; };
-		52ED72282124F5E800D41AAE /* UITableViewExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITableViewExtension.swift; sourceTree = "<group>"; };
-		52ED722A2124F63200D41AAE /* CGFloatExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGFloatExtensions.swift; sourceTree = "<group>"; };
-		52ED722C2124F66A00D41AAE /* NSObjectExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSObjectExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,9 +77,6 @@
 			isa = PBXGroup;
 			children = (
 				520F38C021229C990081B956 /* UIViewExtensions.swift */,
-				52ED722C2124F66A00D41AAE /* NSObjectExtensions.swift */,
-				52ED722A2124F63200D41AAE /* CGFloatExtensions.swift */,
-				52ED72282124F5E800D41AAE /* UITableViewExtension.swift */,
 			);
 			path = Class;
 			sourceTree = "<group>";
@@ -163,10 +154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52ED72292124F5E800D41AAE /* UITableViewExtension.swift in Sources */,
-				52ED722B2124F63200D41AAE /* CGFloatExtensions.swift in Sources */,
 				520F38DD21229C990081B956 /* UIViewExtensions.swift in Sources */,
-				52ED722D2124F66A00D41AAE /* NSObjectExtensions.swift in Sources */,
 				520F38EF21229FDA0081B956 /* AutoLayoutController.swift in Sources */,
 				520F389721229A890081B956 /* AppDelegate.swift in Sources */,
 			);

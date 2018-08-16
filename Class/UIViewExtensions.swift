@@ -1743,3 +1743,58 @@ extension Timer {
     
 }
 
+extension CGFloat {
+    public func degreesToRadians() -> CGFloat {
+        return (.pi * self) / 180.0
+    }
+}
+
+
+private var Object_class_Name_Key : UInt8 = 0
+private var Object_iVar_Name_Key : UInt8 = 0
+private var Object_iVar_Value_Key : UInt8 = 0
+
+
+extension NSObject {
+    
+    public var tag_name: String? {
+        get {
+            return objc_getAssociatedObject(self, &Object_iVar_Name_Key) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &Object_iVar_Name_Key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    public var tag_value: Any? {
+        get {
+            return objc_getAssociatedObject(self, &Object_iVar_Value_Key)
+        }
+        set {
+            objc_setAssociatedObject(self, &Object_iVar_Value_Key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    public var className: String {
+        if let name = objc_getAssociatedObject(self, &Object_class_Name_Key) as? String {
+            return name
+        }
+        else {
+            let name = String(describing: type(of:self))
+            objc_setAssociatedObject(self, &Object_class_Name_Key, name, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return name
+        }
+        
+        
+    }
+    
+    public class var className: String {
+        if let name = objc_getAssociatedObject(self, &Object_class_Name_Key) as? String {
+            return name
+        }
+        else {
+            let name = NSStringFromClass(self).components(separatedBy: ".").last ?? ""
+            objc_setAssociatedObject(self, &Object_class_Name_Key, name, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return name
+        }
+    }
+}
