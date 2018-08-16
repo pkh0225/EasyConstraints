@@ -50,7 +50,7 @@ public var viewDidDisappear: VoidClosure? {
 
 <br>
 
-![SampleTestApp](https://github.com/pkh0225/EasyConstraints/tree/master/Images/Sample.png)
+![SampleTestApp](https://github.com/pkh0225/EasyConstraints/blob/master/Images/Sample.png)
 ### ↑↑ please refer test sample project 👾👾
 
 
