@@ -1,4 +1,4 @@
-# AutoLayout
+# AutoLayout View Extension
 
 widthConstraint, heightConstraint, topConstraint, leadingConstraint, bottomConstraint,  trailingConstraint, centerXConstraint, centerYConstraint
 
