@@ -3,20 +3,21 @@
 ## 🎊 No more @IBOutlets
 🕵🏻‍♂️ With this extension, now you don't have to @IBOulet from your storyboard to get constraints.
 
-### Get & Set Constraints
+### Get & Set Constraints - as you wish
 
 > widthConstraint, heightConstraint, topConstraint, leadingConstraint, bottomConstraint,  trailingConstraint, centerXConstraint, centerYConstraint
 
-### Get Default Constraints 
+### Get Default Constraints - constraints that you first set in SB
 
 > widthDefaultConstraint, heightDefaultConstraint, topDefaultConstraint, leadingDefaultConstraint, bottomDefaultConstraint, trailingDefaultConstraint, centerXDefaultConstraint, centerYDefaultConstraint
 
 
-### (mimic) Android view gone functions 🤧😆
+
+#### + 🤧😆 view gone functions (Android mimic ver.)
 
 > isGone, isGoneWidth, isGoneHeight
 
-### 👻 viewDidDisappear Timer
+#### + 👻👻 viewDidDisappear Timer
 
 ```
 public var viewDidDisappear: VoidClosure? {
@@ -46,7 +47,12 @@ public var viewDidDisappear: VoidClosure? {
     }
 ```
 
-### 👾👾 please refer test sample project
+
+<br>
+
+![SampleTestApp](https://github.com/pkh0225/EasyConstraints/tree/master/Images/Sample.png)
+### ↑↑ please refer test sample project 👾👾
+
 
 <br>
 
