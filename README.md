@@ -1,6 +1,6 @@
 # Easy AutoLayout - UIView Extension
 
-## 🎊 No more @IBOulets
+## 🎊 No more @IBOutlets
 🕵🏻‍♂️ With this extension, now you don't have to @IBOulet from your storyboard to get constraints.
 
 ### Get & Set Constraints
@@ -16,8 +16,39 @@
 
 > isGone, isGoneWidth, isGoneHeight
 
+### 👻 viewDidDisappear Timer
 
-### 👾👾 pleas refer test sample project
+```
+public var viewDidDisappear: VoidClosure? {
+        get {
+            return objc_getAssociatedObject(self, &viewDidDisappear_key) as? VoidClosure
+        }
+        set {
+            objc_setAssociatedObject ( self, &viewDidDisappear_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            
+            viewDidDisappearTimer?.invalidate()
+            if newValue != nil {
+                viewDidDisappearTimer = Timer.schedule(repeatInterval: 0.2) { [weak self] (timer) in
+                    guard let `self` = self else { return }
+                    let check = self.isVisible
+                    if check == false {
+                        self.viewDidDisappearTimer?.invalidate()
+                        self.viewDidDisappearTimer = nil
+                        self.viewDidDisappear?()
+                    }
+                }
+                
+            }
+            else {
+                viewDidDisappearTimer = nil
+            }
+        }
+    }
+```
+
+### 👾👾 please refer test sample project
+
+<br>
 
 ## USE like this
 
@@ -43,6 +74,33 @@ view.viewDidDisappear = {
 
 ## Core Functions
 
+### 👀 Check view is visible or not 
+```
+ public var isVisible: Bool {
+        
+        if self.window == nil {
+            return false
+        }
+        
+        var currentView: UIView = self
+        while let superview = currentView.superview {
+            
+            if (superview.bounds).intersects(currentView.frame) == false {
+                return false;
+            }
+            
+            if currentView.isHidden {
+                return false
+            }
+            
+            currentView = superview
+        }
+        
+        return true
+    }
+```
+
+### 👉🏻 get Constraints
 
 ```
 public func getConstraint(_ layoutAttribute: NSLayoutAttribute, toTaget: UIView) -> NSLayoutConstraint? {
@@ -53,9 +111,7 @@ public func getConstraint(_ layoutAttribute: NSLayoutAttribute, toTaget: UIView)
         
         return result.first
     }
-```
 
-```
 @inline(__always) public func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutAttribute, toTaget: UIView? = nil) -> Array<NSLayoutConstraint> {
         var toTagetView = toTaget
         if toTagetView == nil {
