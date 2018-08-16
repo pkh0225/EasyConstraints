@@ -1,23 +1,34 @@
-# AutoLayout View Extension
+# Easy AutoLayout - UIView Extension
 
-widthConstraint, heightConstraint, topConstraint, leadingConstraint, bottomConstraint,  trailingConstraint, centerXConstraint, centerYConstraint
+## 🎊 No more @IBOulets
+🕵🏻‍♂️ With this extension, now you don't have to @IBOulet from your storyboard to get constraints.
 
-widthDefaultConstraint, heightDefaultConstraint, topDefaultConstraint, leadingDefaultConstraint, bottomDefaultConstraint, trailingDefaultConstraint, centerXDefaultConstraint, centerYDefaultConstraint
+### Get & Set Constraints
 
-isGone, isGoneWidth, isGoneHeight
+> widthConstraint, heightConstraint, topConstraint, leadingConstraint, bottomConstraint,  trailingConstraint, centerXConstraint, centerYConstraint
 
-viewDidDisappear
-## USE
+### Get Default Constraints 
+
+> widthDefaultConstraint, heightDefaultConstraint, topDefaultConstraint, leadingDefaultConstraint, bottomDefaultConstraint, trailingDefaultConstraint, centerXDefaultConstraint, centerYDefaultConstraint
+
+
+### (mimic) Android view gone functions 🤧😆
+
+> isGone, isGoneWidth, isGoneHeight
+
+
+### 👾👾 pleas refer test sample project
+
+## USE like this
 
 
 ```
+view.leadingConstraint = value // get AutoLayout Contraint value
+let value = view.leadingConstraint // set AutoLayout Contraint value
 
-view.leadingConstraint = value <- get AutoLayout Contraint value
-let value = view.leadingConstraint <- set AutoLayout Contraint value
+let defaultValue = view.widthDefaultConstraint // first set AutoLayout value
 
-let defaultValue = view.widthDefaultConstraint <-  first set AutoLayout value
-
-view.isGone = true <- Android view gone function
+view.isGone = true // Android view gone function
 
 
 view.viewDidDisappear = {
@@ -25,6 +36,10 @@ view.viewDidDisappear = {
 }
 
 ```
+
+<br>
+<br>
+
 
 ## Core Functions
 
@@ -38,7 +53,9 @@ public func getConstraint(_ layoutAttribute: NSLayoutAttribute, toTaget: UIView)
         
         return result.first
     }
+```
 
+```
 @inline(__always) public func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutAttribute, toTaget: UIView? = nil) -> Array<NSLayoutConstraint> {
         var toTagetView = toTaget
         if toTagetView == nil {
