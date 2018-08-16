@@ -1,12 +1,43 @@
 # AutoLayout
 
+widthConstraint, heightConstraint, topConstraint, leadingConstraint, bottomConstraint,  trailingConstraint, centerXConstraint, centerYConstraint
+
+widthDefaultConstraint, heightDefaultConstraint, topDefaultConstraint, leadingDefaultConstraint, bottomDefaultConstraint, trailingDefaultConstraint, centerXDefaultConstraint, centerYDefaultConstraint
+
+isGone, isGoneWidth, isGoneHeight
+
+viewDidDisappear
+## USE
 
 
+```
+
+view.leadingConstraint = value <- get AutoLayout Contraint value
+let value = view.leadingConstraint <- set AutoLayout Contraint value
+
+let defaultValue = view.widthDefaultConstraint <-  first set AutoLayout value
+
+view.isGone = true <- Android view gone function
+
+
+view.viewDidDisappear = {
+    print("viewDidDisappear ")
+}
+
+```
 
 ## Core Functions
 
 
 ```
+public func getConstraint(_ layoutAttribute: NSLayoutAttribute, toTaget: UIView) -> NSLayoutConstraint? {
+        let constraints = self.getLayoutAllConstraints(layoutAttribute)
+        let result = constraints.filter { (value) -> Bool in
+            return value.firstItem === toTaget || value.secondItem === toTaget
+        }
+        
+        return result.first
+    }
 
 @inline(__always) public func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutAttribute, toTaget: UIView? = nil) -> Array<NSLayoutConstraint> {
         var toTagetView = toTaget
