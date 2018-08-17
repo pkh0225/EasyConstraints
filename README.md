@@ -60,10 +60,10 @@ public var viewDidDisappear: VoidClosure? {
 
 
 ```
-view.leadingConstraint = value // get AutoLayout Contraint value
-let value = view.leadingConstraint // set AutoLayout Contraint value
+view.leadingConstraint = value // set AutoLayout Contraint value
+let value = view.leadingConstraint // get AutoLayout Contraint value
 
-let defaultValue = view.widthDefaultConstraint // first set AutoLayout value
+let defaultValue = view.widthDefaultConstraint // first set AutoLayout Contraint value
 
 view.isGone = true // Android view gone function
 
