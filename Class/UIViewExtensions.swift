@@ -516,7 +516,7 @@ extension UIView {
         }
         
         let constraintsSort: Array = constraintsTemp.sorted(by: { (obj1, obj2) -> Bool in
-            return obj1.priority.rawValue > obj1.priority.rawValue
+            return obj1.priority.rawValue > obj2.priority.rawValue
         })
         
         let result : NSLayoutConstraint? = constraintsSort.first
