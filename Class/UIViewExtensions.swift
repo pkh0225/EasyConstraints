@@ -301,6 +301,7 @@ extension UIView {
     
     public func setConstraint(_ layoutAttribute: NSLayoutAttribute, _ value: CGFloat) {
         self.getLayoutConstraint(layoutAttribute)?.constant = value
+        setNeedsLayout()
     }
     
     public func getConstraint(_ layoutAttribute: NSLayoutAttribute, toTaget: UIView) -> NSLayoutConstraint? {
