@@ -355,7 +355,7 @@ extension UIView {
             toTagetView = self.superview
         }
         var constraintsTemp = Array<NSLayoutConstraint>()
-        constraintsTemp.reserveCapacity(10)
+        constraintsTemp.reserveCapacity(20)
         for constraint in constraints {
 
             
@@ -494,14 +494,18 @@ extension UIView {
     
     public func getLayoutAllConstraints(_ layoutAttribute: NSLayoutAttribute) -> [NSLayoutConstraint] {
         var constraintsTemp = Array<NSLayoutConstraint>()
-        var constraints : Set<NSLayoutConstraint> = self.getContraints(self)
-        constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+        constraintsTemp.reserveCapacity(20)
+        var constraints = Set<NSLayoutConstraint>()
+        constraints.reserveCapacity(20)
+        
+        if let view = superview {
+            constraints = self.getContraints(view)
+            constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+        }
         
         if constraintsTemp.count == 0 {
-            if let view = superview {
-                constraints = self.getContraints(view)
-                constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-            }
+            constraints = self.getContraints(self)
+            constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
         }
         
         if constraintsTemp.count == 0 {
