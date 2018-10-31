@@ -409,6 +409,9 @@ extension UIView {
                             (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
+                        else if constraint.firstItem === self || constraint.secondItem === self {
+                            constraintsTemp.append(constraint)
+                        }
                     }
                 }
             case .bottom :
@@ -426,6 +429,9 @@ extension UIView {
                     else if toTaget == nil {
                         if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
                             (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
+                            constraintsTemp.append(constraint)
+                        }
+                        else if constraint.firstItem === self || constraint.secondItem === self {
                             constraintsTemp.append(constraint)
                         }
                     }
@@ -447,6 +453,9 @@ extension UIView {
                             (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
+                        else if constraint.firstItem === self || constraint.secondItem === self {
+                            constraintsTemp.append(constraint)
+                        }
                     }
                 }
             case .trailing :
@@ -464,6 +473,9 @@ extension UIView {
                     else if toTaget == nil {
                         if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
                             (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
+                            constraintsTemp.append(constraint)
+                        }
+                        else if constraint.firstItem === self || constraint.secondItem === self {
                             constraintsTemp.append(constraint)
                         }
                     }
