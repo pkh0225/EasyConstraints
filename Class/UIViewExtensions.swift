@@ -23,61 +23,111 @@ public enum VIEW_ADD_TYPE  {
 private var viewDidDisappear_key: UInt8 = 0
 private var viewDidDisappearTimer_key: UInt8 = 0
 
-private var NSLayoutAttributeWidthEmpty : UInt8 = 0
-private var NSLayoutAttributeWidthEmpty_key = UnsafeMutableRawPointer(&NSLayoutAttributeWidthEmpty)
-private var NSLayoutAttributeHeightEmpty : UInt32 = 0
+private var viewDidAppear_key: UInt8 = 0
+private var viewDidAppearTimer_key: UInt8 = 0
+
+
+private var NSLayoutAttributeWidthEmpty     : UInt8 = 0
+private var NSLayoutAttributeHeightEmpty    : UInt8 = 0
+private var NSLayoutAttributeWidthEmpty_key  = UnsafeMutableRawPointer(&NSLayoutAttributeWidthEmpty)
 private var NSLayoutAttributeHeightEmpty_key = UnsafeMutableRawPointer(&NSLayoutAttributeHeightEmpty)
 
-private var NSLayoutAttributeWidthIsGone : UInt8 = 0
-private var NSLayoutAttributeWidthIsGone_key = UnsafeMutableRawPointer(&NSLayoutAttributeWidthIsGone)
-private var NSLayoutAttributeHeightIsGone : UInt8 = 0
+private var NSLayoutAttributeWidthIsGone    : UInt8 = 0
+private var NSLayoutAttributeHeightIsGone   : UInt8 = 0
+private var NSLayoutAttributeWidthGone      : UInt8 = 0
+private var NSLayoutAttributeHeightGone     : UInt8 = 0
+private var NSLayoutAttributeWidthIsGone_key  = UnsafeMutableRawPointer(&NSLayoutAttributeWidthIsGone)
 private var NSLayoutAttributeHeightIsGone_key = UnsafeMutableRawPointer(&NSLayoutAttributeHeightIsGone)
-private var NSLayoutAttributeWidthGone : UInt8 = 0
-private var NSLayoutAttributeWidthGone_key = UnsafeMutableRawPointer(&NSLayoutAttributeWidthGone)
-private var NSLayoutAttributeHeightGone : UInt8 = 0
-private var NSLayoutAttributeHeightGone_key = UnsafeMutableRawPointer(&NSLayoutAttributeHeightGone)
+private var NSLayoutAttributeWidthGone_key    = UnsafeMutableRawPointer(&NSLayoutAttributeWidthGone)
+private var NSLayoutAttributeHeightGone_key   = UnsafeMutableRawPointer(&NSLayoutAttributeHeightGone)
 
 
-private var NSLayoutAttributeTop : UInt8 = 0
-private var NSLayoutAttributeBottom  : UInt8 = 0
-private var NSLayoutAttributeLeading : UInt8 = 0
-private var NSLayoutAttributeTrailing : UInt8 = 0
-private var NSLayoutAttributeWidth : UInt8 = 0
-private var NSLayoutAttributeHeight : UInt8 = 0
-private var NSLayoutAttributeCenterX : UInt8 = 0
-private var NSLayoutAttributeCenterY : UInt8 = 0
+private var NSLayoutAttributeTop        : UInt8 = 0
+private var NSLayoutAttributeBottom     : UInt8 = 0
+private var NSLayoutAttributeLeading    : UInt8 = 0
+private var NSLayoutAttributeTrailing   : UInt8 = 0
+private var NSLayoutAttributeWidth      : UInt8 = 0
+private var NSLayoutAttributeHeight     : UInt8 = 0
+private var NSLayoutAttributeCenterX    : UInt8 = 0
+private var NSLayoutAttributeCenterY    : UInt8 = 0
 
-private var NSLayoutAttributeTop_key = UnsafeMutableRawPointer(&NSLayoutAttributeTop)
-private var NSLayoutAttributeBottom_key = UnsafeMutableRawPointer(&NSLayoutAttributeBottom)
-private var NSLayoutAttributeLeading_key = UnsafeMutableRawPointer(&NSLayoutAttributeLeading)
+private var NSLayoutAttributeTop_key      = UnsafeMutableRawPointer(&NSLayoutAttributeTop)
+private var NSLayoutAttributeBottom_key   = UnsafeMutableRawPointer(&NSLayoutAttributeBottom)
+private var NSLayoutAttributeLeading_key  = UnsafeMutableRawPointer(&NSLayoutAttributeLeading)
 private var NSLayoutAttributeTrailing_key = UnsafeMutableRawPointer(&NSLayoutAttributeTrailing)
-private var NSLayoutAttributeWidth_key = UnsafeMutableRawPointer(&NSLayoutAttributeWidth)
-private var NSLayoutAttributeHeight_key = UnsafeMutableRawPointer(&NSLayoutAttributeHeight)
-private var NSLayoutAttributeCenterX_key = UnsafeMutableRawPointer(&NSLayoutAttributeCenterX)
-private var NSLayoutAttributeCenterY_key = UnsafeMutableRawPointer(&NSLayoutAttributeCenterY)
+private var NSLayoutAttributeWidth_key    = UnsafeMutableRawPointer(&NSLayoutAttributeWidth)
+private var NSLayoutAttributeHeight_key   = UnsafeMutableRawPointer(&NSLayoutAttributeHeight)
+private var NSLayoutAttributeCenterX_key  = UnsafeMutableRawPointer(&NSLayoutAttributeCenterX)
+private var NSLayoutAttributeCenterY_key  = UnsafeMutableRawPointer(&NSLayoutAttributeCenterY)
 
-private var NSLayoutAttributeDefaultTop : UInt8 = 0
+private var NSLayoutAttributeDefaultTop     : UInt8 = 0
 private var NSLayoutAttributeDefaultBottom  : UInt8 = 0
 private var NSLayoutAttributeDefaultLeading : UInt8 = 0
-private var NSLayoutAttributeDefaultTrailing : UInt8 = 0
-private var NSLayoutAttributeDefaultWidth : UInt8 = 0
-private var NSLayoutAttributeDefaultHeight : UInt8 = 0
+private var NSLayoutAttributeDefaultTrailing: UInt8 = 0
+private var NSLayoutAttributeDefaultWidth   : UInt8 = 0
+private var NSLayoutAttributeDefaultHeight  : UInt8 = 0
 private var NSLayoutAttributeDefaultCenterX : UInt8 = 0
 private var NSLayoutAttributeDefaultCenterY : UInt8 = 0
 
-private var NSLayoutAttributeDefaultTop_key = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultTop)
-private var NSLayoutAttributeDefaultBottom_key = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultBottom)
-private var NSLayoutAttributeDefaultLeading_key = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultLeading)
+private var NSLayoutAttributeDefaultTop_key      = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultTop)
+private var NSLayoutAttributeDefaultBottom_key   = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultBottom)
+private var NSLayoutAttributeDefaultLeading_key  = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultLeading)
 private var NSLayoutAttributeDefaultTrailing_key = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultTrailing)
-private var NSLayoutAttributeDefaultWidth_key = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultWidth)
-private var NSLayoutAttributeDefaultHeight_key = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultHeight)
-private var NSLayoutAttributeDefaultCenterX_key = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultCenterX)
-private var NSLayoutAttributeDefaultCenterY_key = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultCenterY)
+private var NSLayoutAttributeDefaultWidth_key    = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultWidth)
+private var NSLayoutAttributeDefaultHeight_key   = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultHeight)
+private var NSLayoutAttributeDefaultCenterX_key  = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultCenterX)
+private var NSLayoutAttributeDefaultCenterY_key  = UnsafeMutableRawPointer(&NSLayoutAttributeDefaultCenterY)
 
-
+extension NSLayoutConstraint.Attribute {
+    var string: String {
+        switch self {
+        case .left:
+            return "left"
+        case .right:
+            return "right"
+        case .top:
+            return "top"
+        case .bottom:
+            return "bottom"
+        case .leading:
+            return "leading"
+        case .trailing:
+            return "trailing"
+        case .width:
+            return "width"
+        case .height:
+            return "height"
+        case .centerX:
+            return "centerX"
+        case .centerY:
+            return "centerY"
+        case .lastBaseline:
+            return "lastBaseline"
+        case .firstBaseline:
+            return "firstBaseline"
+        case .leftMargin:
+            return "leftMargin"
+        case .rightMargin:
+            return "rightMargin"
+        case .topMargin:
+            return "topMargin"
+        case .bottomMargin:
+            return "bottomMargin"
+        case .leadingMargin:
+            return "leadingMargin"
+        case .trailingMargin:
+            return "trailingMargin"
+        case .centerXWithinMargins:
+            return "centerXWithinMargins"
+        case .centerYWithinMargins:
+            return "centerYWithinMargins"
+        case .notAnAttribute:
+            return "notAnAttribute"
+        }
+    }
     
-@inline(__always) private func getLayoutAttributeKey(_ layoutAttribute: NSLayoutAttribute) -> UnsafeMutableRawPointer? {
-    switch layoutAttribute {
+    var AssociatedObjectKey: UnsafeMutableRawPointer? {
+        switch self {
         case .top:
             return NSLayoutAttributeTop_key
         case .bottom:
@@ -96,29 +146,30 @@ private var NSLayoutAttributeDefaultCenterY_key = UnsafeMutableRawPointer(&NSLay
             return NSLayoutAttributeCenterY_key
         default:
             return nil
+        }
     }
-}
-
-@inline(__always) private func getDefaultLayoutAttributeKey(_ layoutAttribute: NSLayoutAttribute) -> UnsafeMutableRawPointer? {
-    switch layoutAttribute {
-    case .top:
-        return NSLayoutAttributeDefaultTop_key
-    case .bottom:
-        return NSLayoutAttributeDefaultBottom_key
-    case .leading:
-        return NSLayoutAttributeDefaultLeading_key
-    case .trailing:
-        return NSLayoutAttributeDefaultTrailing_key
-    case .width:
-        return NSLayoutAttributeDefaultWidth_key
-    case .height:
-        return NSLayoutAttributeDefaultHeight_key
-    case .centerX:
-        return NSLayoutAttributeDefaultCenterX_key
-    case .centerY:
-        return NSLayoutAttributeDefaultCenterY_key
-    default:
-        return nil
+    
+    var defaultAssociatedObjectKey: UnsafeMutableRawPointer? {
+        switch self {
+        case .top:
+            return NSLayoutAttributeDefaultTop_key
+        case .bottom:
+            return NSLayoutAttributeDefaultBottom_key
+        case .leading:
+            return NSLayoutAttributeDefaultLeading_key
+        case .trailing:
+            return NSLayoutAttributeDefaultTrailing_key
+        case .width:
+            return NSLayoutAttributeDefaultWidth_key
+        case .height:
+            return NSLayoutAttributeDefaultHeight_key
+        case .centerX:
+            return NSLayoutAttributeDefaultCenterX_key
+        case .centerY:
+            return NSLayoutAttributeDefaultCenterY_key
+        default:
+            return nil
+        }
     }
 }
     
@@ -289,7 +340,7 @@ extension UIView {
     public func getDefaultConstraint(_ layoutAttribute: NSLayoutAttribute) -> CGFloat {
         
         self.getLayoutConstraint(layoutAttribute)
-        if let layoutAttributeDefaultKey = getDefaultLayoutAttributeKey(layoutAttribute) {
+        if let layoutAttributeDefaultKey = layoutAttribute.defaultAssociatedObjectKey {
             if let data = objc_getAssociatedObject(self, layoutAttributeDefaultKey) {
                 return data as? CGFloat ?? 0
             }
@@ -518,7 +569,7 @@ extension UIView {
     
     @discardableResult
     public func getLayoutConstraint(_ layoutAttribute: NSLayoutAttribute, errorCheck: Bool = true) -> NSLayoutConstraint? {
-        let layoutAttributekey = getLayoutAttributeKey(layoutAttribute)
+        let layoutAttributekey = layoutAttribute.AssociatedObjectKey
         if let layoutAttributekey = layoutAttributekey, let data = objc_getAssociatedObject(self, layoutAttributekey) {
             return data as? NSLayoutConstraint
         }
@@ -527,7 +578,7 @@ extension UIView {
         
         if constraintsTemp.count == 0 {
             if errorCheck {
-                fatalError("\n\nAutoLayout Not Make layoutAttribute : \(layoutAttributeString(layoutAttribute)) \nView: \(self)\n\n")
+                fatalError("\n\nAutoLayout Not Make layoutAttribute : \(layoutAttribute.string)) \nView: \(self)\n\n")
             }
             return nil
         }
@@ -540,7 +591,7 @@ extension UIView {
         if result != nil, let layoutAttributekey = layoutAttributekey  {
             objc_setAssociatedObject ( self, layoutAttributekey, result, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             
-            if let layoutAttributeDefaultKey = getDefaultLayoutAttributeKey(layoutAttribute) {
+            if let layoutAttributeDefaultKey = layoutAttribute.defaultAssociatedObjectKey {
                 if objc_getAssociatedObject(self, layoutAttributeDefaultKey) == nil {
                     objc_setAssociatedObject ( self, layoutAttributeDefaultKey, result?.constant, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
                 }
@@ -550,53 +601,6 @@ extension UIView {
         return result!
     }
     
-    public func layoutAttributeString(_ layoutAttribute: NSLayoutAttribute) -> String {
-        switch layoutAttribute {
-        case .left:
-            return "left"
-        case .right:
-            return "right"
-        case .top:
-            return "top"
-        case .bottom:
-            return "bottom"
-        case .leading:
-            return "leading"
-        case .trailing:
-            return "trailing"
-        case .width:
-            return "width"
-        case .height:
-            return "height"
-        case .centerX:
-            return "centerX"
-        case .centerY:
-            return "centerY"
-        case .lastBaseline:
-            return "lastBaseline"
-        case .firstBaseline:
-            return "firstBaseline"
-        case .leftMargin:
-            return "leftMargin"
-        case .rightMargin:
-            return "rightMargin"
-        case .topMargin:
-            return "topMargin"
-        case .bottomMargin:
-            return "bottomMargin"
-        case .leadingMargin:
-            return "leadingMargin"
-        case .trailingMargin:
-            return "trailingMargin"
-        case .centerXWithinMargins:
-            return "centerXWithinMargins"
-        case .centerYWithinMargins:
-            return "centerYWithinMargins"
-        case .notAnAttribute:
-            return "notAnAttribute"
-        }
-
-    }
     
     public func copyView() -> AnyObject
     {
