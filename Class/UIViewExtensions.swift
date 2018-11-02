@@ -355,13 +355,14 @@ extension UIView {
         setNeedsLayout()
     }
     
-    public func getConstraint(_ layoutAttribute: NSLayoutAttribute, toTaget: UIView) -> NSLayoutConstraint? {
-        let constraints = self.getLayoutAllConstraints(layoutAttribute)
-        let result = constraints.filter { (value) -> Bool in
+    public func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, toTaget: UIView) -> NSLayoutConstraint {
+        let constraints = self.getContraints(self.getControllerView(), checkSub: true)
+        var constraintsTemp = self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+        constraintsTemp = constraintsTemp.filter { (value) -> Bool in
             return value.firstItem === toTaget || value.secondItem === toTaget
         }
-        
-        return result.first
+        assert(constraintsTemp.first != nil, "not find TagetView")
+        return constraintsTemp.first!
     }
     
     
@@ -385,10 +386,10 @@ extension UIView {
     
     @inline(__always) public func getContraints(_ view: UIView, checkSub: Bool = false) -> Set<NSLayoutConstraint> {
         var result = Set<NSLayoutConstraint>()
-        
+        result.reserveCapacity(100)
         if checkSub {
             for subView in view.subviews {
-                result = result.union(self.getContraints(subView))
+                result = result.union(self.getContraints(subView, checkSub: checkSub))
             }
         }
         
@@ -400,15 +401,11 @@ extension UIView {
     
     
 
-    @inline(__always) public func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutAttribute, toTaget: UIView? = nil) -> Array<NSLayoutConstraint> {
-        var toTagetView = toTaget
-        if toTagetView == nil {
-            toTagetView = self.superview
-        }
+    @inline(__always) public func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutConstraint.Attribute) -> Array<NSLayoutConstraint> {
         var constraintsTemp = Array<NSLayoutConstraint>()
-        constraintsTemp.reserveCapacity(20)
+        constraintsTemp.reserveCapacity(100)
         for constraint in constraints {
-
+            
             
             switch layoutAttribute {
             case .width, .height:
@@ -428,8 +425,6 @@ extension UIView {
                             constraintsTemp.append(constraint)
                         }
                     }
-                    
-                    
                 }
                 else if  constraint.firstAttribute == layoutAttribute && constraint.secondAttribute == layoutAttribute {
                     if constraint.firstItem === self || constraint.secondItem === self {
@@ -438,8 +433,8 @@ extension UIView {
                 }
             case .centerX, .centerY:
                 if constraint.firstAttribute == layoutAttribute  && constraint.secondAttribute == layoutAttribute {
-                    if (constraint.firstItem === self && (constraint.secondItem === toTagetView || constraint.secondItem is UILayoutGuide)) ||
-                        (constraint.secondItem === self && (constraint.firstItem === toTagetView || constraint.firstItem is UILayoutGuide)) {
+                    if (constraint.firstItem === self && (constraint.secondItem === self.superview || constraint.secondItem is UILayoutGuide)) ||
+                        (constraint.secondItem === self && (constraint.firstItem === self.superview || constraint.firstItem is UILayoutGuide)) {
                         constraintsTemp.append(constraint)
                     }
                 }
@@ -451,11 +446,11 @@ extension UIView {
                     constraintsTemp.append(constraint)
                 }
                 else if constraint.firstAttribute == .top  && constraint.secondAttribute == .top {
-                    if (constraint.firstItem === self && constraint.secondItem === toTagetView ) ||
-                        (constraint.secondItem === self && constraint.firstItem === toTagetView ) {
+                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
+                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
                         constraintsTemp.append(constraint)
                     }
-                    else if toTaget == nil {
+                    else {
                         if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
                             (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
@@ -473,11 +468,11 @@ extension UIView {
                     constraintsTemp.append(constraint)
                 }
                 else if constraint.firstAttribute == .bottom  && constraint.secondAttribute == .bottom {
-                    if (constraint.firstItem === self && constraint.secondItem === toTagetView ) ||
-                        (constraint.secondItem === self && constraint.firstItem === toTagetView ) {
+                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
+                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
                         constraintsTemp.append(constraint)
                     }
-                    else if toTaget == nil {
+                    else  {
                         if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
                             (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
@@ -495,11 +490,11 @@ extension UIView {
                     constraintsTemp.append(constraint)
                 }
                 else if constraint.firstAttribute == .leading  && constraint.secondAttribute == .leading {
-                    if (constraint.firstItem === self && constraint.secondItem === toTagetView ) ||
-                        (constraint.secondItem === self && constraint.firstItem === toTagetView ) {
+                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
+                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
                         constraintsTemp.append(constraint)
                     }
-                    else if toTaget == nil {
+                    else  {
                         if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
                             (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
@@ -517,11 +512,11 @@ extension UIView {
                     constraintsTemp.append(constraint)
                 }
                 else if constraint.firstAttribute == .trailing  && constraint.secondAttribute == .trailing {
-                    if (constraint.firstItem === self && constraint.secondItem === toTagetView ) ||
-                        (constraint.secondItem === self && constraint.firstItem === toTagetView ) {
+                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
+                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
                         constraintsTemp.append(constraint)
                     }
-                    else if toTaget == nil {
+                    else {
                         if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
                             (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
@@ -535,7 +530,7 @@ extension UIView {
                 
                 
             default :
-                fatalError("not supput \(layoutAttribute)")
+                assertionFailure("not supput \(layoutAttribute)")
             }
         }
         
@@ -545,9 +540,9 @@ extension UIView {
     
     public func getLayoutAllConstraints(_ layoutAttribute: NSLayoutAttribute) -> [NSLayoutConstraint] {
         var constraintsTemp = Array<NSLayoutConstraint>()
-        constraintsTemp.reserveCapacity(20)
+        constraintsTemp.reserveCapacity(100)
         var constraints = Set<NSLayoutConstraint>()
-        constraints.reserveCapacity(20)
+        constraints.reserveCapacity(100)
         
         if let view = superview {
             constraints = self.getContraints(view)
