@@ -544,19 +544,26 @@ extension UIView {
         var constraints = Set<NSLayoutConstraint>()
         constraints.reserveCapacity(100)
         
-        if let view = superview {
-            constraints = self.getContraints(view)
-            constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-        }
-        
-        if constraintsTemp.count == 0 {
+        if layoutAttribute == .width || layoutAttribute == .height {
             constraints = self.getContraints(self)
             constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
         }
-        
-        if constraintsTemp.count == 0 {
-            constraints = self.getContraints(self.getControllerView(), checkSub: true)
-            constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+        else {
+            
+            if let view = superview {
+                constraints = self.getContraints(view)
+                constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            }
+            
+            if constraintsTemp.count == 0 {
+                constraints = self.getContraints(self)
+                constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            }
+            
+            if constraintsTemp.count == 0 {
+                constraints = self.getContraints(self.getControllerView(), checkSub: true)
+                constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            }
         }
         
         return constraintsTemp
