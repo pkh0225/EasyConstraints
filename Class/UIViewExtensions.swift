@@ -437,6 +437,9 @@ extension UIView {
                         (constraint.secondItem === self && (constraint.firstItem === self.superview || constraint.firstItem is UILayoutGuide)) {
                         constraintsTemp.append(constraint)
                     }
+                    else if constraint.firstItem === self || constraint.secondItem === self {
+                        constraintsTemp.append(constraint)
+                    }
                 }
             case .top :
                 if  constraint.firstItem === self && constraint.firstAttribute == .top  && constraint.secondAttribute == .bottom {
@@ -539,34 +542,46 @@ extension UIView {
     }
     
     public func getLayoutAllConstraints(_ layoutAttribute: NSLayoutAttribute) -> [NSLayoutConstraint] {
-        var constraintsTemp = Array<NSLayoutConstraint>()
-        constraintsTemp.reserveCapacity(100)
+        var resultConstraints = Array<NSLayoutConstraint>()
+        resultConstraints.reserveCapacity(100)
         var constraints = Set<NSLayoutConstraint>()
         constraints.reserveCapacity(100)
         
         if layoutAttribute == .width || layoutAttribute == .height {
             constraints = self.getContraints(self)
-            constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            
+            if resultConstraints.count == 0 {
+                if let view = superview {
+                    constraints = self.getContraints(view)
+                    resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+                }
+            }
+            
+            if resultConstraints.count == 0 {
+                constraints = self.getContraints(self.getControllerView(), checkSub: true)
+                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            }
         }
         else {
             
             if let view = superview {
                 constraints = self.getContraints(view)
-                constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
             }
             
-            if constraintsTemp.count == 0 {
+            if resultConstraints.count == 0 {
                 constraints = self.getContraints(self)
-                constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
             }
             
-            if constraintsTemp.count == 0 {
+            if resultConstraints.count == 0 {
                 constraints = self.getContraints(self.getControllerView(), checkSub: true)
-                constraintsTemp += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
             }
         }
         
-        return constraintsTemp
+        return resultConstraints
     }
     
     @discardableResult
