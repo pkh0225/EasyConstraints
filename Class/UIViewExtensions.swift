@@ -21,10 +21,10 @@ public enum VIEW_ADD_TYPE  {
 }
 
 private var viewDidDisappear_key: UInt8 = 0
-private var viewDidDisappearTimer_key: UInt8 = 0
+private var viewDidDisappearCADisplayLink_key: UInt8 = 0
 
 private var viewDidAppear_key: UInt8 = 0
-private var viewDidAppearTimer_key: UInt8 = 0
+private var viewDidAppearCADisplayLink_key: UInt8 = 0
 
 
 private var NSLayoutAttributeWidthEmpty     : UInt8 = 0
@@ -333,11 +333,11 @@ extension UIView {
         }
     }
     
-    public func getConstraint(_ layoutAttribute: NSLayoutAttribute) -> CGFloat {
+    public func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
         return self.getLayoutConstraint(layoutAttribute)?.constant ?? 0
     }
     
-    public func getDefaultConstraint(_ layoutAttribute: NSLayoutAttribute) -> CGFloat {
+    public func getDefaultConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
         
         self.getLayoutConstraint(layoutAttribute)
         if let layoutAttributeDefaultKey = layoutAttribute.defaultAssociatedObjectKey {
@@ -350,7 +350,7 @@ extension UIView {
         
     }
     
-    public func setConstraint(_ layoutAttribute: NSLayoutAttribute, _ value: CGFloat) {
+    public func setConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, _ value: CGFloat) {
         self.getLayoutConstraint(layoutAttribute)?.constant = value
         setNeedsLayout()
     }
@@ -541,7 +541,7 @@ extension UIView {
         return constraintsTemp
     }
     
-    public func getLayoutAllConstraints(_ layoutAttribute: NSLayoutAttribute) -> [NSLayoutConstraint] {
+    public func getLayoutAllConstraints(_ layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
         var resultConstraints = Array<NSLayoutConstraint>()
         resultConstraints.reserveCapacity(100)
         var constraints = Set<NSLayoutConstraint>()
@@ -585,7 +585,7 @@ extension UIView {
     }
     
     @discardableResult
-    public func getLayoutConstraint(_ layoutAttribute: NSLayoutAttribute, errorCheck: Bool = true) -> NSLayoutConstraint? {
+    public func getLayoutConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, errorCheck: Bool = true) -> NSLayoutConstraint? {
         let layoutAttributekey = layoutAttribute.AssociatedObjectKey
         if let layoutAttributekey = layoutAttributekey, let data = objc_getAssociatedObject(self, layoutAttributekey) {
             return data as? NSLayoutConstraint
@@ -650,12 +650,12 @@ extension UIView {
         let edgeInsetsDic: Dictionary = ["top" : (edgeInsets.top), "left" : (edgeInsets.left), "bottom" : (edgeInsets.bottom), "right" : (edgeInsets.right)]
         
         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"H:|-(left)-[subview]-(right)-|",
-                                                      options:NSLayoutFormatOptions(rawValue: 0),
+                                                           options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                       metrics:edgeInsetsDic,
                                                       views:views))
 
         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"V:|-(top)-[subview]-(bottom)-|",
-                                                      options:NSLayoutFormatOptions(rawValue: 0),
+                                                           options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                       metrics:edgeInsetsDic,
                                                       views:views))
     }
@@ -673,7 +673,7 @@ extension UIView {
             
             if addType == .horizontal {
                 self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"V:|-(top)-[view\(idx)]-(bottom)-|",
-                                                              options:NSLayoutFormatOptions(rawValue: 0),
+                    options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                               metrics:["top" : (edgeInsets.top), "bottom" : (edgeInsets.bottom)],
                                                               views:views))
                 
@@ -683,7 +683,7 @@ extension UIView {
                     constraints += "H:|-(left)-[view\(idx)(width\(idx))]-(right)-|"
                     
                     self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
-                                                                  options:NSLayoutFormatOptions(rawValue: 0),
+                                                                       options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                                   metrics:metrics,
                                                                   views:views))
                     
@@ -696,7 +696,7 @@ extension UIView {
                         constraints += "[view\(idx)(width\(idx))]-(right)-|"
                     
                         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
-                                                                      options:NSLayoutFormatOptions(rawValue: 0),
+                                                                           options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                                       metrics:metrics,
                                                                       views:views))
                     }
@@ -709,7 +709,7 @@ extension UIView {
             }
             else {
                 self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"H:|-(left)-[view\(idx)]-(right)-|",
-                                                              options:NSLayoutFormatOptions(rawValue: 0),
+                    options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                               metrics:["left" : (edgeInsets.left), "right" : (edgeInsets.right)],
                                                               views:views))
                 
@@ -719,7 +719,7 @@ extension UIView {
                     constraints += "V:|-(top)-[view\(idx)(height\(idx))]-(bottom)-|"
                     
                     self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
-                                                                  options:NSLayoutFormatOptions(rawValue: 0),
+                                                                       options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                                   metrics:metrics,
                                                                   views:views))
                 }
@@ -732,7 +732,7 @@ extension UIView {
                         constraints += "[view\(idx)(height\(idx))]-(bottom)-|"
                         
                         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
-                                                                      options:NSLayoutFormatOptions(rawValue: 0),
+                                                                           options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                                       metrics:metrics,
                                                                       views:views))
                     }
@@ -763,6 +763,64 @@ extension UIView {
         self.translatesAutoresizingMaskIntoConstraints = true
     }
     
+    private var viewDidAppearCADisplayLink: CADisplayLink? {
+        get {
+            return objc_getAssociatedObject(self, &viewDidAppearCADisplayLink_key) as? CADisplayLink
+        }
+        set {
+            objc_setAssociatedObject ( self, &viewDidAppearCADisplayLink_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    @objc private func onViewDidAppear() {
+        if self.isVisible {
+            self.viewDidAppearCADisplayLink?.invalidate()
+            self.viewDidAppearCADisplayLink = nil
+            self.viewDidAppear?()
+        }
+    }
+    
+    public var viewDidAppear: VoidClosure? {
+        get {
+            return objc_getAssociatedObject(self, &viewDidAppear_key) as? VoidClosure
+        }
+        set {
+            objc_setAssociatedObject ( self, &viewDidAppear_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            
+            viewDidAppearCADisplayLink?.invalidate()
+            if newValue != nil {
+                viewDidAppearCADisplayLink = CADisplayLink(target: self, selector: #selector(onViewDidAppear))
+                viewDidAppearCADisplayLink?.add(to: .current, forMode: .common)
+                if #available(iOS 10.0, *) {
+                    viewDidAppearCADisplayLink?.preferredFramesPerSecond = 5
+                } else {
+                    viewDidAppearCADisplayLink?.frameInterval = 5
+                }
+            }
+            else {
+                viewDidAppearCADisplayLink = nil
+            }
+        }
+    }
+    
+    private var viewDidDisappearCADisplayLink: CADisplayLink? {
+        get {
+            return objc_getAssociatedObject(self, &viewDidDisappearCADisplayLink_key) as? CADisplayLink
+        }
+        set {
+            objc_setAssociatedObject ( self, &viewDidDisappearCADisplayLink_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    @objc private func onViewDidDisappear() {
+        print("onViewDidDisappear")
+        if self.isVisible == false {
+            self.viewDidDisappearCADisplayLink?.invalidate()
+            self.viewDidDisappearCADisplayLink = nil
+            self.viewDidDisappear?()
+        }
+    }
+    
     public var viewDidDisappear: VoidClosure? {
         get {
             return objc_getAssociatedObject(self, &viewDidDisappear_key) as? VoidClosure
@@ -770,31 +828,19 @@ extension UIView {
         set {
             objc_setAssociatedObject ( self, &viewDidDisappear_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             
-            viewDidDisappearTimer?.invalidate()
+            viewDidDisappearCADisplayLink?.invalidate()
             if newValue != nil {
-                viewDidDisappearTimer = Timer.schedule(repeatInterval: 0.2) { [weak self] (timer) in
-                    guard let `self` = self else { return }
-                    let check = self.isVisible
-                    if check == false {
-                        self.viewDidDisappearTimer?.invalidate()
-                        self.viewDidDisappearTimer = nil
-                        self.viewDidDisappear?()
-                    }
+                viewDidDisappearCADisplayLink = CADisplayLink(target: self, selector: #selector(onViewDidDisappear))
+                viewDidDisappearCADisplayLink?.add(to: .current, forMode: .common)
+                if #available(iOS 10.0, *) {
+                    viewDidDisappearCADisplayLink?.preferredFramesPerSecond = 5
+                } else {
+                    viewDidDisappearCADisplayLink?.frameInterval = 5
                 }
-                
             }
             else {
-                viewDidDisappearTimer = nil
+                viewDidDisappearCADisplayLink = nil
             }
-        }
-    }
-    
-    private var viewDidDisappearTimer: Timer? {
-        get {
-            return objc_getAssociatedObject(self, &viewDidDisappearTimer_key) as? Timer
-        }
-        set {
-            objc_setAssociatedObject ( self, &viewDidDisappearTimer_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -821,18 +867,18 @@ extension UIView {
         return true
     }
     
-    public var isGone: Bool {
+    public var gone: Bool {
         get {
-            return isGoneWidth || isGoneHeight
+            return goneWidth || goneHeight
         }
         set {
             isHidden = newValue
-            isGoneWidth = newValue
-            isGoneHeight = newValue
+            goneWidth = newValue
+            goneHeight = newValue
         }
     }
     
-    public var isGoneWidth: Bool {
+    public var goneWidth: Bool {
         get {
             if let isGone = objc_getAssociatedObject(self, NSLayoutAttributeWidthIsGone_key) as? Bool {
                 return isGone
@@ -850,7 +896,7 @@ extension UIView {
         }
     }
     
-    public var isGoneHeight: Bool {
+    public var goneHeight: Bool {
         get {
             if let isGone = objc_getAssociatedObject(self, NSLayoutAttributeHeightIsGone_key) as? Bool {
                 return isGone
@@ -1006,24 +1052,5 @@ extension UIView {
 }
 
 #endif
-
-extension Timer {
-    ///   Runs every x seconds, to cancel use: timer.invalidate()
-    public class func schedule(repeatInterval: TimeInterval, _ handler: @escaping (Timer?) -> Void) -> Timer {
-        let fireDate = CFAbsoluteTimeGetCurrent() + repeatInterval
-        let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, fireDate, repeatInterval, 0, 0, handler)
-        CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, CFRunLoopMode.commonModes)
-        return timer!
-    }
-    
-    ///   Run function after x seconds
-    public class func schedule(delay: TimeInterval, _ handler: @escaping (Timer?) -> Void) -> Timer {
-        let fireDate = delay + CFAbsoluteTimeGetCurrent()
-        let timer = CFRunLoopTimerCreateWithHandler(kCFAllocatorDefault, fireDate, 0, 0, 0, handler)
-        CFRunLoopAddTimer(CFRunLoopGetCurrent(), timer, CFRunLoopMode.commonModes)
-        return timer!
-    }
-    
-}
 
 

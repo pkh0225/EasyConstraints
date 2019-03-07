@@ -102,8 +102,8 @@ class AutoLayoutController: UIViewController {
         setDefaultConstrains()
     }
     @IBAction func onGone(_ sender: UIButton) {
-        view3.isGone = !view3.isGone
-        if view3.isGone {
+        view3.gone = !view3.gone
+        if view3.gone {
             sender.setTitle("No gone", for: .normal)
         }
         else {
