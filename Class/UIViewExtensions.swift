@@ -409,26 +409,24 @@ extension UIView {
             
             switch layoutAttribute {
             case .width, .height:
-                if  constraint.firstItem === self && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
-                    if self is UIButton || self is UILabel || self is UIImageView {
-                        if  type(of:constraint) === NSLayoutConstraint.self {
+                if type(of:constraint) === NSLayoutConstraint.self {
+                    if  constraint.firstItem === self && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
+                        if self is UIButton || self is UILabel || self is UIImageView {
                             constraintsTemp.append(constraint)
                         }
-                    }
-                    else {
-                        if self is UIButton || self is UILabel || self is UIImageView {
-                            if type(of:constraint) === NSLayoutConstraint.self {
+                        else {
+                            if self is UIButton || self is UILabel || self is UIImageView {
+                                constraintsTemp.append(constraint)
+                            }
+                            else {
                                 constraintsTemp.append(constraint)
                             }
                         }
-                        else {
+                    }
+                    else if  constraint.firstAttribute == layoutAttribute && constraint.secondAttribute == layoutAttribute {
+                        if constraint.firstItem === self || constraint.secondItem === self {
                             constraintsTemp.append(constraint)
                         }
-                    }
-                }
-                else if  constraint.firstAttribute == layoutAttribute && constraint.secondAttribute == layoutAttribute {
-                    if constraint.firstItem === self || constraint.secondItem === self {
-                        constraintsTemp.append(constraint)
                     }
                 }
             case .centerX, .centerY:
