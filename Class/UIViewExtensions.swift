@@ -973,7 +973,7 @@ extension UIView {
         guard type.isEmpty == false else { return }
         isHidden = true
         
-        if type.contains(.width) {
+        if type.contains(.width) && goneInfo.type.contains(.width) == false {
             if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
                 goneInfo.width = constraint.constant
                 constraint.constant = 0
@@ -984,7 +984,7 @@ extension UIView {
                 goneInfo.widthEmptyConstraint = constraint
             }
         }
-        if type.contains(.height) {
+        if type.contains(.height) && goneInfo.type.contains(.height) == false {
             if let constraint = self.getLayoutConstraint(.height, errorCheck: false) {
                 goneInfo.height = constraint.constant
                 constraint.constant = 0
@@ -995,25 +995,25 @@ extension UIView {
                 goneInfo.heightEmptyConstraint = constraint
             }
         }
-        if type.contains(.leading) {
+        if type.contains(.leading) && goneInfo.type.contains(.leading) == false {
             if let constraint = self.getLayoutConstraint(.leading, errorCheck: false) {
                 goneInfo.leading = constraint.constant
                 constraint.constant = 0
             }
         }
-        if type.contains(.trailing) {
+        if type.contains(.trailing) && goneInfo.type.contains(.trailing) == false {
             if let constraint = self.getLayoutConstraint(.trailing, errorCheck: false) {
                 goneInfo.trailing = constraint.constant
                 constraint.constant = 0
             }
         }
-        if type.contains(.top) {
+        if type.contains(.top) && goneInfo.type.contains(.top) == false {
             if let constraint = self.getLayoutConstraint(.top, errorCheck: false) {
                 goneInfo.top = constraint.constant
                 constraint.constant = 0
             }
         }
-        if type.contains(.bottom) {
+        if type.contains(.bottom) && goneInfo.type.contains(.bottom) == false {
             if let constraint = self.getLayoutConstraint(.bottom, errorCheck: false) {
                 goneInfo.bottom = constraint.constant
                 constraint.constant = 0
