@@ -975,52 +975,70 @@ extension UIView {
         
         if type.contains(.width) && goneInfo.type.contains(.width) == false {
             if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
-                goneInfo.width = constraint.constant
-                constraint.constant = 0
+                if constraint.constant != 0 {
+                    goneInfo.width = constraint.constant
+                    constraint.constant = 0
+                    goneInfo.type.insert(.width)
+                }
             }
             else {
                 let constraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
                 addConstraint(constraint)
                 goneInfo.widthEmptyConstraint = constraint
+                goneInfo.type.insert(.width)
             }
         }
         if type.contains(.height) && goneInfo.type.contains(.height) == false {
             if let constraint = self.getLayoutConstraint(.height, errorCheck: false) {
-                goneInfo.height = constraint.constant
-                constraint.constant = 0
+                if constraint.constant != 0 {
+                    goneInfo.height = constraint.constant
+                    constraint.constant = 0
+                    goneInfo.type.insert(.height)
+                }
             }
             else {
                 let constraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
                 addConstraint(constraint)
                 goneInfo.heightEmptyConstraint = constraint
+                goneInfo.type.insert(.height)
             }
         }
         if type.contains(.leading) && goneInfo.type.contains(.leading) == false {
             if let constraint = self.getLayoutConstraint(.leading, errorCheck: false) {
-                goneInfo.leading = constraint.constant
-                constraint.constant = 0
+                if constraint.constant != 0 {
+                    goneInfo.leading = constraint.constant
+                    constraint.constant = 0
+                    goneInfo.type.insert(.leading)
+                }
             }
         }
         if type.contains(.trailing) && goneInfo.type.contains(.trailing) == false {
             if let constraint = self.getLayoutConstraint(.trailing, errorCheck: false) {
-                goneInfo.trailing = constraint.constant
-                constraint.constant = 0
+                if constraint.constant != 0 {
+                    goneInfo.trailing = constraint.constant
+                    constraint.constant = 0
+                    goneInfo.type.insert(.trailing)
+                }
             }
         }
         if type.contains(.top) && goneInfo.type.contains(.top) == false {
             if let constraint = self.getLayoutConstraint(.top, errorCheck: false) {
-                goneInfo.top = constraint.constant
-                constraint.constant = 0
+                if constraint.constant != 0 {
+                    goneInfo.top = constraint.constant
+                    constraint.constant = 0
+                    goneInfo.type.insert(.top)
+                }
             }
         }
         if type.contains(.bottom) && goneInfo.type.contains(.bottom) == false {
             if let constraint = self.getLayoutConstraint(.bottom, errorCheck: false) {
-                goneInfo.bottom = constraint.constant
-                constraint.constant = 0
+                if constraint.constant != 0 {
+                    goneInfo.bottom = constraint.constant
+                    constraint.constant = 0
+                    goneInfo.type.insert(.bottom)
+                }
             }
         }
-        
-        goneInfo.type.insert(type)
     }
     
     public func goneRemove() {
@@ -1028,24 +1046,23 @@ extension UIView {
         isHidden = false
         
         if goneInfo.type.contains(.width) {
-            if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
-                constraint.constant = goneInfo.width
+            if let c = goneInfo.widthEmptyConstraint {
+                removeConstraint(c)
+                goneInfo.widthEmptyConstraint = nil
             }
-            else {
-                if let c = goneInfo.widthEmptyConstraint {
-                    removeConstraint(c)
-                }
+            else if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
+                constraint.constant = goneInfo.width
             }
         }
         if goneInfo.type.contains(.height) {
-            if let constraint = self.getLayoutConstraint(.height, errorCheck: false) {
+            if let c = goneInfo.heightEmptyConstraint {
+                removeConstraint(c)
+                goneInfo.heightEmptyConstraint = nil
+            }
+            else if let constraint = self.getLayoutConstraint(.height, errorCheck: false) {
                 constraint.constant = goneInfo.height
             }
-            else {
-                if let c = goneInfo.heightEmptyConstraint {
-                    removeConstraint(c)
-                }
-            }
+            
         }
         if goneInfo.type.contains(.leading) {
             if let constraint = self.getLayoutConstraint(.leading, errorCheck: false) {
