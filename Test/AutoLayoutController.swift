@@ -82,7 +82,7 @@ class AutoLayoutController: UIViewController {
     
     @IBAction func onView2Trailing(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-            view2.topConstraint = value
+            view2.trailingConstraint = value
         }
     }
     
@@ -102,12 +102,14 @@ class AutoLayoutController: UIViewController {
         setDefaultConstrains()
     }
     @IBAction func onGone(_ sender: UIButton) {
-        view3.gone = !view3.gone
-        if view3.gone {
-            sender.setTitle("No gone", for: .normal)
+        
+        if view3.isGone {
+            view3.goneRemove()
+            sender.setTitle("Gone", for: .normal)
         }
         else {
-            sender.setTitle("gone", for: .normal)
+            view3.gone()
+            sender.setTitle("No Gone", for: .normal)
         }
         
     }

@@ -20,26 +20,26 @@ public enum VIEW_ADD_TYPE  {
     case vertical
 }
 
-private var viewDidDisappear_key: UInt8 = 0
-private var viewDidDisappearCADisplayLink_key: UInt8 = 0
+public struct GoneType: OptionSet {
+    public let rawValue: Int
+    
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+    
+    public static let leading = GoneType(rawValue: 1 << 0)
+    public static let trailing = GoneType(rawValue: 1 << 1)
+    public static let top = GoneType(rawValue: 1 << 2)
+    public static let bottom = GoneType(rawValue: 1 << 3)
+    public static let width = GoneType(rawValue: 1 << 4)
+    public static let height = GoneType(rawValue: 1 << 5)
 
-private var viewDidAppear_key: UInt8 = 0
-private var viewDidAppearCADisplayLink_key: UInt8 = 0
-
-
-private var NSLayoutAttributeWidthEmpty     : UInt8 = 0
-private var NSLayoutAttributeHeightEmpty    : UInt8 = 0
-private var NSLayoutAttributeWidthEmpty_key  = UnsafeMutableRawPointer(&NSLayoutAttributeWidthEmpty)
-private var NSLayoutAttributeHeightEmpty_key = UnsafeMutableRawPointer(&NSLayoutAttributeHeightEmpty)
-
-private var NSLayoutAttributeWidthIsGone    : UInt8 = 0
-private var NSLayoutAttributeHeightIsGone   : UInt8 = 0
-private var NSLayoutAttributeWidthGone      : UInt8 = 0
-private var NSLayoutAttributeHeightGone     : UInt8 = 0
-private var NSLayoutAttributeWidthIsGone_key  = UnsafeMutableRawPointer(&NSLayoutAttributeWidthIsGone)
-private var NSLayoutAttributeHeightIsGone_key = UnsafeMutableRawPointer(&NSLayoutAttributeHeightIsGone)
-private var NSLayoutAttributeWidthGone_key    = UnsafeMutableRawPointer(&NSLayoutAttributeWidthGone)
-private var NSLayoutAttributeHeightGone_key   = UnsafeMutableRawPointer(&NSLayoutAttributeHeightGone)
+    public static let size: GoneType = [.width, .height]
+    public static let widthPadding: GoneType = [.width, .leading, .trailing]
+    public static let heightPadding: GoneType = [.height, .top, .bottom]
+    public static let padding: GoneType = [.leading, .trailing, .top, .bottom]
+    public static let all: GoneType = [.leading, .trailing, .top, .bottom, .width, .height]
+}
 
 
 private var NSLayoutAttributeTop        : UInt8 = 0
@@ -123,6 +123,8 @@ extension NSLayoutConstraint.Attribute {
             return "centerYWithinMargins"
         case .notAnAttribute:
             return "notAnAttribute"
+        @unknown default:
+            fatalError()
         }
     }
     
@@ -175,6 +177,93 @@ extension NSLayoutConstraint.Attribute {
     
     
 extension UIView {
+    private struct AssociatedKeys {
+        static var viewDidDisappear: UInt8 = 0
+        static var viewDidDisappearCADisplayLink: UInt8 = 0
+        
+        static var viewDidAppear: UInt8 = 0
+        static var viewDidAppearCADisplayLink: UInt8 = 0
+        
+        static var goneInfo: UInt8 = 0
+    }
+    
+    class GoneInfo {
+        var type: GoneType = []
+        var top: CGFloat = 0
+        var bottom: CGFloat = 0
+        var leading: CGFloat = 0
+        var trailing: CGFloat = 0
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+        
+        var widthEmptyConstraint: NSLayoutConstraint?
+        var heightEmptyConstraint: NSLayoutConstraint?
+    }
+    
+    private var goneInfo: GoneInfo {
+        get {
+            if let goneInfo = objc_getAssociatedObject(self, &AssociatedKeys.goneInfo) as? GoneInfo {
+                return goneInfo
+            }
+            let goneInfo = GoneInfo()
+            objc_setAssociatedObject(self, &AssociatedKeys.goneInfo, goneInfo, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return goneInfo
+        }
+        set {
+            objc_setAssociatedObject(self, &AssociatedKeys.goneInfo, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    public var isGone: Bool {
+        return !goneInfo.type.isEmpty
+    }
+    
+    public var isWidthConstraint: Bool {
+        get {
+            return self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .width).count > 0
+        }
+    }
+    
+    public var isHeightConstraint: Bool {
+        get {
+            return self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .height).count > 0
+        }
+    }
+    
+    public var isTopConstraint: Bool {
+        get {
+            return self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .top).count > 0
+        }
+    }
+    
+    public var isLeadingConstraint: Bool {
+        get {
+            return self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .leading).count > 0
+        }
+    }
+    
+    public var isBottomConstraint: Bool {
+        get {
+            return self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .bottom).count > 0
+        }
+    }
+    
+    public var isTrailingConstraint: Bool {
+        get {
+            return self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .trailing).count > 0
+        }
+    }
+    
+    public var isCenterXConstraint: Bool {
+        get {
+            return self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .centerX).count > 0
+        }
+    }
+    
+    public var isCenterYConstraint: Bool {
+        get {
+            return self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .centerY).count > 0
+        }
+    }
 
     public var widthConstraint: CGFloat {
         get {
@@ -763,27 +852,35 @@ extension UIView {
     
     private var viewDidAppearCADisplayLink: CADisplayLink? {
         get {
-            return objc_getAssociatedObject(self, &viewDidAppearCADisplayLink_key) as? CADisplayLink
+            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppearCADisplayLink) as? CADisplayLink
         }
         set {
-            objc_setAssociatedObject ( self, &viewDidAppearCADisplayLink_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidAppearCADisplayLink, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
     @objc private func onViewDidAppear() {
+        let windowRect = self.superview?.convert(self.frame, to: nil) ?? .zero
+        if windowRect == .zero {
+            self.viewDidAppearCADisplayLink?.invalidate()
+            self.viewDidAppearCADisplayLink = nil
+            return
+        }
+        
         if self.isVisible {
             self.viewDidAppearCADisplayLink?.invalidate()
             self.viewDidAppearCADisplayLink = nil
             self.viewDidAppear?()
         }
+
     }
     
     public var viewDidAppear: VoidClosure? {
         get {
-            return objc_getAssociatedObject(self, &viewDidAppear_key) as? VoidClosure
+            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppear) as? VoidClosure
         }
         set {
-            objc_setAssociatedObject ( self, &viewDidAppear_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidAppear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             
             viewDidAppearCADisplayLink?.invalidate()
             if newValue != nil {
@@ -803,27 +900,35 @@ extension UIView {
     
     private var viewDidDisappearCADisplayLink: CADisplayLink? {
         get {
-            return objc_getAssociatedObject(self, &viewDidDisappearCADisplayLink_key) as? CADisplayLink
+            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidDisappearCADisplayLink) as? CADisplayLink
         }
         set {
-            objc_setAssociatedObject ( self, &viewDidDisappearCADisplayLink_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidDisappearCADisplayLink, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
     @objc private func onViewDidDisappear() {
+        let windowRect = self.superview?.convert(self.frame, to: nil) ?? .zero
+        if windowRect == .zero {
+            self.viewDidDisappearCADisplayLink?.invalidate()
+            self.viewDidDisappearCADisplayLink = nil
+            return
+        }
+        
         if self.isVisible == false {
             self.viewDidDisappearCADisplayLink?.invalidate()
             self.viewDidDisappearCADisplayLink = nil
             self.viewDidDisappear?()
         }
+
     }
     
     public var viewDidDisappear: VoidClosure? {
         get {
-            return objc_getAssociatedObject(self, &viewDidDisappear_key) as? VoidClosure
+            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidDisappear) as? VoidClosure
         }
         set {
-            objc_setAssociatedObject ( self, &viewDidDisappear_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidDisappear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             
             viewDidDisappearCADisplayLink?.invalidate()
             if newValue != nil {
@@ -864,151 +969,116 @@ extension UIView {
         return true
     }
     
-    public var gone: Bool {
-        get {
-            return goneWidth || goneHeight
-        }
-        set {
-            isHidden = newValue
-            goneWidth = newValue
-            goneHeight = newValue
-        }
-    }
-    
-    public var goneWidth: Bool {
-        get {
-            if let isGone = objc_getAssociatedObject(self, NSLayoutAttributeWidthIsGone_key) as? Bool {
-                return isGone
-            }
-            return false
-        }
-        set {
-            if newValue {
-                isHidden = true
-                goneWidth(space: true)
-            }
-            else {
-                goneRelease(key: NSLayoutAttributeWidthGone_key)
-            }
-        }
-    }
-    
-    public var goneHeight: Bool {
-        get {
-            if let isGone = objc_getAssociatedObject(self, NSLayoutAttributeHeightIsGone_key) as? Bool {
-                return isGone
-            }
-            return false
-        }
-        set {
-            if newValue {
-                goneHeight(space: true)
-            }
-            else {
-                goneRelease(key: NSLayoutAttributeHeightGone_key)
-            }
-        }
-    }
-    
-    public func gone(space: Bool) {
-        goneWidth(space: space)
-        goneHeight(space: space)
-    }
-    
-    public func goneRelease() {
-        goneRelease(key: NSLayoutAttributeWidthGone_key)
-        goneRelease(key: NSLayoutAttributeHeightGone_key)
-    }
-    
-    public func goneHeight(space: Bool = true) {
-        if let isGone = objc_getAssociatedObject(self, NSLayoutAttributeHeightIsGone_key) as? Bool, isGone == true {
-            return
-        }
+    public func gone(_ type : GoneType = .all) {
+        guard type.isEmpty == false else { return }
         isHidden = true
-        var dic = [NSLayoutConstraint:CGFloat]()
-        if let constraint = self.getLayoutConstraint(.height, errorCheck: false) {
-            dic.updateValue(constraint.constant, forKey: constraint)
-            constraint.constant = 0
-        }
-        else {
-            let constraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
-            addConstraint(constraint)
-            dic.updateValue(constraint.constant, forKey: constraint)
-            objc_setAssociatedObject ( self, NSLayoutAttributeHeightEmpty_key, true, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-        if space {
-            if let constraint = self.getLayoutConstraint(.top, errorCheck: false) {
-                dic.updateValue(constraint.constant, forKey: constraint)
-                constraint.constant = 0
-            }
-            if let constraint = self.getLayoutConstraint(.bottom, errorCheck: false) {
-                dic.updateValue(constraint.constant, forKey: constraint)
-                constraint.constant = 0
-            }
-        }
         
-        objc_setAssociatedObject ( self, NSLayoutAttributeHeightGone_key, dic, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        objc_setAssociatedObject ( self, NSLayoutAttributeHeightIsGone_key, true, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-    }
-    
-    public func goneWidth(space: Bool = true) {
-        if let isGone = objc_getAssociatedObject(self, NSLayoutAttributeWidthIsGone_key) as? Bool, isGone == true {
-            return
+        if type.contains(.width) {
+            if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
+                goneInfo.width = constraint.constant
+                constraint.constant = 0
+            }
+            else {
+                let constraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
+                addConstraint(constraint)
+                goneInfo.widthEmptyConstraint = constraint
+            }
         }
-        isHidden = true
-        var dic = [NSLayoutConstraint:CGFloat]()
-        if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
-            dic.updateValue(constraint.constant, forKey: constraint)
-            constraint.constant = 0
+        if type.contains(.height) {
+            if let constraint = self.getLayoutConstraint(.height, errorCheck: false) {
+                goneInfo.height = constraint.constant
+                constraint.constant = 0
+            }
+            else {
+                let constraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
+                addConstraint(constraint)
+                goneInfo.heightEmptyConstraint = constraint
+            }
         }
-        else {
-            let constraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
-            addConstraint(constraint)
-            dic.updateValue(constraint.constant, forKey: constraint)
-            objc_setAssociatedObject ( self, NSLayoutAttributeWidthEmpty_key, true, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-        if space {
+        if type.contains(.leading) {
             if let constraint = self.getLayoutConstraint(.leading, errorCheck: false) {
-                dic.updateValue(constraint.constant, forKey: constraint)
+                goneInfo.leading = constraint.constant
                 constraint.constant = 0
             }
+        }
+        if type.contains(.trailing) {
             if let constraint = self.getLayoutConstraint(.trailing, errorCheck: false) {
-                dic.updateValue(constraint.constant, forKey: constraint)
+                goneInfo.trailing = constraint.constant
+                constraint.constant = 0
+            }
+        }
+        if type.contains(.top) {
+            if let constraint = self.getLayoutConstraint(.top, errorCheck: false) {
+                goneInfo.top = constraint.constant
+                constraint.constant = 0
+            }
+        }
+        if type.contains(.bottom) {
+            if let constraint = self.getLayoutConstraint(.bottom, errorCheck: false) {
+                goneInfo.bottom = constraint.constant
                 constraint.constant = 0
             }
         }
         
-        objc_setAssociatedObject ( self, NSLayoutAttributeWidthGone_key, dic, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        objc_setAssociatedObject ( self, NSLayoutAttributeWidthIsGone_key, true, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        goneInfo.type.insert(type)
     }
     
-    private func goneRelease(key: UnsafeMutableRawPointer) {
+    public func goneRemove() {
+        guard goneInfo.type.isEmpty == false else { return }
         isHidden = false
-        if let dic = objc_getAssociatedObject(self, key) as? [NSLayoutConstraint:CGFloat] {
-            for (constraint, value) in dic {
-                if constraint.firstAttribute == .width {
-                    if let empty = objc_getAssociatedObject(self, NSLayoutAttributeWidthEmpty_key) as? Bool , empty == true {
-                        removeConstraint(constraint)
-                        objc_setAssociatedObject ( self, NSLayoutAttributeWidthEmpty_key, false, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-                    }
+        
+        if goneInfo.type.contains(.width) {
+            if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
+                constraint.constant = goneInfo.width
+            }
+            else {
+                if let c = goneInfo.widthEmptyConstraint {
+                    removeConstraint(c)
                 }
-                else if constraint.firstAttribute == .height {
-                    if let empty = objc_getAssociatedObject(self, NSLayoutAttributeHeightEmpty_key) as? Bool , empty == true {
-                        removeConstraint(constraint)
-                        objc_setAssociatedObject ( self, NSLayoutAttributeHeightEmpty_key, false, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-                    }
-                }
-                constraint.constant = value
             }
         }
-        if key == NSLayoutAttributeWidthGone_key {
-            objc_setAssociatedObject ( self, NSLayoutAttributeWidthIsGone_key, false, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        if goneInfo.type.contains(.height) {
+            if let constraint = self.getLayoutConstraint(.height, errorCheck: false) {
+                constraint.constant = goneInfo.height
+            }
+            else {
+                if let c = goneInfo.heightEmptyConstraint {
+                    removeConstraint(c)
+                }
+            }
         }
-        else if key == NSLayoutAttributeHeightGone_key {
-            objc_setAssociatedObject ( self, NSLayoutAttributeHeightIsGone_key, false, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        if goneInfo.type.contains(.leading) {
+            if let constraint = self.getLayoutConstraint(.leading, errorCheck: false) {
+                constraint.constant = goneInfo.leading
+            }
+        }
+        if goneInfo.type.contains(.trailing) {
+            if let constraint = self.getLayoutConstraint(.trailing, errorCheck: false) {
+                constraint.constant = goneInfo.trailing
+            }
+        }
+        if goneInfo.type.contains(.top) {
+            if let constraint = self.getLayoutConstraint(.top, errorCheck: false) {
+                constraint.constant = goneInfo.top
+            }
+        }
+        if goneInfo.type.contains(.bottom) {
+            if let constraint = self.getLayoutConstraint(.bottom, errorCheck: false) {
+                constraint.constant = goneInfo.bottom
+            }
         }
         
+        goneInfo.type = []
         
+    }
+    
+    public func goneEmptyRemove() {
+        if let c = goneInfo.widthEmptyConstraint {
+            removeConstraint(c)
+        }
+        if let c = goneInfo.heightEmptyConstraint {
+            removeConstraint(c)
+        }
     }
 }
 

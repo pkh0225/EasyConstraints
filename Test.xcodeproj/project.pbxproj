@@ -11,7 +11,6 @@
 		520F389C21229A890081B956 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 520F389A21229A890081B956 /* Main.storyboard */; };
 		520F389E21229A8A0081B956 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 520F389D21229A8A0081B956 /* Assets.xcassets */; };
 		520F38A121229A8A0081B956 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 520F389F21229A8A0081B956 /* LaunchScreen.storyboard */; };
-		520F38A921229AA60081B956 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 520F38A821229AA60081B956 /* README.md */; };
 		520F38DD21229C990081B956 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520F38C021229C990081B956 /* UIViewExtensions.swift */; };
 		520F38E921229CA10081B956 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 520F38E821229CA10081B956 /* README.md */; };
 		520F38EF21229FDA0081B956 /* AutoLayoutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520F38EE21229FDA0081B956 /* AutoLayoutController.swift */; };
@@ -108,12 +107,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0940;
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = pkh;
 				TargetAttributes = {
 					520F389221229A890081B956 = {
 						CreatedOnToolsVersion = 9.4.1;
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -143,7 +142,6 @@
 				520F38A121229A8A0081B956 /* LaunchScreen.storyboard in Resources */,
 				520F389E21229A8A0081B956 /* Assets.xcassets in Resources */,
 				520F38E921229CA10081B956 /* README.md in Resources */,
-				520F38A921229AA60081B956 /* README.md in Resources */,
 				520F389C21229A890081B956 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -309,7 +307,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Test.Test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -326,7 +324,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Test.Test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
