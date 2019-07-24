@@ -33,10 +33,17 @@ public struct GoneType: OptionSet {
     public static let bottom = GoneType(rawValue: 1 << 3)
     public static let width = GoneType(rawValue: 1 << 4)
     public static let height = GoneType(rawValue: 1 << 5)
-
+    
     public static let size: GoneType = [.width, .height]
+    
+    public static let widthLeading: GoneType = [.width, .leading]
+    public static let widthTrailing: GoneType = [.width, .trailing]
     public static let widthPadding: GoneType = [.width, .leading, .trailing]
+    
+    public static let heightTop: GoneType = [.height, .top, .bottom]
+    public static let heightBottom: GoneType = [.height, .top, .bottom]
     public static let heightPadding: GoneType = [.height, .top, .bottom]
+    
     public static let padding: GoneType = [.leading, .trailing, .top, .bottom]
     public static let all: GoneType = [.leading, .trailing, .top, .bottom, .width, .height]
 }
