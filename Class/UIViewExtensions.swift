@@ -213,9 +213,6 @@ extension UIView {
             objc_setAssociatedObject(self, &AssociatedKeys.goneInfo, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    public var isGone: Bool {
-        return !goneInfo.type.isEmpty
-    }
     
     public var isWidthConstraint: Bool {
         get {
@@ -969,10 +966,36 @@ extension UIView {
         return true
     }
     
+    public var isGone: Bool {
+        get {
+            return !goneInfo.type.isEmpty
+        }
+        set {
+            newValue ? gone() : goneRemove()
+        }
+    }
+    
+    public var isGoneWidth: Bool {
+        get {
+            return goneInfo.type.contains(.widthPadding)
+        }
+        set {
+            newValue ? gone(.widthPadding) : goneRemove(.widthPadding)
+        }
+    }
+    
+    public var isGoneHeight: Bool {
+        get {
+            return goneInfo.type.contains(.heightPadding)
+        }
+        set {
+            newValue ? gone(.heightPadding) : goneRemove(.heightPadding)
+        }
+    }
+    
     public func gone(_ type: GoneType = .all) {
         guard type.isEmpty == false else { return }
         isHidden = true
-        goneInfo.type.insert(type)
         
         if type.contains(.width) && goneInfo.type.contains(.width) == false {
             if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
@@ -1033,14 +1056,15 @@ extension UIView {
                 }
             }
         }
+        
+        goneInfo.type.insert(type)
     }
     
     public func goneRemove(_ type: GoneType = .all) {
         guard goneInfo.type.isEmpty == false else { return }
         isHidden = false
-        goneInfo.type.remove(type)
         
-        if type.contains(.width) {
+        if type.contains(.width) && goneInfo.type.contains(.width) {
             if let c = goneInfo.widthEmptyConstraint {
                 removeConstraint(c)
                 goneInfo.widthEmptyConstraint = nil
@@ -1049,7 +1073,7 @@ extension UIView {
                 constraint.constant = goneInfo.width
             }
         }
-        if type.contains(.height) {
+        if type.contains(.height) && goneInfo.type.contains(.height) {
             if let c = goneInfo.heightEmptyConstraint {
                 removeConstraint(c)
                 goneInfo.heightEmptyConstraint = nil
@@ -1059,27 +1083,28 @@ extension UIView {
             }
             
         }
-        if type.contains(.leading) {
+        if type.contains(.leading) && goneInfo.type.contains(.leading) {
             if let constraint = self.getLayoutConstraint(.leading, errorCheck: false) {
                 constraint.constant = goneInfo.leading
             }
         }
-        if type.contains(.trailing) {
+        if type.contains(.trailing) && goneInfo.type.contains(.trailing) {
             if let constraint = self.getLayoutConstraint(.trailing, errorCheck: false) {
                 constraint.constant = goneInfo.trailing
             }
         }
-        if type.contains(.top) {
+        if type.contains(.top) && goneInfo.type.contains(.top) {
             if let constraint = self.getLayoutConstraint(.top, errorCheck: false) {
                 constraint.constant = goneInfo.top
             }
         }
-        if type.contains(.bottom) {
+        if type.contains(.bottom) && goneInfo.type.contains(.bottom) {
             if let constraint = self.getLayoutConstraint(.bottom, errorCheck: false) {
                 constraint.constant = goneInfo.bottom
             }
         }
-        
+     
+        goneInfo.type.remove(type)
     }
     
 }

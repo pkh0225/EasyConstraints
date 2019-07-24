@@ -103,15 +103,14 @@ class AutoLayoutController: UIViewController {
     }
     @IBAction func onGone(_ sender: UIButton) {
         
+        view3.isGone = !view3.isGone
+        
         if view3.isGone {
-            view3.goneRemove()
-            sender.setTitle("Gone", for: .normal)
-        }
-        else {
-            view3.gone()
             sender.setTitle("No Gone", for: .normal)
         }
-        
+        else {
+            sender.setTitle("Gone", for: .normal)
+        }
     }
 }
 
