@@ -196,12 +196,6 @@ extension UIView {
     
     class GoneInfo {
         var type: GoneType = []
-        var top: CGFloat = 0
-        var bottom: CGFloat = 0
-        var leading: CGFloat = 0
-        var trailing: CGFloat = 0
-        var width: CGFloat = 0
-        var height: CGFloat = 0
         
         var widthEmptyConstraint: NSLayoutConstraint?
         var heightEmptyConstraint: NSLayoutConstraint?
@@ -1004,13 +998,9 @@ extension UIView {
         guard type.isEmpty == false else { return }
         isHidden = true
         
-        if type.contains(.width) && goneInfo.type.contains(.width) == false {
+        if type.contains(.width) {
             if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
-                if constraint.constant != 0 {
-                    goneInfo.width = constraint.constant
-                    constraint.constant = 0
-                    
-                }
+                constraint.constant = 0
             }
             else {
                 let constraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
@@ -1018,12 +1008,9 @@ extension UIView {
                 goneInfo.widthEmptyConstraint = constraint
             }
         }
-        if type.contains(.height) && goneInfo.type.contains(.height) == false {
+        if type.contains(.height) {
             if let constraint = self.getLayoutConstraint(.height, errorCheck: false) {
-                if constraint.constant != 0 {
-                    goneInfo.height = constraint.constant
-                    constraint.constant = 0
-                }
+                constraint.constant = 0
             }
             else {
                 let constraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
@@ -1031,36 +1018,24 @@ extension UIView {
                 goneInfo.heightEmptyConstraint = constraint
             }
         }
-        if type.contains(.leading) && goneInfo.type.contains(.leading) == false {
+        if type.contains(.leading)  {
             if let constraint = self.getLayoutConstraint(.leading, errorCheck: false) {
-                if constraint.constant != 0 {
-                    goneInfo.leading = constraint.constant
-                    constraint.constant = 0
-                }
+                constraint.constant = 0
             }
         }
-        if type.contains(.trailing) && goneInfo.type.contains(.trailing) == false {
+        if type.contains(.trailing)  {
             if let constraint = self.getLayoutConstraint(.trailing, errorCheck: false) {
-                if constraint.constant != 0 {
-                    goneInfo.trailing = constraint.constant
-                    constraint.constant = 0
-                }
+                constraint.constant = 0
             }
         }
-        if type.contains(.top) && goneInfo.type.contains(.top) == false {
+        if type.contains(.top) {
             if let constraint = self.getLayoutConstraint(.top, errorCheck: false) {
-                if constraint.constant != 0 {
-                    goneInfo.top = constraint.constant
-                    constraint.constant = 0
-                }
+                constraint.constant = 0
             }
         }
-        if type.contains(.bottom) && goneInfo.type.contains(.bottom) == false {
+        if type.contains(.bottom) {
             if let constraint = self.getLayoutConstraint(.bottom, errorCheck: false) {
-                if constraint.constant != 0 {
-                    goneInfo.bottom = constraint.constant
-                    constraint.constant = 0
-                }
+                constraint.constant = 0
             }
         }
         
@@ -1071,43 +1046,43 @@ extension UIView {
         guard goneInfo.type.isEmpty == false else { return }
         isHidden = false
         
-        if type.contains(.width) && goneInfo.type.contains(.width) {
+        if type.contains(.width) {
             if let c = goneInfo.widthEmptyConstraint {
                 removeConstraint(c)
                 goneInfo.widthEmptyConstraint = nil
             }
             else if let constraint = self.getLayoutConstraint(.width, errorCheck: false) {
-                constraint.constant = goneInfo.width
+                constraint.constant = widthDefaultConstraint
             }
         }
-        if type.contains(.height) && goneInfo.type.contains(.height) {
+        if type.contains(.height) {
             if let c = goneInfo.heightEmptyConstraint {
                 removeConstraint(c)
                 goneInfo.heightEmptyConstraint = nil
             }
             else if let constraint = self.getLayoutConstraint(.height, errorCheck: false) {
-                constraint.constant = goneInfo.height
+                constraint.constant = heightDefaultConstraint
             }
             
         }
-        if type.contains(.leading) && goneInfo.type.contains(.leading) {
+        if type.contains(.leading) {
             if let constraint = self.getLayoutConstraint(.leading, errorCheck: false) {
-                constraint.constant = goneInfo.leading
+                constraint.constant = leadingDefaultConstraint
             }
         }
-        if type.contains(.trailing) && goneInfo.type.contains(.trailing) {
+        if type.contains(.trailing) {
             if let constraint = self.getLayoutConstraint(.trailing, errorCheck: false) {
-                constraint.constant = goneInfo.trailing
+                constraint.constant = trailingDefaultConstraint
             }
         }
-        if type.contains(.top) && goneInfo.type.contains(.top) {
+        if type.contains(.top) {
             if let constraint = self.getLayoutConstraint(.top, errorCheck: false) {
-                constraint.constant = goneInfo.top
+                constraint.constant = topDefaultConstraint
             }
         }
-        if type.contains(.bottom) && goneInfo.type.contains(.bottom) {
+        if type.contains(.bottom) {
             if let constraint = self.getLayoutConstraint(.bottom, errorCheck: false) {
-                constraint.constant = goneInfo.bottom
+                constraint.constant = bottomDefaultConstraint
             }
         }
      
