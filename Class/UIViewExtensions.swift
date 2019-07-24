@@ -195,8 +195,6 @@ extension UIView {
     }
     
     class GoneInfo {
-        var type: GoneType = []
-        
         var widthEmptyConstraint: NSLayoutConstraint?
         var heightEmptyConstraint: NSLayoutConstraint?
     }
@@ -967,27 +965,27 @@ extension UIView {
         return true
     }
     
-    public var isGone: Bool {
+    public var gone: Bool {
         get {
-            return !goneInfo.type.isEmpty
+            fatalError("You cannot read from this object.")
         }
         set {
             newValue ? gone() : goneRemove()
         }
     }
     
-    public var isGoneWidth: Bool {
+    public var goneWidth: Bool {
         get {
-            return goneInfo.type.contains(.widthPadding)
+            fatalError("You cannot read from this object.")
         }
         set {
             newValue ? gone(.widthPadding) : goneRemove(.widthPadding)
         }
     }
     
-    public var isGoneHeight: Bool {
+    public var goneHeight: Bool {
         get {
-            return goneInfo.type.contains(.heightPadding)
+            fatalError("You cannot read from this object.")
         }
         set {
             newValue ? gone(.heightPadding) : goneRemove(.heightPadding)
@@ -1038,12 +1036,9 @@ extension UIView {
                 constraint.constant = 0
             }
         }
-        
-        goneInfo.type.insert(type)
     }
     
     public func goneRemove(_ type: GoneType = .all) {
-        guard goneInfo.type.isEmpty == false else { return }
         isHidden = false
         
         if type.contains(.width) {
@@ -1085,8 +1080,6 @@ extension UIView {
                 constraint.constant = bottomDefaultConstraint
             }
         }
-     
-        goneInfo.type.remove(type)
     }
     
 }
