@@ -274,41 +274,19 @@ extension UIView {
     }
     
     
-    public var isWidthConstraint: Bool {
-        get {
-            if let value = constraintInfo.isWidthConstraint {
-                return value
-            }
-            else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .width).count > 0
-                constraintInfo.isWidthConstraint = value
-                return value
-            }
-        }
-    }
-    
-    public var isHeightConstraint: Bool {
-        get {
-            if let value = constraintInfo.isHeightConstraint {
-                return value
-            }
-            else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .height).count > 0
-                constraintInfo.isHeightConstraint = value
-                return value
-            }
-        }
-    }
-    
     public var isTopConstraint: Bool {
         get {
             if let value = constraintInfo.isTopConstraint {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .top).count > 0
-                constraintInfo.isTopConstraint = value
-                return value
+                if let _ = self.getLayoutConstraint(.top, errorCheck: false) {
+                    constraintInfo.isTopConstraint = true
+                    return true
+                }
+                constraintInfo.isTopConstraint = false
+                return false
+                
             }
         }
     }
@@ -319,9 +297,12 @@ extension UIView {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .leading).count > 0
-                constraintInfo.isLeadingConstraint = value
-                return value
+                if let _ = self.getLayoutConstraint(.leading, errorCheck: false) {
+                    constraintInfo.isLeadingConstraint = true
+                    return true
+                }
+                constraintInfo.isLeadingConstraint = false
+                return false
             }
         }
     }
@@ -332,9 +313,12 @@ extension UIView {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .bottom).count > 0
-                constraintInfo.isBottomConstraint = value
-                return value
+                if let _ = self.getLayoutConstraint(.bottom, errorCheck: false) {
+                    constraintInfo.isBottomConstraint = true
+                    return true
+                }
+                constraintInfo.isBottomConstraint = false
+                return false
             }
         }
     }
@@ -345,9 +329,12 @@ extension UIView {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .trailing).count > 0
-                constraintInfo.isTrailingConstraint = value
-                return value
+                if let _ = self.getLayoutConstraint(.trailing, errorCheck: false) {
+                    constraintInfo.isTrailingConstraint = true
+                    return true
+                }
+                constraintInfo.isTrailingConstraint = false
+                return false
             }
         }
     }
@@ -358,9 +345,12 @@ extension UIView {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .centerX).count > 0
-                constraintInfo.isCenterXConstraint = value
-                return value
+                if let _ = self.getLayoutConstraint(.centerX, errorCheck: false) {
+                    constraintInfo.isCenterXConstraint = true
+                    return true
+                }
+                constraintInfo.isCenterXConstraint = false
+                return false
             }
         }
     }
@@ -371,9 +361,12 @@ extension UIView {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .centerY).count > 0
-                constraintInfo.isCenterYConstraint = value
-                return value
+                if let _ = self.getLayoutConstraint(.centerY, errorCheck: false) {
+                    constraintInfo.isCenterYConstraint = true
+                    return true
+                }
+                constraintInfo.isCenterYConstraint = false
+                return false
             }
         }
     }
