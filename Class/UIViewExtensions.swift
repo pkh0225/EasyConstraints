@@ -1,4 +1,4 @@
-//
+    //
 //  UIViewExtensions.swift
 //  EZSwiftExtensions
 //
@@ -112,7 +112,7 @@ extension UIView {
         static var constraintInfo: UInt8 = 0
     }
     
-    private struct ConstraintInfo {
+    private class ConstraintInfo {
         var isWidthConstraint: Bool?
         var isHeightConstraint: Bool?
         var isTopConstraint: Bool?
@@ -166,7 +166,7 @@ extension UIView {
             return result
         }
         
-        mutating func setLayoutConstraint(attribute: NSLayoutConstraint.Attribute, value: NSLayoutConstraint) {
+        func setLayoutConstraint(attribute: NSLayoutConstraint.Attribute, value: NSLayoutConstraint) {
             switch attribute {
             case .top:
                 topConstraint = value
@@ -215,7 +215,7 @@ extension UIView {
             return result
         }
         
-        mutating func setConstraintDefaultValue(attribute: NSLayoutConstraint.Attribute, value: CGFloat) {
+        func setConstraintDefaultValue(attribute: NSLayoutConstraint.Attribute, value: CGFloat) {
             switch attribute {
             case .top:
                 topDefaultConstraint = value
@@ -239,19 +239,19 @@ extension UIView {
         }
     }
     
-    private struct GoneInfo {
+    private class GoneInfo {
         var widthEmptyConstraint: NSLayoutConstraint?
         var heightEmptyConstraint: NSLayoutConstraint?
     }
     
     private var constraintInfo: ConstraintInfo {
         get {
-            if let goneInfo = objc_getAssociatedObject(self, &AssociatedKeys.constraintInfo) as? ConstraintInfo {
-                return goneInfo
+            if let info = objc_getAssociatedObject(self, &AssociatedKeys.constraintInfo) as? ConstraintInfo {
+                return info
             }
-            let goneInfo = ConstraintInfo()
-            objc_setAssociatedObject(self, &AssociatedKeys.constraintInfo, goneInfo, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            return goneInfo
+            let info = ConstraintInfo()
+            objc_setAssociatedObject(self, &AssociatedKeys.constraintInfo, info, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return info
         }
         set {
             objc_setAssociatedObject(self, &AssociatedKeys.constraintInfo, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
@@ -261,18 +261,43 @@ extension UIView {
     
     private var goneInfo: GoneInfo {
         get {
-            if let goneInfo = objc_getAssociatedObject(self, &AssociatedKeys.goneInfo) as? GoneInfo {
-                return goneInfo
+            if let info = objc_getAssociatedObject(self, &AssociatedKeys.goneInfo) as? GoneInfo {
+                return info
             }
-            let goneInfo = GoneInfo()
-            objc_setAssociatedObject(self, &AssociatedKeys.goneInfo, goneInfo, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            return goneInfo
+            let info = GoneInfo()
+            objc_setAssociatedObject(self, &AssociatedKeys.goneInfo, info, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return info
         }
         set {
             objc_setAssociatedObject(self, &AssociatedKeys.goneInfo, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
+    public var isWidthConstraint: Bool {
+        get {
+            if let value = constraintInfo.isWidthConstraint {
+                return value
+            }
+            else {
+                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .width).count > 0
+                constraintInfo.isWidthConstraint = value
+                return value
+            }
+        }
+    }
+    
+    public var isHeightConstraint: Bool {
+        get {
+            if let value = constraintInfo.isHeightConstraint {
+                return value
+            }
+            else {
+                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .height).count > 0
+                constraintInfo.isHeightConstraint = value
+                return value
+            }
+        }
+    }
     
     public var isTopConstraint: Bool {
         get {
@@ -1108,9 +1133,15 @@ extension UIView {
                 widthConstraint = 0
             }
             else {
-                let constraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
-                addConstraint(constraint)
-                goneInfo.widthEmptyConstraint = constraint
+                if let c = self.goneInfo.widthEmptyConstraint {
+                    c.constant = 0
+                }
+                else {
+                    let constraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
+                    addConstraint(constraint)
+                    goneInfo.widthEmptyConstraint = constraint
+                }
+                
             }
         }
         if type.contains(.height) {
@@ -1118,9 +1149,15 @@ extension UIView {
                 heightConstraint = 0
             }
             else {
-                let constraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
-                addConstraint(constraint)
-                goneInfo.heightEmptyConstraint = constraint
+                if let c = self.goneInfo.heightEmptyConstraint {
+                    c.constant = 0
+                }
+                else {
+                    let constraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
+                    addConstraint(constraint)
+                    goneInfo.heightEmptyConstraint = constraint
+                }
+                
             }
         }
         if type.contains(.leading)  {
