@@ -60,42 +60,36 @@ class AutoLayoutController: UIViewController {
     */
     @IBAction func onView1Leading(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-//            view1.leadingConstraint = value
-            view1.ea.leading = value
+            view1.ea.leading(value)
         }
     }
     
     @IBAction func onView1Trailing(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-//            view1.trailingConstraint = value
             view1.ea.trailing = value
         }
     }
     
     @IBAction func onView2Top(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-//            view2.topConstraint = value
             view2.ea.top = value
         }
     }
     
     @IBAction func onView2Trailing(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-//            view2.trailingConstraint = value
             view2.ea.trailing = value
         }
     }
     
     @IBAction func onView2Width(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-//            view2.widthConstraint = value
             view2.ea.width = value
         }
     }
     
     @IBAction func onView2Height(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-//            view2.heightConstraint = value
             view2.ea.height = value
         }
     }
@@ -103,6 +97,7 @@ class AutoLayoutController: UIViewController {
     @IBAction func onDefaultContraints(_ sender: Any) {
         setDefaultConstrains()
     }
+    
     @IBAction func onGone(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
         view3.ea.gone = sender.isSelected
