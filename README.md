@@ -57,13 +57,14 @@
 
 
 ```
-view.ea.leading = value // set AutoLayout Contraint value
-let value = view.ea.leading // get AutoLayout Contraint value
+view.ea.leading = value // set AutoLayout Constraint value
+let value = view.ea.leading // get AutoLayout Constraint value
 
-let defaultValue = view.ea.widthDefault // first set AutoLayout Contraint value
+let defaultValue = view.ea.widthDefault // first set AutoLayout Constraint value
 
 view.ea.isGone = true // Android view gone function
 
+view.ea.reset(.top, .trailing, .width, .height) // set Default Constraint Value
 
 view.viewDidDisappear = {
     print("viewDidDisappear ")
