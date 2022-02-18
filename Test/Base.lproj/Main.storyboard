@@ -19,9 +19,19 @@
                         <subviews>
                             <view contentMode="scaleToFill" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="mmV-Gd-ZBb" userLabel="View1">
                                 <rect key="frame" x="26" y="73" width="127" height="116"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="view1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a4l-w2-lIu">
+                                        <rect key="frame" x="42" y="47.5" width="43" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <color key="backgroundColor" red="1" green="0.51516384548611116" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="116" id="HfG-he-ffb"/>
+                                    <constraint firstItem="a4l-w2-lIu" firstAttribute="centerX" secondItem="mmV-Gd-ZBb" secondAttribute="centerX" id="hTb-1U-Qpe"/>
+                                    <constraint firstItem="a4l-w2-lIu" firstAttribute="centerY" secondItem="mmV-Gd-ZBb" secondAttribute="centerY" id="nJg-U1-Hjk"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vhd-e2-CDy" userLabel="View2">
@@ -51,12 +61,20 @@
                                             <action selector="onView2Height:" destination="PAc-k6-IKK" eventType="editingChanged" id="XWR-fF-RqE"/>
                                         </connections>
                                     </textField>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="view2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eUO-gi-YRz">
+                                        <rect key="frame" x="59" y="93.5" width="45" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.63069661458333337" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="408" id="COy-0D-Nul"/>
                                     <constraint firstItem="ubM-LO-QUo" firstAttribute="top" secondItem="Vhd-e2-CDy" secondAttribute="top" constant="17" id="EdQ-dL-pRJ"/>
                                     <constraint firstAttribute="width" constant="163" id="Ey1-UW-l2Y"/>
+                                    <constraint firstItem="eUO-gi-YRz" firstAttribute="centerY" secondItem="Vhd-e2-CDy" secondAttribute="centerY" constant="-100" id="KNB-bZ-v5S"/>
+                                    <constraint firstItem="eUO-gi-YRz" firstAttribute="centerX" secondItem="Vhd-e2-CDy" secondAttribute="centerX" id="Mk2-DV-QpT"/>
                                     <constraint firstItem="xb2-2Z-Fng" firstAttribute="centerY" secondItem="Vhd-e2-CDy" secondAttribute="centerY" id="Zag-di-veS"/>
                                     <constraint firstAttribute="trailing" secondItem="xb2-2Z-Fng" secondAttribute="trailing" constant="8" id="eaD-dJ-8Pt"/>
                                     <constraint firstItem="ubM-LO-QUo" firstAttribute="centerX" secondItem="Vhd-e2-CDy" secondAttribute="centerX" id="kYo-V7-YsX"/>
@@ -142,6 +160,7 @@
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rxv-tX-LpF">
                                 <rect key="frame" x="117.5" y="626" width="140" height="30"/>
+                                <color key="backgroundColor" red="0.79249230209999999" green="0.22662488459999999" blue="0.3227178872" alpha="0.52398075330000005" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="vTx-vX-1IA"/>
                                     <constraint firstAttribute="width" constant="140" id="wrI-Oq-SAQ"/>
