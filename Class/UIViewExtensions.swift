@@ -242,6 +242,12 @@ extension UIView {
     private class GoneInfo {
         var widthEmptyConstraint: NSLayoutConstraint?
         var heightEmptyConstraint: NSLayoutConstraint?
+        var widthGoneValue: CGFloat?
+        var heightGoneValue: CGFloat?
+        var topGoneValue: CGFloat?
+        var leadingGoneValue: CGFloat?
+        var bottomGoneValue: CGFloat?
+        var trailingGoneValue: CGFloat?
     }
     
     private var constraintInfo: ConstraintInfo {
@@ -1124,103 +1130,177 @@ extension UIView {
         }
     }
     
+    /// gone
+    ///
+    ///
+    ///  GontType
+    ///
+    ///  leading = GoneType(rawValue: 1 << 0)
+    ///  trailing = GoneType(rawValue: 1 << 1)
+    ///  top = GoneType(rawValue: 1 << 2)
+    ///  bottom = GoneType(rawValue: 1 << 3)
+    ///  width = GoneType(rawValue: 1 << 4)
+    ///  height = GoneType(rawValue: 1 << 5)
+    ///
+    ///  size: GoneType = [.width, .height]
+    ///
+    ///  widthLeading: GoneType = [.width, .leading]
+    ///  widthTrailing: GoneType = [.width, .trailing]
+    ///  widthPadding: GoneType = [.width, .leading, .trailing]
+    ///
+    ///  heightTop: GoneType = [.height, .top]
+    ///  heightBottom: GoneType = [.height, .bottom]
+    ///  heightPadding: GoneType = [.height, .top, .bottom]
+    ///
+    ///  padding: GoneType = [.leading, .trailing, .top, .bottom]
+    ///  all: GoneType = [.leading, .trailing, .top, .bottom, .width, .height]
+    ///
+    ///
+    /// - Parameter type: GoneType
     public func gone(_ type: GoneType = .all) {
         guard type.isEmpty == false else { return }
         isHidden = true
-        
+
         if type.contains(.width) {
-            if isWidthConstraint {
+            if isWidthConstraint, widthConstraint != 0 {
+                self.goneInfo.widthGoneValue = widthConstraint
                 widthConstraint = 0
             }
             else {
-                if let c = self.goneInfo.widthEmptyConstraint {
+                if let c = self.goneInfo.widthEmptyConstraint, c.constant != 0 {
+                    if self.frame.size.width != 0 {
+                        self.goneInfo.widthGoneValue = c.constant
+                    }
                     c.constant = 0
                 }
                 else {
-                    let constraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
+                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
                     addConstraint(constraint)
-                    goneInfo.widthEmptyConstraint = constraint
+                    self.goneInfo.widthEmptyConstraint = constraint
+                    if self.frame.size.width != 0 {
+                        self.goneInfo.widthGoneValue = self.frame.size.width
+                    }
                 }
-                
             }
         }
         if type.contains(.height) {
-            if isHeightConstraint {
+            if isHeightConstraint, heightConstraint != 0 {
+                self.goneInfo.heightGoneValue = heightConstraint
                 heightConstraint = 0
             }
             else {
-                if let c = self.goneInfo.heightEmptyConstraint {
+                if let c = self.goneInfo.heightEmptyConstraint, c.constant != 0 {
+                    if self.frame.size.height != 0 {
+                        self.goneInfo.heightGoneValue = c.constant
+                    }
                     c.constant = 0
                 }
                 else {
-                    let constraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
+                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
                     addConstraint(constraint)
-                    goneInfo.heightEmptyConstraint = constraint
+                    self.goneInfo.heightEmptyConstraint = constraint
+                    if self.frame.size.height != 0 {
+                        self.goneInfo.heightGoneValue = self.frame.size.height
+                    }
                 }
-                
             }
         }
-        if type.contains(.leading)  {
-            if isLeadingConstraint {
+        if type.contains(.leading) {
+            if isLeadingConstraint, leadingConstraint != 0 {
+                self.goneInfo.leadingGoneValue = leadingConstraint
                 leadingConstraint = 0
             }
         }
-        if type.contains(.trailing)  {
-            if isTrailingConstraint {
+        if type.contains(.trailing) {
+            if isTrailingConstraint, trailingConstraint != 0 {
+                self.goneInfo.trailingGoneValue = trailingConstraint
                 trailingConstraint = 0
             }
         }
         if type.contains(.top) {
-            if isTopConstraint {
+            if isTopConstraint, topConstraint != 0 {
+                self.goneInfo.topGoneValue = topConstraint
                 topConstraint = 0
             }
         }
         if type.contains(.bottom) {
-            if isBottomConstraint {
+            if isBottomConstraint, bottomConstraint != 0 {
+                self.goneInfo.bottomGoneValue = bottomConstraint
                 bottomConstraint = 0
             }
         }
     }
-    
+
     public func goneRemove(_ type: GoneType = .all) {
         isHidden = false
-        
+
         if type.contains(.width) {
-            if let c = goneInfo.widthEmptyConstraint {
+            if let c: NSLayoutConstraint = self.goneInfo.widthEmptyConstraint {
                 removeConstraint(c)
-                goneInfo.widthEmptyConstraint = nil
+                self.goneInfo.widthEmptyConstraint = nil
             }
             else if isWidthConstraint {
-                widthConstraint = widthDefaultConstraint
+                if let widht = self.goneInfo.widthGoneValue {
+                    widthConstraint = widht
+                }
+                else {
+                    widthConstraint = widthDefaultConstraint
+                }
+
             }
         }
         if type.contains(.height) {
-            if let c = goneInfo.heightEmptyConstraint {
+            if let c: NSLayoutConstraint = self.goneInfo.heightEmptyConstraint {
                 removeConstraint(c)
-                goneInfo.heightEmptyConstraint = nil
+                self.goneInfo.heightEmptyConstraint = nil
             }
             else if isHeightConstraint {
-                heightConstraint = heightDefaultConstraint
+                if let height = self.goneInfo.heightGoneValue {
+                    heightConstraint = height
+                }
+                else {
+                    heightConstraint = heightDefaultConstraint
+                }
             }
         }
         if type.contains(.leading) {
             if isLeadingConstraint {
-                leadingConstraint = leadingDefaultConstraint
+                if let value = self.goneInfo.leadingGoneValue {
+                    leadingConstraint = value
+                }
+                else {
+                    leadingConstraint = leadingDefaultConstraint
+                }
             }
         }
         if type.contains(.trailing) {
             if isTrailingConstraint {
-                trailingConstraint = trailingDefaultConstraint
+                if let value = self.goneInfo.trailingGoneValue {
+                    trailingConstraint = value
+                }
+                else {
+                    trailingConstraint = trailingDefaultConstraint
+                }
             }
         }
         if type.contains(.top) {
             if isTopConstraint {
-                topConstraint = topDefaultConstraint
+                if let value = self.goneInfo.topGoneValue {
+                    topConstraint = value
+                }
+                else {
+                    topConstraint = topDefaultConstraint
+                }
             }
         }
         if type.contains(.bottom) {
             if isBottomConstraint {
-                bottomConstraint = bottomDefaultConstraint
+                if let value = self.goneInfo.bottomGoneValue {
+                    bottomConstraint = value
+                }
+                else {
+                    bottomConstraint = bottomDefaultConstraint
+                }
             }
         }
     }
