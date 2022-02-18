@@ -45,12 +45,8 @@ class AutoLayoutController: UIViewController {
         textField6.text = "\(view2.ea.heightDefault)"
         
         
-        view1.ea.leading = view1.ea.leadingDefault
-        view1.ea.trailing = view1.ea.trailingDefault
-        view2.ea.top = view2.ea.topDefault
-        view2.ea.trailing = view2.ea.trailingDefault
-        view2.ea.width = view2.ea.widthDefault
-        view2.ea.height = view2.ea.heightDefault
+        view1.ea.reset(.leading, .trailing)
+        view2.ea.reset(.top, .trailing, .width, .height)
     }
 
     /*

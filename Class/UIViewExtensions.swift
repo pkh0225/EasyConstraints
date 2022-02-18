@@ -547,6 +547,35 @@ public class EasyConstraints {
         }
     }
 
+    public func reset(_ attribute: NSLayoutConstraint.Attribute...) {
+        attribute.forEach { att in
+            switch att {
+            case .left:
+                leading = leadingDefault
+            case .right:
+                trailing = trailingDefault
+            case .top:
+                top = topDefault
+            case .bottom:
+                bottom = bottomDefault
+            case .leading:
+                leading = leadingDefault
+            case .trailing:
+                trailing = trailingDefault
+            case .width:
+                width = widthDefault
+            case .height:
+                height = heightDefault
+            case .centerX:
+                centerX = centerXDefault
+            case .centerY:
+                centerY = centerYDefault
+            default:
+                return
+            }
+        }
+    }
+
     private func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
         return self.getLayoutConstraint(layoutAttribute)?.constant ?? 0
     }
@@ -715,8 +744,6 @@ public class EasyConstraints {
                         }
                     }
                 }
-
-
 
             default :
                 assertionFailure("not supput \(layoutAttribute)")
@@ -1060,8 +1087,7 @@ extension UIView {
         return nil
     }
 
-    public func copyView() -> AnyObject
-    {
+    public func copyView() -> AnyObject {
         return NSKeyedUnarchiver.unarchiveObject(with: NSKeyedArchiver.archivedData(withRootObject: self))! as AnyObject
     }
     
@@ -1306,9 +1332,8 @@ extension UIView {
         
         var currentView: UIView = self
         while let superview = currentView.superview {
-            
             if (superview.bounds).intersects(currentView.frame) == false {
-                return false;
+                return false
             }
             
             if currentView.isHidden {
