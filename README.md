@@ -20,28 +20,25 @@
 #### + 👻👻 viewDidDisappear Timer
 
 ```
-public var viewDidDisappear: VoidClosure? {
+    public var viewDidDisappear: VoidClosure? {
         get {
-            return objc_getAssociatedObject(self, &viewDidDisappear_key) as? VoidClosure
+            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidDisappear) as? VoidClosure
         }
         set {
-            objc_setAssociatedObject ( self, &viewDidDisappear_key, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidDisappear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             
-            viewDidDisappearTimer?.invalidate()
+            viewDidDisappearCADisplayLink?.invalidate()
             if newValue != nil {
-                viewDidDisappearTimer = Timer.schedule(repeatInterval: 0.2) { [weak self] (timer) in
-                    guard let `self` = self else { return }
-                    let check = self.isVisible
-                    if check == false {
-                        self.viewDidDisappearTimer?.invalidate()
-                        self.viewDidDisappearTimer = nil
-                        self.viewDidDisappear?()
-                    }
+                viewDidDisappearCADisplayLink = CADisplayLink(target: self, selector: #selector(onViewDidDisappear))
+                viewDidDisappearCADisplayLink?.add(to: .current, forMode: .common)
+                if #available(iOS 10.0, *) {
+                    viewDidDisappearCADisplayLink?.preferredFramesPerSecond = 5
+                } else {
+                    viewDidDisappearCADisplayLink?.frameInterval = 5
                 }
-                
             }
             else {
-                viewDidDisappearTimer = nil
+                viewDidDisappearCADisplayLink = nil
             }
         }
     }
@@ -60,12 +57,12 @@ public var viewDidDisappear: VoidClosure? {
 
 
 ```
-view.leadingConstraint = value // set AutoLayout Contraint value
-let value = view.leadingConstraint // get AutoLayout Contraint value
+view.ea.leading = value // set AutoLayout Contraint value
+let value = view.ea.leading // get AutoLayout Contraint value
 
-let defaultValue = view.widthDefaultConstraint // first set AutoLayout Contraint value
+let defaultValue = view.ea.widthDefault // first set AutoLayout Contraint value
 
-view.isGone = true // Android view gone function
+view.ea.isGone = true // Android view gone function
 
 
 view.viewDidDisappear = {
@@ -82,7 +79,7 @@ view.viewDidDisappear = {
 
 ### 👀 Check view is visible or not 
 ```
- public var isVisible: Bool {
+ public var isShow: Bool {
         
         if self.window == nil {
             return false
@@ -109,149 +106,138 @@ view.viewDidDisappear = {
 ### 👉🏻 get Constraints
 
 ```
-public func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, toTaget: UIView) -> NSLayoutConstraint {
-        let constraints = self.getContraints(self.getControllerView(), checkSub: true)
-        var constraintsTemp = self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-        constraintsTemp = constraintsTemp.filter { (value) -> Bool in
-            return value.firstItem === toTaget || value.secondItem === toTaget
-        }
-        assert(constraintsTemp.first != nil, "not find TagetView")
-        return constraintsTemp.first!
-    }
-
-@inline(__always) public func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutConstraint.Attribute) -> Array<NSLayoutConstraint> {
+    @inline(__always) private func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutConstraint.Attribute) -> Array<NSLayoutConstraint> {
         var constraintsTemp = Array<NSLayoutConstraint>()
         constraintsTemp.reserveCapacity(100)
         for constraint in constraints {
-            
-            
+
             switch layoutAttribute {
             case .width, .height:
-                if  constraint.firstItem === self && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
-                    if self is UIButton || self is UILabel || self is UIImageView {
-                        if  type(of:constraint) === NSLayoutConstraint.self {
+                if type(of:constraint) === NSLayoutConstraint.self {
+                    if  constraint.firstItem === self.view && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
+                        if self.view is UIButton || self.view is UILabel || self.view is UIImageView {
                             constraintsTemp.append(constraint)
                         }
-                    }
-                    else {
-                        if self is UIButton || self is UILabel || self is UIImageView {
-                            if type(of:constraint) === NSLayoutConstraint.self {
+                        else {
+                            if self.view is UIButton || self.view is UILabel || self.view is UIImageView {
+                                constraintsTemp.append(constraint)
+                            }
+                            else {
                                 constraintsTemp.append(constraint)
                             }
                         }
-                        else {
+                    }
+                    else if  constraint.firstAttribute == layoutAttribute && constraint.secondAttribute == layoutAttribute {
+                        if constraint.firstItem === self.view || constraint.secondItem === self.view {
                             constraintsTemp.append(constraint)
                         }
-                    }
-                }
-                else if  constraint.firstAttribute == layoutAttribute && constraint.secondAttribute == layoutAttribute {
-                    if constraint.firstItem === self || constraint.secondItem === self {
-                        constraintsTemp.append(constraint)
                     }
                 }
             case .centerX, .centerY:
                 if constraint.firstAttribute == layoutAttribute  && constraint.secondAttribute == layoutAttribute {
-                    if (constraint.firstItem === self && (constraint.secondItem === self.superview || constraint.secondItem is UILayoutGuide)) ||
-                        (constraint.secondItem === self && (constraint.firstItem === self.superview || constraint.firstItem is UILayoutGuide)) {
+                    if (constraint.firstItem === self.view && (constraint.secondItem === self.view.superview || constraint.secondItem is UILayoutGuide)) ||
+                        (constraint.secondItem === self.view && (constraint.firstItem === self.view.superview || constraint.firstItem is UILayoutGuide)) {
+                        constraintsTemp.append(constraint)
+                    }
+                    else if constraint.firstItem === self.view || constraint.secondItem === self.view {
                         constraintsTemp.append(constraint)
                     }
                 }
             case .top :
-                if  constraint.firstItem === self && constraint.firstAttribute == .top  && constraint.secondAttribute == .bottom {
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .top  && constraint.secondAttribute == .bottom {
                     constraintsTemp.append(constraint)
                 }
-                else if  constraint.secondItem === self && constraint.secondAttribute == .top  && constraint.firstAttribute == .bottom {
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .top  && constraint.firstAttribute == .bottom {
                     constraintsTemp.append(constraint)
                 }
                 else if constraint.firstAttribute == .top  && constraint.secondAttribute == .top {
-                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
-                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
+                    if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
+                        (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
                         constraintsTemp.append(constraint)
                     }
                     else {
-                        if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
+                        if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
+                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
-                        else if constraint.firstItem === self || constraint.secondItem === self {
+                        else if constraint.firstItem === self.view || constraint.secondItem === self.view {
                             constraintsTemp.append(constraint)
                         }
                     }
                 }
             case .bottom :
-                if  constraint.firstItem === self && constraint.firstAttribute == .bottom  && constraint.secondAttribute == .top {
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .bottom  && constraint.secondAttribute == .top {
                     constraintsTemp.append(constraint)
                 }
-                else if  constraint.secondItem === self && constraint.secondAttribute == .bottom  && constraint.firstAttribute == .top {
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .bottom  && constraint.firstAttribute == .top {
                     constraintsTemp.append(constraint)
                 }
                 else if constraint.firstAttribute == .bottom  && constraint.secondAttribute == .bottom {
-                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
-                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
+                    if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
+                        (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
                         constraintsTemp.append(constraint)
                     }
                     else  {
-                        if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
+                        if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
+                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
-                        else if constraint.firstItem === self || constraint.secondItem === self {
+                        else if constraint.firstItem === self.view || constraint.secondItem === self.view {
                             constraintsTemp.append(constraint)
                         }
                     }
                 }
             case .leading :
-                if  constraint.firstItem === self && constraint.firstAttribute == .leading  && constraint.secondAttribute == .trailing {
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .leading  && constraint.secondAttribute == .trailing {
                     constraintsTemp.append(constraint)
                 }
-                else if  constraint.secondItem === self && constraint.secondAttribute == .leading  && constraint.firstAttribute == .trailing {
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .leading  && constraint.firstAttribute == .trailing {
                     constraintsTemp.append(constraint)
                 }
                 else if constraint.firstAttribute == .leading  && constraint.secondAttribute == .leading {
-                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
-                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
+                    if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
+                        (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
                         constraintsTemp.append(constraint)
                     }
                     else  {
-                        if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
+                        if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
+                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
-                        else if constraint.firstItem === self || constraint.secondItem === self {
+                        else if constraint.firstItem === self.view || constraint.secondItem === self.view {
                             constraintsTemp.append(constraint)
                         }
                     }
                 }
             case .trailing :
-                if  constraint.firstItem === self && constraint.firstAttribute == .trailing  && constraint.secondAttribute == .leading {
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .trailing  && constraint.secondAttribute == .leading {
                     constraintsTemp.append(constraint)
                 }
-                else if  constraint.secondItem === self && constraint.secondAttribute == .trailing  && constraint.firstAttribute == .leading {
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .trailing  && constraint.firstAttribute == .leading {
                     constraintsTemp.append(constraint)
                 }
                 else if constraint.firstAttribute == .trailing  && constraint.secondAttribute == .trailing {
-                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
-                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
+                    if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
+                        (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
                         constraintsTemp.append(constraint)
                     }
                     else {
-                        if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
+                        if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
+                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
-                        else if constraint.firstItem === self || constraint.secondItem === self {
+                        else if constraint.firstItem === self.view || constraint.secondItem === self.view {
                             constraintsTemp.append(constraint)
                         }
                     }
                 }
-                
-                
-                
+
+
+
             default :
                 assertionFailure("not supput \(layoutAttribute)")
             }
         }
-        
 
         return constraintsTemp
     }

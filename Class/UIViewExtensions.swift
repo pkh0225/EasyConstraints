@@ -95,21 +95,10 @@ extension NSLayoutConstraint.Attribute {
             return ""
         }
     }
-    
 }
 
-extension UIView {
-    private struct AssociatedKeys {
-        static var viewDidDisappear: UInt8 = 0
-        static var viewDidDisappearCADisplayLink: UInt8 = 0
-        
-        static var viewDidAppear: UInt8 = 0
-        static var viewDidAppearCADisplayLink: UInt8 = 0
-        
-        static var goneInfo: UInt8 = 0
-        static var constraintInfo: UInt8 = 0
-    }
-    
+public class EasyConstraints {
+    private lazy var constraintInfo: ConstraintInfo = { return ConstraintInfo() }()
     private class ConstraintInfo {
         var isWidthConstraint: Bool?
         var isHeightConstraint: Bool?
@@ -119,7 +108,7 @@ extension UIView {
         var isTrailingConstraint: Bool?
         var isCenterXConstraint: Bool?
         var isCenterYConstraint: Bool?
-        
+
         var widthConstraint: NSLayoutConstraint?
         var heightConstraint: NSLayoutConstraint?
         var topConstraint: NSLayoutConstraint?
@@ -128,7 +117,7 @@ extension UIView {
         var trailingConstraint: NSLayoutConstraint?
         var centerXConstraint: NSLayoutConstraint?
         var centerYConstraint: NSLayoutConstraint?
-        
+
         var widthDefaultConstraint: CGFloat?
         var heightDefaultConstraint: CGFloat?
         var topDefaultConstraint: CGFloat?
@@ -137,7 +126,7 @@ extension UIView {
         var trailingDefaultConstraint: CGFloat?
         var centerXDefaultConstraint: CGFloat?
         var centerYDefaultConstraint: CGFloat?
-        
+
         func getLayoutConstraint(attribute: NSLayoutConstraint.Attribute) -> NSLayoutConstraint? {
             var result: NSLayoutConstraint?
             switch attribute {
@@ -160,10 +149,10 @@ extension UIView {
             default:
                 break
             }
-            
+
             return result
         }
-        
+
         func setLayoutConstraint(attribute: NSLayoutConstraint.Attribute, value: NSLayoutConstraint) {
             switch attribute {
             case .top:
@@ -186,7 +175,7 @@ extension UIView {
                 break
             }
         }
-        
+
         func getConstraintDefaultValue(attribute: NSLayoutConstraint.Attribute) -> CGFloat? {
             var result: CGFloat?
             switch attribute {
@@ -209,10 +198,10 @@ extension UIView {
             default:
                 break
             }
-            
+
             return result
         }
-        
+
         func setConstraintDefaultValue(attribute: NSLayoutConstraint.Attribute, value: CGFloat) {
             switch attribute {
             case .top:
@@ -236,7 +225,8 @@ extension UIView {
             }
         }
     }
-    
+
+    private lazy var goneInfo: GoneInfo = { return GoneInfo() }()
     private class GoneInfo {
         var widthEmptyConstraint: NSLayoutConstraint?
         var heightEmptyConstraint: NSLayoutConstraint?
@@ -247,63 +237,172 @@ extension UIView {
         var bottomGoneValue: CGFloat?
         var trailingGoneValue: CGFloat?
     }
-    
-    private var constraintInfo: ConstraintInfo {
+
+    let view: UIView
+
+    required init(view: UIView) {
+        self.view = view
+    }
+
+    var leading: CGFloat {
         get {
-            if let info = objc_getAssociatedObject(self, &AssociatedKeys.constraintInfo) as? ConstraintInfo {
-                return info
-            }
-            let info = ConstraintInfo()
-            objc_setAssociatedObject(self, &AssociatedKeys.constraintInfo, info, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            return info
+            return self.getConstraint(.leading)
         }
         set {
-            objc_setAssociatedObject(self, &AssociatedKeys.constraintInfo, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            let constraint = self.getLayoutConstraint(.leading)
+            if constraint?.secondItem === self {
+                self.setConstraint(.leading, newValue * -1)
+            }
+            else {
+                self.setConstraint(.leading, newValue)
+            }
         }
     }
-    
-    
-    private var goneInfo: GoneInfo {
+    @discardableResult func leading(_ value: CGFloat) -> EasyConstraints {
+        leading = value
+        return self
+    }
+
+    var trailing: CGFloat {
         get {
-            if let info = objc_getAssociatedObject(self, &AssociatedKeys.goneInfo) as? GoneInfo {
-                return info
-            }
-            let info = GoneInfo()
-            objc_setAssociatedObject(self, &AssociatedKeys.goneInfo, info, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            return info
+            return self.getConstraint(.trailing)
         }
         set {
-            objc_setAssociatedObject(self, &AssociatedKeys.goneInfo, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            let constraint = self.getLayoutConstraint(.trailing)
+            if constraint?.firstItem === self {
+                self.setConstraint(.trailing, newValue * -1)
+            }
+            else {
+                self.setConstraint(.trailing, newValue)
+            }
         }
     }
-    
-    public var isWidthConstraint: Bool {
+    @discardableResult func trailing(_ value: CGFloat) -> EasyConstraints {
+        trailing = value
+        return self
+    }
+
+    var top: CGFloat {
+        get {
+            return self.getConstraint(.top)
+        }
+        set {
+            let constraint = self.getLayoutConstraint(.top)
+            if constraint?.secondItem === self {
+                self.setConstraint(.top, newValue * -1)
+            }
+            else {
+                self.setConstraint(.top, newValue)
+            }
+        }
+    }
+    @discardableResult func top(_ value: CGFloat) -> EasyConstraints {
+        top = value
+        return self
+    }
+
+    var bottom: CGFloat {
+        get {
+            return self.getConstraint(.bottom)
+        }
+        set {
+            let constraint = self.getLayoutConstraint(.bottom)
+            if constraint?.firstItem === self {
+                self.setConstraint(.bottom, newValue * -1)
+            }
+            else {
+                self.setConstraint(.bottom, newValue)
+            }
+        }
+    }
+    @discardableResult func bottom(_ value: CGFloat) -> EasyConstraints {
+        bottom = value
+        return self
+    }
+
+    var width: CGFloat {
+        get { return self.getConstraint(.width) }
+        set { self.setConstraint(.width, newValue) }
+    }
+    @discardableResult func width(_ value: CGFloat) -> EasyConstraints {
+        width = value
+        return self
+    }
+
+    var height: CGFloat {
+        get { return self.getConstraint(.height) }
+        set { self.setConstraint(.height, newValue) }
+    }
+    @discardableResult func height(_ value: CGFloat) -> EasyConstraints {
+        height = value
+        return self
+    }
+
+    var centerX: CGFloat {
+        get {
+            return self.getConstraint(.centerX)
+        }
+        set {
+            let constraint = self.getLayoutConstraint(.centerX)
+            if constraint?.secondItem === self {
+                self.setConstraint(.centerX, newValue * -1)
+            }
+            else {
+                self.setConstraint(.centerX, newValue)
+            }
+        }
+    }
+    @discardableResult func centerX(_ value: CGFloat) -> EasyConstraints {
+        centerX = value
+        return self
+    }
+
+    var centerY: CGFloat {
+        get {
+            return self.getConstraint(.centerY)
+        }
+        set {
+            let constraint = self.getLayoutConstraint(.centerY)
+            if constraint?.secondItem === self {
+                self.setConstraint(.centerY, newValue * -1)
+            }
+            else {
+                self.setConstraint(.centerY, newValue)
+            }
+        }
+    }
+    @discardableResult func centerY(_ value: CGFloat) -> EasyConstraints {
+        centerY = value
+        return self
+    }
+
+    public var isWidth: Bool {
         get {
             if let value = constraintInfo.isWidthConstraint {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .width).count > 0
+                let value  = self.getAttributeConstrains(constraints:Set(self.view.constraints) , layoutAttribute: .width).count > 0
                 constraintInfo.isWidthConstraint = value
                 return value
             }
         }
     }
-    
-    public var isHeightConstraint: Bool {
+
+    public var isHeight: Bool {
         get {
             if let value = constraintInfo.isHeightConstraint {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.constraints) , layoutAttribute: .height).count > 0
+                let value  = self.getAttributeConstrains(constraints:Set(self.view.constraints) , layoutAttribute: .height).count > 0
                 constraintInfo.isHeightConstraint = value
                 return value
             }
         }
     }
-    
-    public var isTopConstraint: Bool {
+
+    public var isTop: Bool {
         get {
             if let value = constraintInfo.isTopConstraint {
                 return value
@@ -315,12 +414,12 @@ extension UIView {
                 }
                 constraintInfo.isTopConstraint = false
                 return false
-                
+
             }
         }
     }
-    
-    public var isLeadingConstraint: Bool {
+
+    public var isLeading: Bool {
         get {
             if let value = constraintInfo.isLeadingConstraint {
                 return value
@@ -335,8 +434,8 @@ extension UIView {
             }
         }
     }
-    
-    public var isBottomConstraint: Bool {
+
+    public var isBottom: Bool {
         get {
             if let value = constraintInfo.isBottomConstraint {
                 return value
@@ -351,8 +450,8 @@ extension UIView {
             }
         }
     }
-    
-    public var isTrailingConstraint: Bool {
+
+    public var isTrailing: Bool {
         get {
             if let value = constraintInfo.isTrailingConstraint {
                 return value
@@ -367,8 +466,8 @@ extension UIView {
             }
         }
     }
-    
-    public var isCenterXConstraint: Bool {
+
+    public var isCenterX: Bool {
         get {
             if let value = constraintInfo.isCenterXConstraint {
                 return value
@@ -383,8 +482,8 @@ extension UIView {
             }
         }
     }
-    
-    public var isCenterYConstraint: Bool {
+
+    public var isCenterY: Bool {
         get {
             if let value = constraintInfo.isCenterYConstraint {
                 return value
@@ -399,188 +498,77 @@ extension UIView {
             }
         }
     }
-    
-    
-    
-    
-    public var widthConstraint: CGFloat {
-        get {
-            return self.getConstraint(.width)
-        }
-        set {
-            self.setConstraint(.width, newValue)
-        }
-    }
-    
-    public var heightConstraint: CGFloat {
-        get {
-            return self.getConstraint(.height)
-        }
-        set {
-            self.setConstraint(.height, newValue)
-        }
-    }
-    
-    public var topConstraint: CGFloat {
-        get {
-            return self.getConstraint(.top)
-        }
-        set {
-            let constraint = self.getLayoutConstraint(.top)
-            if constraint?.secondItem === self {
-                self.setConstraint(.top, newValue * -1)
-            }
-            else {
-                self.setConstraint(.top, newValue)
-            }
-        }
-    }
-    
-    public var leadingConstraint: CGFloat {
-        get {
-            return self.getConstraint(.leading)
-        }
-        set {
-            let constraint = self.getLayoutConstraint(.leading)
-            if constraint?.secondItem === self {
-                self.setConstraint(.leading, newValue * -1)
-            }
-            else {
-                self.setConstraint(.leading, newValue)
-            }
-        }
-    }
-    
-    public var bottomConstraint: CGFloat {
-        get {
-            return self.getConstraint(.bottom)
-        }
-        set {
-            let constraint = self.getLayoutConstraint(.bottom)
-            if constraint?.firstItem === self {
-                self.setConstraint(.bottom, newValue * -1)
-            }
-            else {
-                self.setConstraint(.bottom, newValue)
-            }
-        }
-    }
-    
-    public var trailingConstraint: CGFloat {
-        get {
-            return self.getConstraint(.trailing)
-        }
-        set {
-            let constraint = self.getLayoutConstraint(.trailing)
-            if constraint?.firstItem === self {
-                self.setConstraint(.trailing, newValue * -1)
-            }
-            else {
-                self.setConstraint(.trailing, newValue)
-            }
-        }
-    }
-    
-    public var centerXConstraint: CGFloat {
-        get {
-            return self.getConstraint(.centerX)
-        }
-        set {
-            let constraint = self.getLayoutConstraint(.centerX)
-            if constraint?.secondItem === self {
-                self.setConstraint(.centerX, newValue * -1)
-            }
-            else {
-                self.setConstraint(.centerX, newValue)
-            }
-        }
-    }
-    
-    public var centerYConstraint: CGFloat {
-        get {
-            return self.getConstraint(.centerY)
-        }
-        set {
-            let constraint = self.getLayoutConstraint(.centerY)
-            if constraint?.secondItem === self {
-                self.setConstraint(.centerY, newValue * -1)
-            }
-            else {
-                self.setConstraint(.centerY, newValue)
-            }
-        }
-    }
-    
-    public var widthDefaultConstraint: CGFloat {
+
+    public var widthDefault: CGFloat {
         get {
             return self.getDefaultConstraint(.width)
         }
     }
-    
-    public var heightDefaultConstraint: CGFloat {
+
+    public var heightDefault: CGFloat {
         get {
             return self.getDefaultConstraint(.height)
         }
     }
-    
-    public var topDefaultConstraint: CGFloat {
+
+    public var topDefault: CGFloat {
         get {
             return self.getDefaultConstraint(.top)
         }
     }
-    
-    public var leadingDefaultConstraint: CGFloat {
+
+    public var leadingDefault: CGFloat {
         get {
             return self.getDefaultConstraint(.leading)
         }
     }
-    
-    public var bottomDefaultConstraint: CGFloat {
+
+    public var bottomDefault: CGFloat {
         get {
             return self.getDefaultConstraint(.bottom)
         }
     }
-    
-    public var trailingDefaultConstraint: CGFloat {
+
+    public var trailingDefault: CGFloat {
         get {
             return self.getDefaultConstraint(.trailing)
         }
     }
-    
-    public var centerXDefaultConstraint: CGFloat {
+
+    public var centerXDefault: CGFloat {
         get {
             return self.getDefaultConstraint(.centerX)
         }
     }
-    
-    public var centerYDefaultConstraint: CGFloat {
+
+    public var centerYDefault: CGFloat {
         get {
             return self.getDefaultConstraint(.centerY)
         }
     }
-    
-    public func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
+
+    private func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
         return self.getLayoutConstraint(layoutAttribute)?.constant ?? 0
     }
-    
-    public func getDefaultConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
-        
+
+    private func getDefaultConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
+
         self.getLayoutConstraint(layoutAttribute)
         if let value = constraintInfo.getConstraintDefaultValue(attribute: layoutAttribute) {
             return value
         }
-        
+
         assertionFailure("Error getDefaultConstraint")
         return 0.0
     }
-    
-    public func setConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, _ value: CGFloat) {
+
+    private func setConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, _ value: CGFloat) {
         self.getLayoutConstraint(layoutAttribute)?.constant = value
-        setNeedsLayout()
+        self.view.setNeedsLayout()
     }
-    
-    public func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, toTaget: UIView) -> NSLayoutConstraint? {
-        let constraints = self.getContraints(self.topParentViewView, checkSub: true)
+
+    private func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, toTaget: UIView) -> NSLayoutConstraint? {
+        let constraints = self.getContraints(self.view.topParentViewView, checkSub: true)
         var constraintsTemp = self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
         constraintsTemp = constraintsTemp.lazy.filter { (value) -> Bool in
             return value.firstItem === toTaget || value.secondItem === toTaget
@@ -588,15 +576,479 @@ extension UIView {
         //        assert(constraintsTemp.first != nil, "not find TagetView")
         return constraintsTemp.first
     }
-    
-    
+
+    @inline(__always) private func getContraints(_ view: UIView, checkSub: Bool = false) -> Set<NSLayoutConstraint> {
+        var result = Set<NSLayoutConstraint>()
+        result.reserveCapacity(100)
+        if checkSub {
+            for subView in view.subviews {
+                result = result.union(self.getContraints(subView, checkSub: checkSub))
+            }
+        }
+
+        result = result.union(view.constraints)
+        return result
+    }
+
+    @inline(__always) private func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutConstraint.Attribute) -> Array<NSLayoutConstraint> {
+        var constraintsTemp = Array<NSLayoutConstraint>()
+        constraintsTemp.reserveCapacity(100)
+        for constraint in constraints {
+
+            switch layoutAttribute {
+            case .width, .height:
+                if type(of:constraint) === NSLayoutConstraint.self {
+                    if  constraint.firstItem === self.view && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
+                        if self.view is UIButton || self.view is UILabel || self.view is UIImageView {
+                            constraintsTemp.append(constraint)
+                        }
+                        else {
+                            if self.view is UIButton || self.view is UILabel || self.view is UIImageView {
+                                constraintsTemp.append(constraint)
+                            }
+                            else {
+                                constraintsTemp.append(constraint)
+                            }
+                        }
+                    }
+                    else if  constraint.firstAttribute == layoutAttribute && constraint.secondAttribute == layoutAttribute {
+                        if constraint.firstItem === self.view || constraint.secondItem === self.view {
+                            constraintsTemp.append(constraint)
+                        }
+                    }
+                }
+            case .centerX, .centerY:
+                if constraint.firstAttribute == layoutAttribute  && constraint.secondAttribute == layoutAttribute {
+                    if (constraint.firstItem === self.view && (constraint.secondItem === self.view.superview || constraint.secondItem is UILayoutGuide)) ||
+                        (constraint.secondItem === self.view && (constraint.firstItem === self.view.superview || constraint.firstItem is UILayoutGuide)) {
+                        constraintsTemp.append(constraint)
+                    }
+                    else if constraint.firstItem === self.view || constraint.secondItem === self.view {
+                        constraintsTemp.append(constraint)
+                    }
+                }
+            case .top :
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .top  && constraint.secondAttribute == .bottom {
+                    constraintsTemp.append(constraint)
+                }
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .top  && constraint.firstAttribute == .bottom {
+                    constraintsTemp.append(constraint)
+                }
+                else if constraint.firstAttribute == .top  && constraint.secondAttribute == .top {
+                    if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
+                        (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
+                        constraintsTemp.append(constraint)
+                    }
+                    else {
+                        if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
+                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
+                            constraintsTemp.append(constraint)
+                        }
+                        else if constraint.firstItem === self.view || constraint.secondItem === self.view {
+                            constraintsTemp.append(constraint)
+                        }
+                    }
+                }
+            case .bottom :
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .bottom  && constraint.secondAttribute == .top {
+                    constraintsTemp.append(constraint)
+                }
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .bottom  && constraint.firstAttribute == .top {
+                    constraintsTemp.append(constraint)
+                }
+                else if constraint.firstAttribute == .bottom  && constraint.secondAttribute == .bottom {
+                    if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
+                        (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
+                        constraintsTemp.append(constraint)
+                    }
+                    else  {
+                        if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
+                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
+                            constraintsTemp.append(constraint)
+                        }
+                        else if constraint.firstItem === self.view || constraint.secondItem === self.view {
+                            constraintsTemp.append(constraint)
+                        }
+                    }
+                }
+            case .leading :
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .leading  && constraint.secondAttribute == .trailing {
+                    constraintsTemp.append(constraint)
+                }
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .leading  && constraint.firstAttribute == .trailing {
+                    constraintsTemp.append(constraint)
+                }
+                else if constraint.firstAttribute == .leading  && constraint.secondAttribute == .leading {
+                    if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
+                        (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
+                        constraintsTemp.append(constraint)
+                    }
+                    else  {
+                        if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
+                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
+                            constraintsTemp.append(constraint)
+                        }
+                        else if constraint.firstItem === self.view || constraint.secondItem === self.view {
+                            constraintsTemp.append(constraint)
+                        }
+                    }
+                }
+            case .trailing :
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .trailing  && constraint.secondAttribute == .leading {
+                    constraintsTemp.append(constraint)
+                }
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .trailing  && constraint.firstAttribute == .leading {
+                    constraintsTemp.append(constraint)
+                }
+                else if constraint.firstAttribute == .trailing  && constraint.secondAttribute == .trailing {
+                    if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
+                        (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
+                        constraintsTemp.append(constraint)
+                    }
+                    else {
+                        if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
+                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
+                            constraintsTemp.append(constraint)
+                        }
+                        else if constraint.firstItem === self.view || constraint.secondItem === self.view {
+                            constraintsTemp.append(constraint)
+                        }
+                    }
+                }
+
+
+
+            default :
+                assertionFailure("not supput \(layoutAttribute)")
+            }
+        }
+
+        return constraintsTemp
+    }
+
+    private func getLayoutAllConstraints(_ layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
+        var resultConstraints = Array<NSLayoutConstraint>()
+        resultConstraints.reserveCapacity(100)
+        var constraints = Set<NSLayoutConstraint>()
+        constraints.reserveCapacity(100)
+
+        if layoutAttribute == .width || layoutAttribute == .height {
+
+            constraints = self.getContraints(self.view)
+            resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+
+            if resultConstraints.count == 0 {
+                if let view = self.view.superview {
+                    constraints = self.getContraints(view)
+                    resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+                }
+            }
+
+            if resultConstraints.count == 0 {
+                constraints = self.getContraints(self.view.topParentViewView, checkSub: true)
+                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            }
+        }
+        else {
+
+            if let view = self.view.superview {
+                constraints = self.getContraints(view)
+                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            }
+
+            if resultConstraints.count == 0 {
+                constraints = self.getContraints(self.view)
+                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            }
+
+            if resultConstraints.count == 0 {
+                constraints = self.getContraints(self.view.topParentViewView, checkSub: true)
+                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+            }
+        }
+
+        return resultConstraints
+    }
+
+    @discardableResult
+    private func getLayoutConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, errorCheck: Bool = true) -> NSLayoutConstraint? {
+
+        if let value = constraintInfo.getLayoutConstraint(attribute: layoutAttribute) {
+            return value
+        }
+
+        let constraintsTemp = getLayoutAllConstraints(layoutAttribute)
+
+        if constraintsTemp.count == 0 {
+            if errorCheck {
+                assertionFailure("\n\n🔗 ------------------------------------------------ \n\(self.view.constraints)\nAutoLayout Not Make layoutAttribute : \(layoutAttribute.string) \nView: \(self)\n🔗 ------------------------------------------------ \n\n")
+            }
+            return nil
+        }
+
+        let constraintsSort: Array = constraintsTemp.sorted(by: { (obj1, obj2) -> Bool in
+            return obj1.priority.rawValue > obj2.priority.rawValue
+        })
+
+
+        let result : NSLayoutConstraint? = constraintsSort.first
+        if let result = result  {
+            constraintInfo.setLayoutConstraint(attribute: layoutAttribute, value: result)
+
+            if constraintInfo.getConstraintDefaultValue(attribute: layoutAttribute) == nil {
+                constraintInfo.setConstraintDefaultValue(attribute: layoutAttribute, value: result.constant)
+            }
+        }
+
+        return result
+    }
+
+    //MARK: - GONE
+    public var gone: Bool {
+        get {
+            fatalError("You cannot read from this object.")
+        }
+        set {
+            newValue ? gone() : goneRemove()
+        }
+    }
+
+    public var goneWidth: Bool {
+        get {
+            fatalError("You cannot read from this object.")
+        }
+        set {
+            newValue ? gone(.widthPadding) : goneRemove(.widthPadding)
+        }
+    }
+
+    public var goneHeight: Bool {
+        get {
+            fatalError("You cannot read from this object.")
+        }
+        set {
+            newValue ? gone(.heightPadding) : goneRemove(.heightPadding)
+        }
+    }
+
+    /// gone
+    ///
+    ///
+    ///  GontType
+    ///
+    ///  leading = GoneType(rawValue: 1 << 0)
+    ///  trailing = GoneType(rawValue: 1 << 1)
+    ///  top = GoneType(rawValue: 1 << 2)
+    ///  bottom = GoneType(rawValue: 1 << 3)
+    ///  width = GoneType(rawValue: 1 << 4)
+    ///  height = GoneType(rawValue: 1 << 5)
+    ///
+    ///  size: GoneType = [.width, .height]
+    ///
+    ///  widthLeading: GoneType = [.width, .leading]
+    ///  widthTrailing: GoneType = [.width, .trailing]
+    ///  widthPadding: GoneType = [.width, .leading, .trailing]
+    ///
+    ///  heightTop: GoneType = [.height, .top]
+    ///  heightBottom: GoneType = [.height, .bottom]
+    ///  heightPadding: GoneType = [.height, .top, .bottom]
+    ///
+    ///  padding: GoneType = [.leading, .trailing, .top, .bottom]
+    ///  all: GoneType = [.leading, .trailing, .top, .bottom, .width, .height]
+    ///
+    ///
+    /// - Parameter type: GoneType
+    public func gone(_ type: GoneType = .all) {
+        guard type.isEmpty == false else { return }
+        self.view.isHidden = true
+
+        if type.contains(.width) {
+            if isWidth, width != 0 {
+                self.goneInfo.widthGoneValue = width
+                width = 0
+            }
+            else {
+                if let c = self.goneInfo.widthEmptyConstraint, c.constant != 0 {
+                    if self.view.frame.size.width != 0 {
+                        self.goneInfo.widthGoneValue = c.constant
+                    }
+                    c.constant = 0
+                }
+                else {
+                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
+                    self.view.addConstraint(constraint)
+                    self.goneInfo.widthEmptyConstraint = constraint
+                    if self.view.frame.size.width != 0 {
+                        self.goneInfo.widthGoneValue = self.view.frame.size.width
+                    }
+                }
+            }
+        }
+        if type.contains(.height) {
+            if isHeight, height != 0 {
+                self.goneInfo.heightGoneValue = height
+                height = 0
+            }
+            else {
+                if let c = self.goneInfo.heightEmptyConstraint, c.constant != 0 {
+                    if self.view.frame.size.height != 0 {
+                        self.goneInfo.heightGoneValue = c.constant
+                    }
+                    c.constant = 0
+                }
+                else {
+                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
+                    self.view.addConstraint(constraint)
+                    self.goneInfo.heightEmptyConstraint = constraint
+                    if self.view.frame.size.height != 0 {
+                        self.goneInfo.heightGoneValue = self.view.frame.size.height
+                    }
+                }
+            }
+        }
+        if type.contains(.leading) {
+            if isLeading, leading != 0 {
+                self.goneInfo.leadingGoneValue = leading
+                leading = 0
+            }
+        }
+        if type.contains(.trailing) {
+            if isTrailing, trailing != 0 {
+                self.goneInfo.trailingGoneValue = trailing
+                trailing = 0
+            }
+        }
+        if type.contains(.top) {
+            if isTop, top != 0 {
+                self.goneInfo.topGoneValue = top
+                top = 0
+            }
+        }
+        if type.contains(.bottom) {
+            if isBottom, bottom != 0 {
+                self.goneInfo.bottomGoneValue = bottom
+                bottom = 0
+            }
+        }
+    }
+
+    public func goneRemove(_ type: GoneType = .all) {
+        self.view.isHidden = false
+
+        if type.contains(.width) {
+            if let c: NSLayoutConstraint = self.goneInfo.widthEmptyConstraint {
+                self.view.removeConstraint(c)
+                self.goneInfo.widthEmptyConstraint = nil
+            }
+            else if isWidth {
+                if let value = self.goneInfo.widthGoneValue {
+                    width = value
+                }
+                else {
+                    width = widthDefault
+                }
+
+            }
+        }
+        if type.contains(.height) {
+            if let c: NSLayoutConstraint = self.goneInfo.heightEmptyConstraint {
+                self.view.removeConstraint(c)
+                self.goneInfo.heightEmptyConstraint = nil
+            }
+            else if isHeight {
+                if let value = self.goneInfo.heightGoneValue {
+                    height = value
+                }
+                else {
+                    height = heightDefault
+                }
+            }
+        }
+        if type.contains(.leading) {
+            if isLeading {
+                if let value = self.goneInfo.leadingGoneValue {
+                    leading = value
+                }
+                else {
+                    leading = leadingDefault
+                }
+            }
+        }
+        if type.contains(.trailing) {
+            if isTrailing {
+                if let value = self.goneInfo.trailingGoneValue {
+                    trailing = value
+                }
+                else {
+                    trailing = trailingDefault
+                }
+            }
+        }
+        if type.contains(.top) {
+            if isTop {
+                if let value = self.goneInfo.topGoneValue {
+                    top = value
+                }
+                else {
+                    top = topDefault
+                }
+            }
+        }
+        if type.contains(.bottom) {
+            if isBottom {
+                if let value = self.goneInfo.bottomGoneValue {
+                    bottom = value
+                }
+                else {
+                    bottom = bottomDefault
+                }
+            }
+        }
+    }
+}
+
+//MARK: - UIView Extension EasyConstraints
+extension UIView {
+    public var ea: EasyConstraints {
+        return easyConstraints
+    }
+
+    private var easyConstraints: EasyConstraints {
+        get {
+            if let info = objc_getAssociatedObject(self, &EasyConstraintsKey.easyConstraints) as? EasyConstraints {
+                return info
+            }
+            let info = EasyConstraints(view: self)
+            objc_setAssociatedObject(self, &EasyConstraintsKey.easyConstraints, info, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return info
+        }
+        set {
+            objc_setAssociatedObject(self, &EasyConstraintsKey.easyConstraints, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+
+    private struct EasyConstraintsKey {
+        static var easyConstraints: UInt8 = 0
+    }
+}
+
+//MARK: - UIView Extension Common
+extension UIView {
+    private struct AssociatedKeys {
+        static var viewDidDisappear: UInt8 = 0
+        static var viewDidDisappearCADisplayLink: UInt8 = 0
+        
+        static var viewDidAppear: UInt8 = 0
+        static var viewDidAppearCADisplayLink: UInt8 = 0
+    }
+
     public var topParentViewView: UIView {
         guard let superview = superview else {
             return  self
         }
         return superview.topParentViewView
-        
     }
+
     public var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self
         while parentResponder != nil {
@@ -607,238 +1059,7 @@ extension UIView {
         }
         return nil
     }
-    
-    @inline(__always) public func getContraints(_ view: UIView, checkSub: Bool = false) -> Set<NSLayoutConstraint> {
-        var result = Set<NSLayoutConstraint>()
-        result.reserveCapacity(100)
-        if checkSub {
-            for subView in view.subviews {
-                result = result.union(self.getContraints(subView, checkSub: checkSub))
-            }
-        }
-        
-        result = result.union(view.constraints)
-        
-        
-        return result
-    }
-    
-    
-    
-    @inline(__always) public func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutConstraint.Attribute) -> Array<NSLayoutConstraint> {
-        var constraintsTemp = Array<NSLayoutConstraint>()
-        constraintsTemp.reserveCapacity(100)
-        for constraint in constraints {
-            
-            switch layoutAttribute {
-            case .width, .height:
-                if type(of:constraint) === NSLayoutConstraint.self {
-                    if  constraint.firstItem === self && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
-                        if self is UIButton || self is UILabel || self is UIImageView {
-                            constraintsTemp.append(constraint)
-                        }
-                        else {
-                            if self is UIButton || self is UILabel || self is UIImageView {
-                                constraintsTemp.append(constraint)
-                            }
-                            else {
-                                constraintsTemp.append(constraint)
-                            }
-                        }
-                    }
-                    else if  constraint.firstAttribute == layoutAttribute && constraint.secondAttribute == layoutAttribute {
-                        if constraint.firstItem === self || constraint.secondItem === self {
-                            constraintsTemp.append(constraint)
-                        }
-                    }
-                }
-            case .centerX, .centerY:
-                if constraint.firstAttribute == layoutAttribute  && constraint.secondAttribute == layoutAttribute {
-                    if (constraint.firstItem === self && (constraint.secondItem === self.superview || constraint.secondItem is UILayoutGuide)) ||
-                        (constraint.secondItem === self && (constraint.firstItem === self.superview || constraint.firstItem is UILayoutGuide)) {
-                        constraintsTemp.append(constraint)
-                    }
-                    else if constraint.firstItem === self || constraint.secondItem === self {
-                        constraintsTemp.append(constraint)
-                    }
-                }
-            case .top :
-                if  constraint.firstItem === self && constraint.firstAttribute == .top  && constraint.secondAttribute == .bottom {
-                    constraintsTemp.append(constraint)
-                }
-                else if  constraint.secondItem === self && constraint.secondAttribute == .top  && constraint.firstAttribute == .bottom {
-                    constraintsTemp.append(constraint)
-                }
-                else if constraint.firstAttribute == .top  && constraint.secondAttribute == .top {
-                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
-                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
-                        constraintsTemp.append(constraint)
-                    }
-                    else {
-                        if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
-                            constraintsTemp.append(constraint)
-                        }
-                        else if constraint.firstItem === self || constraint.secondItem === self {
-                            constraintsTemp.append(constraint)
-                        }
-                    }
-                }
-            case .bottom :
-                if  constraint.firstItem === self && constraint.firstAttribute == .bottom  && constraint.secondAttribute == .top {
-                    constraintsTemp.append(constraint)
-                }
-                else if  constraint.secondItem === self && constraint.secondAttribute == .bottom  && constraint.firstAttribute == .top {
-                    constraintsTemp.append(constraint)
-                }
-                else if constraint.firstAttribute == .bottom  && constraint.secondAttribute == .bottom {
-                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
-                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
-                        constraintsTemp.append(constraint)
-                    }
-                    else  {
-                        if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
-                            constraintsTemp.append(constraint)
-                        }
-                        else if constraint.firstItem === self || constraint.secondItem === self {
-                            constraintsTemp.append(constraint)
-                        }
-                    }
-                }
-            case .leading :
-                if  constraint.firstItem === self && constraint.firstAttribute == .leading  && constraint.secondAttribute == .trailing {
-                    constraintsTemp.append(constraint)
-                }
-                else if  constraint.secondItem === self && constraint.secondAttribute == .leading  && constraint.firstAttribute == .trailing {
-                    constraintsTemp.append(constraint)
-                }
-                else if constraint.firstAttribute == .leading  && constraint.secondAttribute == .leading {
-                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
-                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
-                        constraintsTemp.append(constraint)
-                    }
-                    else  {
-                        if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
-                            constraintsTemp.append(constraint)
-                        }
-                        else if constraint.firstItem === self || constraint.secondItem === self {
-                            constraintsTemp.append(constraint)
-                        }
-                    }
-                }
-            case .trailing :
-                if  constraint.firstItem === self && constraint.firstAttribute == .trailing  && constraint.secondAttribute == .leading {
-                    constraintsTemp.append(constraint)
-                }
-                else if  constraint.secondItem === self && constraint.secondAttribute == .trailing  && constraint.firstAttribute == .leading {
-                    constraintsTemp.append(constraint)
-                }
-                else if constraint.firstAttribute == .trailing  && constraint.secondAttribute == .trailing {
-                    if (constraint.firstItem === self && constraint.secondItem === self.superview ) ||
-                        (constraint.secondItem === self && constraint.firstItem === self.superview ) {
-                        constraintsTemp.append(constraint)
-                    }
-                    else {
-                        if (constraint.firstItem === self && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self &&  constraint.firstItem is UILayoutGuide) {
-                            constraintsTemp.append(constraint)
-                        }
-                        else if constraint.firstItem === self || constraint.secondItem === self {
-                            constraintsTemp.append(constraint)
-                        }
-                    }
-                }
-                
-                
-                
-            default :
-                assertionFailure("not supput \(layoutAttribute)")
-            }
-        }
-        
-        
-        return constraintsTemp
-    }
-    
-    public func getLayoutAllConstraints(_ layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
-        var resultConstraints = Array<NSLayoutConstraint>()
-        resultConstraints.reserveCapacity(100)
-        var constraints = Set<NSLayoutConstraint>()
-        constraints.reserveCapacity(100)
-        
-        if layoutAttribute == .width || layoutAttribute == .height {
-            
-            constraints = self.getContraints(self)
-            resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-            
-            if resultConstraints.count == 0 {
-                if let view = superview {
-                    constraints = self.getContraints(view)
-                    resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-                }
-            }
-            
-            if resultConstraints.count == 0 {
-                constraints = self.getContraints(self.topParentViewView, checkSub: true)
-                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-            }
-        }
-        else {
-            
-            if let view = superview {
-                constraints = self.getContraints(view)
-                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-            }
-            
-            if resultConstraints.count == 0 {
-                constraints = self.getContraints(self)
-                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-            }
-            
-            if resultConstraints.count == 0 {
-                constraints = self.getContraints(self.topParentViewView, checkSub: true)
-                resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-            }
-        }
-        
-        return resultConstraints
-    }
-    
-    @discardableResult
-    public func getLayoutConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, errorCheck: Bool = true) -> NSLayoutConstraint? {
-        
-        if let value = constraintInfo.getLayoutConstraint(attribute: layoutAttribute) {
-            return value
-        }
-        
-        let constraintsTemp = getLayoutAllConstraints(layoutAttribute)
-        
-        if constraintsTemp.count == 0 {
-            if errorCheck {
-                assertionFailure("\n\n🔗 ------------------------------------------------ \n\(self.constraints)\nAutoLayout Not Make layoutAttribute : \(layoutAttribute.string) \nView: \(self)\n🔗 ------------------------------------------------ \n\n")
-            }
-            return nil
-        }
-        
-        let constraintsSort: Array = constraintsTemp.sorted(by: { (obj1, obj2) -> Bool in
-            return obj1.priority.rawValue > obj2.priority.rawValue
-        })
-        
-        
-        let result : NSLayoutConstraint? = constraintsSort.first
-        if let result = result  {
-            constraintInfo.setLayoutConstraint(attribute: layoutAttribute, value: result)
-            
-            if constraintInfo.getConstraintDefaultValue(attribute: layoutAttribute) == nil {
-                constraintInfo.setConstraintDefaultValue(attribute: layoutAttribute, value: result.constant)
-            }
-        }
-        
-        return result
-    }
-    
+
     public func copyView() -> AnyObject
     {
         return NSKeyedUnarchiver.unarchiveObject(with: NSKeyedArchiver.archivedData(withRootObject: self))! as AnyObject
@@ -1001,7 +1222,7 @@ extension UIView {
             return
         }
         
-        if self.isVisible {
+        if self.isShow {
             self.viewDidAppearCADisplayLink?.invalidate()
             self.viewDidAppearCADisplayLink = nil
             self.viewDidAppear?()
@@ -1048,7 +1269,7 @@ extension UIView {
             return
         }
         
-        if self.isVisible == false {
+        if self.isShow == false {
             self.viewDidDisappearCADisplayLink?.invalidate()
             self.viewDidDisappearCADisplayLink = nil
             self.viewDidDisappear?()
@@ -1078,8 +1299,7 @@ extension UIView {
         }
     }
     
-    public var isVisible: Bool {
-        
+    public var isShow: Bool {
         if self.window == nil {
             return false
         }
@@ -1100,213 +1320,10 @@ extension UIView {
         
         return true
     }
-    
-    public var gone: Bool {
-        get {
-            fatalError("You cannot read from this object.")
-        }
-        set {
-            newValue ? gone() : goneRemove()
-        }
-    }
-    
-    public var goneWidth: Bool {
-        get {
-            fatalError("You cannot read from this object.")
-        }
-        set {
-            newValue ? gone(.widthPadding) : goneRemove(.widthPadding)
-        }
-    }
-    
-    public var goneHeight: Bool {
-        get {
-            fatalError("You cannot read from this object.")
-        }
-        set {
-            newValue ? gone(.heightPadding) : goneRemove(.heightPadding)
-        }
-    }
-    
-    /// gone
-    ///
-    ///
-    ///  GontType
-    ///
-    ///  leading = GoneType(rawValue: 1 << 0)
-    ///  trailing = GoneType(rawValue: 1 << 1)
-    ///  top = GoneType(rawValue: 1 << 2)
-    ///  bottom = GoneType(rawValue: 1 << 3)
-    ///  width = GoneType(rawValue: 1 << 4)
-    ///  height = GoneType(rawValue: 1 << 5)
-    ///
-    ///  size: GoneType = [.width, .height]
-    ///
-    ///  widthLeading: GoneType = [.width, .leading]
-    ///  widthTrailing: GoneType = [.width, .trailing]
-    ///  widthPadding: GoneType = [.width, .leading, .trailing]
-    ///
-    ///  heightTop: GoneType = [.height, .top]
-    ///  heightBottom: GoneType = [.height, .bottom]
-    ///  heightPadding: GoneType = [.height, .top, .bottom]
-    ///
-    ///  padding: GoneType = [.leading, .trailing, .top, .bottom]
-    ///  all: GoneType = [.leading, .trailing, .top, .bottom, .width, .height]
-    ///
-    ///
-    /// - Parameter type: GoneType
-    public func gone(_ type: GoneType = .all) {
-        guard type.isEmpty == false else { return }
-        isHidden = true
-
-        if type.contains(.width) {
-            if isWidthConstraint, widthConstraint != 0 {
-                self.goneInfo.widthGoneValue = widthConstraint
-                widthConstraint = 0
-            }
-            else {
-                if let c = self.goneInfo.widthEmptyConstraint, c.constant != 0 {
-                    if self.frame.size.width != 0 {
-                        self.goneInfo.widthGoneValue = c.constant
-                    }
-                    c.constant = 0
-                }
-                else {
-                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
-                    addConstraint(constraint)
-                    self.goneInfo.widthEmptyConstraint = constraint
-                    if self.frame.size.width != 0 {
-                        self.goneInfo.widthGoneValue = self.frame.size.width
-                    }
-                }
-            }
-        }
-        if type.contains(.height) {
-            if isHeightConstraint, heightConstraint != 0 {
-                self.goneInfo.heightGoneValue = heightConstraint
-                heightConstraint = 0
-            }
-            else {
-                if let c = self.goneInfo.heightEmptyConstraint, c.constant != 0 {
-                    if self.frame.size.height != 0 {
-                        self.goneInfo.heightGoneValue = c.constant
-                    }
-                    c.constant = 0
-                }
-                else {
-                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
-                    addConstraint(constraint)
-                    self.goneInfo.heightEmptyConstraint = constraint
-                    if self.frame.size.height != 0 {
-                        self.goneInfo.heightGoneValue = self.frame.size.height
-                    }
-                }
-            }
-        }
-        if type.contains(.leading) {
-            if isLeadingConstraint, leadingConstraint != 0 {
-                self.goneInfo.leadingGoneValue = leadingConstraint
-                leadingConstraint = 0
-            }
-        }
-        if type.contains(.trailing) {
-            if isTrailingConstraint, trailingConstraint != 0 {
-                self.goneInfo.trailingGoneValue = trailingConstraint
-                trailingConstraint = 0
-            }
-        }
-        if type.contains(.top) {
-            if isTopConstraint, topConstraint != 0 {
-                self.goneInfo.topGoneValue = topConstraint
-                topConstraint = 0
-            }
-        }
-        if type.contains(.bottom) {
-            if isBottomConstraint, bottomConstraint != 0 {
-                self.goneInfo.bottomGoneValue = bottomConstraint
-                bottomConstraint = 0
-            }
-        }
-    }
-
-    public func goneRemove(_ type: GoneType = .all) {
-        isHidden = false
-
-        if type.contains(.width) {
-            if let c: NSLayoutConstraint = self.goneInfo.widthEmptyConstraint {
-                removeConstraint(c)
-                self.goneInfo.widthEmptyConstraint = nil
-            }
-            else if isWidthConstraint {
-                if let widht = self.goneInfo.widthGoneValue {
-                    widthConstraint = widht
-                }
-                else {
-                    widthConstraint = widthDefaultConstraint
-                }
-
-            }
-        }
-        if type.contains(.height) {
-            if let c: NSLayoutConstraint = self.goneInfo.heightEmptyConstraint {
-                removeConstraint(c)
-                self.goneInfo.heightEmptyConstraint = nil
-            }
-            else if isHeightConstraint {
-                if let height = self.goneInfo.heightGoneValue {
-                    heightConstraint = height
-                }
-                else {
-                    heightConstraint = heightDefaultConstraint
-                }
-            }
-        }
-        if type.contains(.leading) {
-            if isLeadingConstraint {
-                if let value = self.goneInfo.leadingGoneValue {
-                    leadingConstraint = value
-                }
-                else {
-                    leadingConstraint = leadingDefaultConstraint
-                }
-            }
-        }
-        if type.contains(.trailing) {
-            if isTrailingConstraint {
-                if let value = self.goneInfo.trailingGoneValue {
-                    trailingConstraint = value
-                }
-                else {
-                    trailingConstraint = trailingDefaultConstraint
-                }
-            }
-        }
-        if type.contains(.top) {
-            if isTopConstraint {
-                if let value = self.goneInfo.topGoneValue {
-                    topConstraint = value
-                }
-                else {
-                    topConstraint = topDefaultConstraint
-                }
-            }
-        }
-        if type.contains(.bottom) {
-            if isBottomConstraint {
-                if let value = self.goneInfo.bottomGoneValue {
-                    bottomConstraint = value
-                }
-                else {
-                    bottomConstraint = bottomDefaultConstraint
-                }
-            }
-        }
-    }
 }
 
-
+//MARK: - UIView Extension SafeArea
 extension UIView {
-    
     var safeTopAnchor: NSLayoutYAxisAnchor {
         if #available(iOS 11.0, *) {
             return self.safeAreaLayoutGuide.topAnchor
@@ -1339,7 +1356,6 @@ extension UIView {
         }
     }
 }
-
 
 #endif
 

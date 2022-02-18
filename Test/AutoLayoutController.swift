@@ -37,20 +37,20 @@ class AutoLayoutController: UIViewController {
     
     
     func setDefaultConstrains()  {
-        textField1.text = "\(view1.leadingDefaultConstraint)"
-        textField2.text = "\(view1.trailingDefaultConstraint)"
-        textField3.text = "\(view2.topDefaultConstraint)"
-        textField4.text = "\(view2.trailingDefaultConstraint)"
-        textField5.text = "\(view2.widthDefaultConstraint)"
-        textField6.text = "\(view2.heightDefaultConstraint)"
+        textField1.text = "\(view1.ea.leadingDefault)"
+        textField2.text = "\(view1.ea.trailingDefault)"
+        textField3.text = "\(view2.ea.topDefault)"
+        textField4.text = "\(view2.ea.trailingDefault)"
+        textField5.text = "\(view2.ea.widthDefault)"
+        textField6.text = "\(view2.ea.heightDefault)"
         
         
-        view1.leadingConstraint = view1.leadingDefaultConstraint
-        view1.trailingConstraint = view1.trailingDefaultConstraint
-        view2.topConstraint = view2.topDefaultConstraint
-        view2.trailingConstraint =  view2.trailingDefaultConstraint
-        view2.widthConstraint = view2.widthDefaultConstraint
-        view2.heightConstraint = view2.heightDefaultConstraint
+        view1.ea.leading = view1.ea.leadingDefault
+        view1.ea.trailing = view1.ea.trailingDefault
+        view2.ea.top = view2.ea.topDefault
+        view2.ea.trailing = view2.ea.trailingDefault
+        view2.ea.width = view2.ea.widthDefault
+        view2.ea.height = view2.ea.heightDefault
     }
 
     /*
@@ -64,37 +64,43 @@ class AutoLayoutController: UIViewController {
     */
     @IBAction func onView1Leading(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-            view1.leadingConstraint = value
+//            view1.leadingConstraint = value
+            view1.ea.leading = value
         }
     }
     
     @IBAction func onView1Trailing(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-            view1.trailingConstraint = value
+//            view1.trailingConstraint = value
+            view1.ea.trailing = value
         }
     }
     
     @IBAction func onView2Top(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-            view2.topConstraint = value
+//            view2.topConstraint = value
+            view2.ea.top = value
         }
     }
     
     @IBAction func onView2Trailing(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-            view2.trailingConstraint = value
+//            view2.trailingConstraint = value
+            view2.ea.trailing = value
         }
     }
     
     @IBAction func onView2Width(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-            view2.widthConstraint = value
+//            view2.widthConstraint = value
+            view2.ea.width = value
         }
     }
     
     @IBAction func onView2Height(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
-            view2.heightConstraint = value
+//            view2.heightConstraint = value
+            view2.ea.height = value
         }
     }
     
@@ -103,7 +109,7 @@ class AutoLayoutController: UIViewController {
     }
     @IBAction func onGone(_ sender: UIButton) {
         sender.isSelected = !sender.isSelected
-        view3.gone = sender.isSelected
+        view3.ea.gone = sender.isSelected
         
         if sender.isSelected {
             sender.setTitle("No Gone", for: .normal)
