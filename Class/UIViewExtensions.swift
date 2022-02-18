@@ -1,10 +1,8 @@
-    //
-//  UIViewExtensions.swift
-//  EZSwiftExtensions
 //
-//  Created by Goktug Yilmaz on 15/07/15.
-//  Copyright (c) 2015 Goktug Yilmaz. All rights reserved.
-//참고 https://github.com/goktugyil/EZSwiftExtensions
+//  UIViewExtensions.swift
+//
+//  Created by pkh on 2018. 8. 14..
+//  Copyright © 2018년 pkh. All rights reserved.
 
 #if os(iOS) || os(tvOS)
 
