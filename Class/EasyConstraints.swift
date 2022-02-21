@@ -957,6 +957,8 @@ public class EasyConstraints {
                 bottom = 0
             }
         }
+
+        self.view.setNeedsLayout()
     }
 
     public func goneRemove(_ type: GoneType = .all) {
@@ -1031,6 +1033,8 @@ public class EasyConstraints {
                 }
             }
         }
+
+        self.view.setNeedsLayout()
     }
 }
 
