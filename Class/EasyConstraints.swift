@@ -890,14 +890,19 @@ public class EasyConstraints {
         self.view.isHidden = true
 
         if type.contains(.width) {
-            if isWidth, width != 0 {
-                self.goneInfo.widthGoneValue = width
+            if isWidth {
+                if width != 0 {
+                    self.goneInfo.widthGoneValue = width
+                }
                 width = 0
             }
             else {
-                if let c = self.goneInfo.widthEmptyConstraint, c.constant != 0 {
-                    if self.view.frame.size.width != 0 {
+                if let c = self.goneInfo.widthEmptyConstraint {
+                    if  c.constant != 0 {
                         self.goneInfo.widthGoneValue = c.constant
+                    }
+                    else if self.view.frame.size.width != 0 {
+                        self.goneInfo.widthGoneValue = self.view.frame.size.width
                     }
                     c.constant = 0
                 }
@@ -912,14 +917,19 @@ public class EasyConstraints {
             }
         }
         if type.contains(.height) {
-            if isHeight, height != 0 {
-                self.goneInfo.heightGoneValue = height
+            if isHeight {
+                if height != 0 {
+                    self.goneInfo.heightGoneValue = height
+                }
                 height = 0
             }
             else {
-                if let c = self.goneInfo.heightEmptyConstraint, c.constant != 0 {
-                    if self.view.frame.size.height != 0 {
+                if let c = self.goneInfo.heightEmptyConstraint {
+                    if c.constant != 0 {
                         self.goneInfo.heightGoneValue = c.constant
+                    }
+                    else if self.view.frame.size.height != 0 {
+                        self.goneInfo.heightGoneValue = self.view.frame.size.height
                     }
                     c.constant = 0
                 }
@@ -968,6 +978,9 @@ public class EasyConstraints {
             if let c: NSLayoutConstraint = self.goneInfo.widthEmptyConstraint {
                 self.view.removeConstraint(c)
                 self.goneInfo.widthEmptyConstraint = nil
+                if let value = self.goneInfo.widthGoneValue {
+                    self.view.frame.size.width = value
+                }
             }
             else if isWidth {
                 if let value = self.goneInfo.widthGoneValue {
@@ -983,6 +996,9 @@ public class EasyConstraints {
             if let c: NSLayoutConstraint = self.goneInfo.heightEmptyConstraint {
                 self.view.removeConstraint(c)
                 self.goneInfo.heightEmptyConstraint = nil
+                if let value = self.goneInfo.heightGoneValue {
+                    self.view.frame.size.height = value
+                }
             }
             else if isHeight {
                 if let value = self.goneInfo.heightGoneValue {
