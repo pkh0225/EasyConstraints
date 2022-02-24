@@ -1,0 +1,144 @@
+{
+  "builtTestProducts" : [
+    {
+      "binaryPath" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraintsPackageTests.xctest/Contents/MacOS/EasyConstraintsPackageTests",
+      "productName" : "EasyConstraintsPackageTests"
+    }
+  ],
+  "copyCommands" : {
+
+  },
+  "swiftCommands" : {
+    "C.EasyConstraints-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "importPath" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/Sources/EasyConstraints/EasyConstraints.swift"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "EasyConstraints",
+      "moduleOutputPath" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraints.swiftmodule",
+      "objects" : [
+        "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraints.build/EasyConstraints.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "x86_64-apple-macosx10.10",
+        "-swift-version",
+        "5",
+        "-enable-batch-mode",
+        "-index-store-path",
+        "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/index/store",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-Onone",
+        "-enable-testing",
+        "-g",
+        "-j16",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-module-cache-path",
+        "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraints.build/EasyConstraints-Swift.h",
+        "-color-diagnostics"
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraints.build/EasyConstraints.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraints.swiftmodule"
+        }
+      ],
+      "sources" : [
+        "/Users/gil-hopark/Documents/GitHub/EasyConstraints/Sources/EasyConstraints/EasyConstraints.swift"
+      ],
+      "tempsPath" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraints.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.EasyConstraintsTests-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "importPath" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/Tests/EasyConstraintsTests/EasyConstraintsTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraints.swiftmodule"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "EasyConstraintsTests",
+      "moduleOutputPath" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraintsTests.swiftmodule",
+      "objects" : [
+        "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraintsTests.build/EasyConstraintsTests.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "x86_64-apple-macosx11.0",
+        "-swift-version",
+        "5",
+        "-enable-batch-mode",
+        "-index-store-path",
+        "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/index/store",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-Onone",
+        "-enable-testing",
+        "-g",
+        "-j16",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-module-cache-path",
+        "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-color-diagnostics"
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraintsTests.build/EasyConstraintsTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraintsTests.swiftmodule"
+        }
+      ],
+      "sources" : [
+        "/Users/gil-hopark/Documents/GitHub/EasyConstraints/Tests/EasyConstraintsTests/EasyConstraintsTests.swift"
+      ],
+      "tempsPath" : "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraintsTests.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "testDiscoveryCommands" : {
+
+  }
+}

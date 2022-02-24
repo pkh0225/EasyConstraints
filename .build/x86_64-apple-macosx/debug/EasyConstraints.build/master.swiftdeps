@@ -1,0 +1,6 @@
+version: "Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)"
+options: "8f91f5c080ee05dfa082fbbdc06113a444cc9a4781f02ab54a8aa8fd08142ceb"
+build_start_time: [1645662108, 141504049]
+build_end_time: [1645662109, 379274845]
+inputs:
+  "/Users/gil-hopark/Documents/GitHub/EasyConstraints/Sources/EasyConstraints/EasyConstraints.swift": [1645662051, 717207908]
