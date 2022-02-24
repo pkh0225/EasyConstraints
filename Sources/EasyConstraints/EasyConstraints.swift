@@ -20,28 +20,28 @@ public enum VIEW_ADD_TYPE  {
 
 public struct GoneType: OptionSet {
     public let rawValue: Int
-    
+
     public init(rawValue: Int) {
         self.rawValue = rawValue
     }
-    
+
     public static let leading = GoneType(rawValue: 1 << 0)
     public static let trailing = GoneType(rawValue: 1 << 1)
     public static let top = GoneType(rawValue: 1 << 2)
     public static let bottom = GoneType(rawValue: 1 << 3)
     public static let width = GoneType(rawValue: 1 << 4)
     public static let height = GoneType(rawValue: 1 << 5)
-    
+
     public static let size: GoneType = [.width, .height]
-    
+
     public static let widthLeading: GoneType = [.width, .leading]
     public static let widthTrailing: GoneType = [.width, .trailing]
     public static let widthPadding: GoneType = [.width, .leading, .trailing]
-    
+
     public static let heightTop: GoneType = [.height, .top]
     public static let heightBottom: GoneType = [.height, .bottom]
     public static let heightPadding: GoneType = [.height, .top, .bottom]
-    
+
     public static let padding: GoneType = [.leading, .trailing, .top, .bottom]
     public static let all: GoneType = [.leading, .trailing, .top, .bottom, .width, .height]
 }
@@ -1084,7 +1084,7 @@ extension UIView {
     private struct AssociatedKeys {
         static var viewDidDisappear: UInt8 = 0
         static var viewDidDisappearCADisplayLink: UInt8 = 0
-        
+
         static var viewDidAppear: UInt8 = 0
         static var viewDidAppearCADisplayLink: UInt8 = 0
     }
@@ -1110,16 +1110,16 @@ extension UIView {
     public func copyView() -> AnyObject {
         return NSKeyedUnarchiver.unarchiveObject(with: NSKeyedArchiver.archivedData(withRootObject: self))! as AnyObject
     }
-    
+
     public func addSubViewAutoLayout(_ subview: UIView) {
         self.addSubViewAutoLayout(subview, edgeInsets: UIEdgeInsets.zero)
     }
-    
+
     public func addSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
         self.addSubview(subview)
         self.setSubViewAutoLayout(subview, edgeInsets: edgeInsets)
     }
-    
+
     public func addSubViewAutoLayout(insertView: UIView, subview: UIView, edgeInsets: UIEdgeInsets, isFront: Bool) {
         if (isFront) {
             self.insertSubview(insertView, belowSubview:subview);
@@ -1129,51 +1129,51 @@ extension UIView {
         }
         self.setSubViewAutoLayout(insertView, edgeInsets: edgeInsets)
     }
-    
+
     public func setSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
         subview.translatesAutoresizingMaskIntoConstraints = false
-        
+
         let views: Dictionary = ["subview": subview]
         let edgeInsetsDic: Dictionary = ["top" : (edgeInsets.top), "left" : (edgeInsets.left), "bottom" : (edgeInsets.bottom), "right" : (edgeInsets.right)]
-        
+
         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"H:|-(left)-[subview]-(right)-|",
                                                            options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                            metrics:edgeInsetsDic,
                                                            views:views))
-        
+
         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"V:|-(top)-[subview]-(bottom)-|",
                                                            options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                            metrics:edgeInsetsDic,
                                                            views:views))
     }
-    
+
     public func addSubViewAutoLayout(subviews: Array<UIView>, addType: VIEW_ADD_TYPE, edgeInsets: UIEdgeInsets) {
         var constraints = String()
         var views = Dictionary<String,UIView>()
         var metrics: Dictionary = ["top" : (edgeInsets.top), "left" : (edgeInsets.left), "bottom" : (edgeInsets.bottom), "right" : (edgeInsets.right)];
-        
+
         for (idx, obj) in subviews.enumerated() {
             obj.translatesAutoresizingMaskIntoConstraints = false;
             self.addSubview(obj)
             views["view\(idx)"] = obj
-            
-            
+
+
             if addType == .horizontal {
                 self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"V:|-(top)-[view\(idx)]-(bottom)-|",
                     options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                     metrics:["top" : (edgeInsets.top), "bottom" : (edgeInsets.bottom)],
                     views:views))
-                
+
                 metrics["width\(idx)"] = (obj.frame.size.width)
-                
+
                 if subviews.count == 1 {
                     constraints += "H:|-(left)-[view\(idx)(width\(idx))]-(right)-|"
-                    
+
                     self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
                                                                        options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                                        metrics:metrics,
                                                                        views:views))
-                    
+
                 }
                 else {
                     if idx == 0 {
@@ -1181,7 +1181,7 @@ extension UIView {
                     }
                     else if idx == subviews.count - 1 {
                         constraints += "[view\(idx)(width\(idx))]-(right)-|"
-                        
+
                         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
                                                                            options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                                            metrics:metrics,
@@ -1191,20 +1191,20 @@ extension UIView {
                         constraints += "[view\(idx)(width\(idx))]"
                     }
                 }
-                
-                
+
+
             }
             else {
                 self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"H:|-(left)-[view\(idx)]-(right)-|",
                     options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                     metrics:["left" : (edgeInsets.left), "right" : (edgeInsets.right)],
                     views:views))
-                
+
                 metrics["height\(idx)"] = (obj.frame.size.height)
-                
+
                 if subviews.count == 1 {
                     constraints += "V:|-(top)-[view\(idx)(height\(idx))]-(bottom)-|"
-                    
+
                     self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
                                                                        options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                                        metrics:metrics,
@@ -1213,11 +1213,11 @@ extension UIView {
                 else {
                     if idx == 0 {
                         constraints += "V:|-(top)-[view\(idx)(height\(idx))]"
-                        
+
                     }
                     else if idx == subviews.count - 1 {
                         constraints += "[view\(idx)(height\(idx))]-(bottom)-|"
-                        
+
                         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
                                                                            options:NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                                            metrics:metrics,
@@ -1227,30 +1227,30 @@ extension UIView {
                         constraints += "[view\(idx)(height\(idx))]"
                     }
                 }
-                
+
             }
-            
+
         }
-        
+
     }
-    
+
     public func removeSuperViewAllConstraints() {
         guard let superview: UIView = self.superview else { return}
-        
+
         for c: NSLayoutConstraint in superview.constraints {
             if c.firstItem === self || c.secondItem === self {
                 superview.removeConstraint(c)
             }
         }
     }
-    
+
     public func removeAllConstraints() {
         self.removeSuperViewAllConstraints()
         self.removeConstraints(self.constraints)
         self.translatesAutoresizingMaskIntoConstraints = true
     }
-    
-    
+
+
     private var viewDidAppearCADisplayLink: CADisplayLink? {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppearCADisplayLink) as? CADisplayLink
@@ -1259,7 +1259,7 @@ extension UIView {
             objc_setAssociatedObject ( self, &AssociatedKeys.viewDidAppearCADisplayLink, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    
+
     @objc private func onViewDidAppear() {
         let windowRect = self.superview?.convert(self.frame, to: nil) ?? .zero
         if windowRect == .zero {
@@ -1267,21 +1267,21 @@ extension UIView {
             self.viewDidAppearCADisplayLink = nil
             return
         }
-        
+
         if self.isShow {
             self.viewDidAppearCADisplayLink?.invalidate()
             self.viewDidAppearCADisplayLink = nil
             self.viewDidAppear?()
         }
     }
-    
+
     public var viewDidAppear: VoidClosure? {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppear) as? VoidClosure
         }
         set {
             objc_setAssociatedObject ( self, &AssociatedKeys.viewDidAppear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            
+
             viewDidAppearCADisplayLink?.invalidate()
             if newValue != nil {
                 viewDidAppearCADisplayLink = CADisplayLink(target: self, selector: #selector(onViewDidAppear))
@@ -1297,7 +1297,7 @@ extension UIView {
             }
         }
     }
-    
+
     private var viewDidDisappearCADisplayLink: CADisplayLink? {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.viewDidDisappearCADisplayLink) as? CADisplayLink
@@ -1306,7 +1306,7 @@ extension UIView {
             objc_setAssociatedObject ( self, &AssociatedKeys.viewDidDisappearCADisplayLink, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    
+
     @objc private func onViewDidDisappear() {
         let windowRect = self.superview?.convert(self.frame, to: nil) ?? .zero
         if windowRect == .zero {
@@ -1314,21 +1314,21 @@ extension UIView {
             self.viewDidDisappearCADisplayLink = nil
             return
         }
-        
+
         if self.isShow == false {
             self.viewDidDisappearCADisplayLink?.invalidate()
             self.viewDidDisappearCADisplayLink = nil
             self.viewDidDisappear?()
         }
     }
-    
+
     public var viewDidDisappear: VoidClosure? {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.viewDidDisappear) as? VoidClosure
         }
         set {
             objc_setAssociatedObject ( self, &AssociatedKeys.viewDidDisappear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            
+
             viewDidDisappearCADisplayLink?.invalidate()
             if newValue != nil {
                 viewDidDisappearCADisplayLink = CADisplayLink(target: self, selector: #selector(onViewDidDisappear))
@@ -1344,25 +1344,25 @@ extension UIView {
             }
         }
     }
-    
+
     public var isShow: Bool {
         if self.window == nil {
             return false
         }
-        
+
         var currentView: UIView = self
         while let superview = currentView.superview {
             if (superview.bounds).intersects(currentView.frame) == false {
                 return false
             }
-            
+
             if currentView.isHidden {
                 return false
             }
-            
+
             currentView = superview
         }
-        
+
         return true
     }
 }
@@ -1376,7 +1376,7 @@ extension UIView {
             return self.topAnchor
         }
     }
-    
+
     var safeLeftAnchor: NSLayoutXAxisAnchor {
         if #available(iOS 11.0, *){
             return self.safeAreaLayoutGuide.leftAnchor
@@ -1384,7 +1384,7 @@ extension UIView {
             return self.leftAnchor
         }
     }
-    
+
     var safeRightAnchor: NSLayoutXAxisAnchor {
         if #available(iOS 11.0, *){
             return self.safeAreaLayoutGuide.rightAnchor
@@ -1392,7 +1392,7 @@ extension UIView {
             return self.rightAnchor
         }
     }
-    
+
     var safeBottomAnchor: NSLayoutYAxisAnchor {
         if #available(iOS 11.0, *) {
             return self.safeAreaLayoutGuide.bottomAnchor
