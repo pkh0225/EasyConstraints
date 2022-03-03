@@ -60,13 +60,13 @@
 view.ea.leading = value // set AutoLayout Constraint value
 view.ea.leading(10).top(10).trailing(10).bottom(10) // set AutoLayout Constraint value
 
-let value = view.ea.leading // get AutoLayout Constraint value
+let value = view.ec.leading // get AutoLayout Constraint value
 
-let defaultValue = view.ea.widthDefault // first set AutoLayout Constraint value
+let defaultValue = view.ec.widthDefault // first set AutoLayout Constraint value
 
-view.ea.isGone = true // Android view gone function
+view.ec.isGone = true // Android view gone function
 
-view.ea.reset(.top, .trailing, .width, .height) // set Default Constraint Value
+view.ec.reset(.top, .trailing, .width, .height) // set Default Constraint Value
 
 view.viewDidDisappear = {
     print("viewDidDisappear ")
@@ -82,7 +82,7 @@ view.viewDidDisappear = {
 
 ### 👀 Check view is visible or not 
 ```
- public var isShow: Bool {
+ public var isVisible: Bool {
         
         if self.window == nil {
             return false

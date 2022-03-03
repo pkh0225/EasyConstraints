@@ -9,9 +9,7 @@
 import UIKit
 
 public typealias VoidClosure = () -> Void
-
-fileprivate var ViewNibs = [String : UIView]()
-fileprivate var ViewNibSizes = [String : CGSize]()
+public typealias BoolClosure = (_ value: Bool) -> Void
 
 public enum VIEW_ADD_TYPE  {
     case horizontal
@@ -97,6 +95,7 @@ extension NSLayoutConstraint.Attribute {
     }
 }
 
+// MARK: -
 public class EasyConstraints {
     private lazy var constraintInfo: ConstraintInfo = { return ConstraintInfo() }()
     private class ConstraintInfo {
@@ -382,7 +381,7 @@ public class EasyConstraints {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.view.constraints) , layoutAttribute: .width).count > 0
+                let value = self.getAttributeConstrains(constraints: self.view.constraints, layoutAttribute: .width).count > 0
                 constraintInfo.isWidthConstraint = value
                 return value
             }
@@ -395,7 +394,7 @@ public class EasyConstraints {
                 return value
             }
             else {
-                let value  = self.getAttributeConstrains(constraints:Set(self.view.constraints) , layoutAttribute: .height).count > 0
+                let value = self.getAttributeConstrains(constraints: self.view.constraints, layoutAttribute: .height).count > 0
                 constraintInfo.isHeightConstraint = value
                 return value
             }
@@ -581,7 +580,6 @@ public class EasyConstraints {
     }
 
     private func getDefaultConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
-
         self.getLayoutConstraint(layoutAttribute)
         if let value = constraintInfo.getConstraintDefaultValue(attribute: layoutAttribute) {
             return value
@@ -592,42 +590,46 @@ public class EasyConstraints {
     }
 
     private func setConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, _ value: CGFloat) {
+        guard self.getLayoutConstraint(layoutAttribute)?.constant != value else { return }
         self.getLayoutConstraint(layoutAttribute)?.constant = value
         self.view.setNeedsLayout()
     }
 
-    private func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, toTaget: UIView) -> NSLayoutConstraint? {
-        let constraints = self.getContraints(self.view.topParentViewView, checkSub: true)
-        var constraintsTemp = self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
-        constraintsTemp = constraintsTemp.lazy.filter { (value) -> Bool in
+    /// 특정뷰의 layoutAttribute를 가져오기 (전뷰를 검사하기 때문에 느림. 셀에서는 쓰지 말것)
+    /// - Parameter layoutAttribute: layoutAttribute
+    /// - Parameter toTaget: 특정뷰
+    public func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, toTaget: UIView) -> NSLayoutConstraint? {
+        let constraints: [NSLayoutConstraint] = self.getContraints(self.view.topParentViewView, checkSub: true)
+        var constraintsTemp: [NSLayoutConstraint] = self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
+        constraintsTemp = constraintsTemp.filter { value -> Bool in
             return value.firstItem === toTaget || value.secondItem === toTaget
         }
-        //        assert(constraintsTemp.first != nil, "not find TagetView")
+//        assert(constraintsTemp.first != nil, "not find TagetView")
         return constraintsTemp.first
     }
 
-    @inline(__always) private func getContraints(_ view: UIView, checkSub: Bool = false) -> Set<NSLayoutConstraint> {
-        var result = Set<NSLayoutConstraint>()
+    @inline(__always) private func getContraints(_ view: UIView, checkSub: Bool = false) -> [NSLayoutConstraint] {
+        var result: [NSLayoutConstraint] = [NSLayoutConstraint]()
         result.reserveCapacity(100)
         if checkSub {
-            for subView in view.subviews {
-                result = result.union(self.getContraints(subView, checkSub: checkSub))
+            for subView: UIView in view.subviews {
+                result += self.getContraints(subView, checkSub: checkSub)
             }
         }
 
-        result = result.union(view.constraints)
+        result += view.constraints
+
         return result
     }
 
-    @inline(__always) private func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutConstraint.Attribute) -> Array<NSLayoutConstraint> {
-        var constraintsTemp = Array<NSLayoutConstraint>()
+    @inline(__always) private func getAttributeConstrains(constraints: [NSLayoutConstraint], layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
+        var constraintsTemp: [NSLayoutConstraint] = [NSLayoutConstraint]()
         constraintsTemp.reserveCapacity(100)
-        for constraint in constraints {
-
+        for constraint: NSLayoutConstraint in constraints {
             switch layoutAttribute {
             case .width, .height:
-                if type(of:constraint) === NSLayoutConstraint.self {
-                    if  constraint.firstItem === self.view && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
+                if type(of: constraint) === NSLayoutConstraint.self {
+                    if  constraint.firstItem === self && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
                         if self.view is UIButton || self.view is UILabel || self.view is UIImageView {
                             constraintsTemp.append(constraint)
                         }
@@ -647,7 +649,7 @@ public class EasyConstraints {
                     }
                 }
             case .centerX, .centerY:
-                if constraint.firstAttribute == layoutAttribute  && constraint.secondAttribute == layoutAttribute {
+                if constraint.firstAttribute == layoutAttribute && constraint.secondAttribute == layoutAttribute {
                     if (constraint.firstItem === self.view && (constraint.secondItem === self.view.superview || constraint.secondItem is UILayoutGuide)) ||
                         (constraint.secondItem === self.view && (constraint.firstItem === self.view.superview || constraint.firstItem is UILayoutGuide)) {
                         constraintsTemp.append(constraint)
@@ -657,20 +659,20 @@ public class EasyConstraints {
                     }
                 }
             case .top :
-                if  constraint.firstItem === self.view && constraint.firstAttribute == .top  && constraint.secondAttribute == .bottom {
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .top && constraint.secondAttribute == .bottom {
                     constraintsTemp.append(constraint)
                 }
-                else if  constraint.secondItem === self.view && constraint.secondAttribute == .top  && constraint.firstAttribute == .bottom {
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .top && constraint.firstAttribute == .bottom {
                     constraintsTemp.append(constraint)
                 }
-                else if constraint.firstAttribute == .top  && constraint.secondAttribute == .top {
+                else if constraint.firstAttribute == .top && constraint.secondAttribute == .top {
                     if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
                         (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
                         constraintsTemp.append(constraint)
                     }
                     else {
                         if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
+                            (constraint.secondItem === self.view && constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
                         else if constraint.firstItem === self.view || constraint.secondItem === self.view {
@@ -679,20 +681,20 @@ public class EasyConstraints {
                     }
                 }
             case .bottom :
-                if  constraint.firstItem === self.view && constraint.firstAttribute == .bottom  && constraint.secondAttribute == .top {
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .bottom && constraint.secondAttribute == .top {
                     constraintsTemp.append(constraint)
                 }
-                else if  constraint.secondItem === self.view && constraint.secondAttribute == .bottom  && constraint.firstAttribute == .top {
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .bottom && constraint.firstAttribute == .top {
                     constraintsTemp.append(constraint)
                 }
-                else if constraint.firstAttribute == .bottom  && constraint.secondAttribute == .bottom {
+                else if constraint.firstAttribute == .bottom && constraint.secondAttribute == .bottom {
                     if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
                         (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
                         constraintsTemp.append(constraint)
                     }
-                    else  {
+                    else {
                         if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
+                            (constraint.secondItem === self.view && constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
                         else if constraint.firstItem === self.view || constraint.secondItem === self.view {
@@ -701,20 +703,20 @@ public class EasyConstraints {
                     }
                 }
             case .leading :
-                if  constraint.firstItem === self.view && constraint.firstAttribute == .leading  && constraint.secondAttribute == .trailing {
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .leading && constraint.secondAttribute == .trailing {
                     constraintsTemp.append(constraint)
                 }
-                else if  constraint.secondItem === self.view && constraint.secondAttribute == .leading  && constraint.firstAttribute == .trailing {
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .leading && constraint.firstAttribute == .trailing {
                     constraintsTemp.append(constraint)
                 }
-                else if constraint.firstAttribute == .leading  && constraint.secondAttribute == .leading {
+                else if constraint.firstAttribute == .leading && constraint.secondAttribute == .leading {
                     if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
                         (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
                         constraintsTemp.append(constraint)
                     }
-                    else  {
+                    else {
                         if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
+                            (constraint.secondItem === self.view && constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
                         else if constraint.firstItem === self.view || constraint.secondItem === self.view {
@@ -723,20 +725,20 @@ public class EasyConstraints {
                     }
                 }
             case .trailing :
-                if  constraint.firstItem === self.view && constraint.firstAttribute == .trailing  && constraint.secondAttribute == .leading {
+                if  constraint.firstItem === self.view && constraint.firstAttribute == .trailing && constraint.secondAttribute == .leading {
                     constraintsTemp.append(constraint)
                 }
-                else if  constraint.secondItem === self.view && constraint.secondAttribute == .trailing  && constraint.firstAttribute == .leading {
+                else if  constraint.secondItem === self.view && constraint.secondAttribute == .trailing && constraint.firstAttribute == .leading {
                     constraintsTemp.append(constraint)
                 }
-                else if constraint.firstAttribute == .trailing  && constraint.secondAttribute == .trailing {
+                else if constraint.firstAttribute == .trailing && constraint.secondAttribute == .trailing {
                     if (constraint.firstItem === self.view && constraint.secondItem === self.view.superview ) ||
                         (constraint.secondItem === self.view && constraint.firstItem === self.view.superview ) {
                         constraintsTemp.append(constraint)
                     }
                     else {
                         if (constraint.firstItem === self.view && constraint.secondItem is UILayoutGuide) ||
-                            (constraint.secondItem === self.view &&  constraint.firstItem is UILayoutGuide) {
+                            (constraint.secondItem === self.view && constraint.firstItem is UILayoutGuide) {
                             constraintsTemp.append(constraint)
                         }
                         else if constraint.firstItem === self.view || constraint.secondItem === self.view {
@@ -753,14 +755,13 @@ public class EasyConstraints {
         return constraintsTemp
     }
 
-    private func getLayoutAllConstraints(_ layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
-        var resultConstraints = Array<NSLayoutConstraint>()
+    @inline(__always) private func getLayoutAllConstraints(_ layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
+        var resultConstraints: [NSLayoutConstraint] = [NSLayoutConstraint]()
         resultConstraints.reserveCapacity(100)
-        var constraints = Set<NSLayoutConstraint>()
+        var constraints: [NSLayoutConstraint] = [NSLayoutConstraint]()
         constraints.reserveCapacity(100)
 
         if layoutAttribute == .width || layoutAttribute == .height {
-
             constraints = self.getContraints(self.view)
             resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
 
@@ -777,7 +778,6 @@ public class EasyConstraints {
             }
         }
         else {
-
             if let view = self.view.superview {
                 constraints = self.getContraints(view)
                 resultConstraints += self.getAttributeConstrains(constraints: constraints, layoutAttribute: layoutAttribute)
@@ -799,12 +799,11 @@ public class EasyConstraints {
 
     @discardableResult
     private func getLayoutConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, errorCheck: Bool = true) -> NSLayoutConstraint? {
-
-        if let value = constraintInfo.getLayoutConstraint(attribute: layoutAttribute) {
+        if let value: NSLayoutConstraint = constraintInfo.getLayoutConstraint(attribute: layoutAttribute) {
             return value
         }
 
-        let constraintsTemp = getLayoutAllConstraints(layoutAttribute)
+        let constraintsTemp: [NSLayoutConstraint] = getLayoutAllConstraints(layoutAttribute)
 
         if constraintsTemp.count == 0 {
             if errorCheck {
@@ -813,48 +812,64 @@ public class EasyConstraints {
             return nil
         }
 
-        let constraintsSort: Array = constraintsTemp.sorted(by: { (obj1, obj2) -> Bool in
+        let constraintsSort: Array = constraintsTemp.sorted(by: { obj1, obj2 -> Bool in
             return obj1.priority.rawValue > obj2.priority.rawValue
         })
 
-
-        let result : NSLayoutConstraint? = constraintsSort.first
-        if let result = result  {
+        let result: NSLayoutConstraint? = constraintsSort.first
+        if let result = result {
             constraintInfo.setLayoutConstraint(attribute: layoutAttribute, value: result)
 
             if constraintInfo.getConstraintDefaultValue(attribute: layoutAttribute) == nil {
-                constraintInfo.setConstraintDefaultValue(attribute: layoutAttribute, value: result.constant)
+               constraintInfo.setConstraintDefaultValue(attribute: layoutAttribute, value: result.constant)
             }
         }
 
         return result
     }
 
-    //MARK: - GONE
+    // MARK: - GONE
     public var gone: Bool {
         get {
             fatalError("You cannot read from this object.")
         }
         set {
-            newValue ? gone() : goneRemove()
+            if newValue {
+               gone()
+            }
+            else {
+                goneRemove()
+            }
         }
     }
 
+    /// only widht gone
     public var goneWidth: Bool {
         get {
             fatalError("You cannot read from this object.")
         }
         set {
-            newValue ? gone(.widthPadding) : goneRemove(.widthPadding)
+            if newValue {
+                gone(.width)
+            }
+            else {
+                goneRemove(.width)
+            }
         }
     }
 
+    /// only height gone
     public var goneHeight: Bool {
         get {
             fatalError("You cannot read from this object.")
         }
         set {
-            newValue ? gone(.heightPadding) : goneRemove(.heightPadding)
+            if newValue {
+                gone(.height)
+            }
+            else {
+                goneRemove(.height)
+            }
         }
     }
 
@@ -1054,9 +1069,13 @@ public class EasyConstraints {
     }
 }
 
-//MARK: - UIView Extension EasyConstraints
+// MARK: - UIView Extension EasyConstraints
 extension UIView {
-    public var ea: EasyConstraints {
+    private struct EasyConstraintsKey {
+        static var easyConstraints: UInt8 = 0
+    }
+
+    public var ec: EasyConstraints {
         return easyConstraints
     }
 
@@ -1074,28 +1093,257 @@ extension UIView {
         }
     }
 
-    private struct EasyConstraintsKey {
-        static var easyConstraints: UInt8 = 0
+    public func addSubViewAutoLayout(_ subview: UIView) {
+        self.addSubViewAutoLayout(subview, edgeInsets: UIEdgeInsets.zero)
+    }
+
+    public func addSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
+        self.addSubview(subview)
+        self.setSubViewAutoLayout(subview, edgeInsets: edgeInsets)
+    }
+
+    public func addSubViewAutoLayout(insertView: UIView, subview: UIView, edgeInsets: UIEdgeInsets, isFront: Bool) {
+        if isFront {
+            self.insertSubview(insertView, belowSubview: subview)
+        }
+        else {
+            self.insertSubview(insertView, aboveSubview: subview)
+        }
+        self.setSubViewAutoLayout(insertView, edgeInsets: edgeInsets)
+    }
+
+    public func setSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
+        subview.translatesAutoresizingMaskIntoConstraints = false
+
+        let views: Dictionary = ["subview": subview]
+        let edgeInsetsDic: Dictionary = ["top": (edgeInsets.top), "left": (edgeInsets.left), "bottom": (edgeInsets.bottom), "right": (edgeInsets.right)]
+
+        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(left)-[subview]-(right)-|",
+                                                           options: NSLayoutConstraint.FormatOptions(rawValue: 0),
+                                                           metrics: edgeInsetsDic,
+                                                           views: views))
+
+        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(top)-[subview]-(bottom)-|",
+                                                           options: NSLayoutConstraint.FormatOptions(rawValue: 0),
+                                                           metrics: edgeInsetsDic,
+                                                           views: views))
+    }
+
+    public func addSubViewAutoLayout(subviews: [UIView], addType: VIEW_ADD_TYPE, edgeInsets: UIEdgeInsets, buttonGap: CGFloat = 0.0) {
+        var constraints: String = String()
+        var views = [String: UIView]()
+        var metrics: Dictionary = ["top": (edgeInsets.top), "left": (edgeInsets.left), "bottom": (edgeInsets.bottom), "right": (edgeInsets.right), "buttonGap": buttonGap]
+
+        for (idx, obj) in subviews.enumerated() {
+            obj.translatesAutoresizingMaskIntoConstraints = false
+            self.addSubview(obj)
+            views["view\(idx)"] = obj
+
+            if addType == .horizontal {
+                self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(top)-[view\(idx)]-(bottom)-|",
+                    options: NSLayoutConstraint.FormatOptions(rawValue: 0),
+                    metrics: ["top": (edgeInsets.top), "bottom": (edgeInsets.bottom)],
+                    views: views))
+
+                metrics["width\(idx)"] = (obj.frame.size.width)
+
+                if subviews.count == 1 {
+                    constraints += "H:|-(left)-[view\(idx)(width\(idx))]-(right)-|"
+
+                    self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: constraints,
+                                                                       options: NSLayoutConstraint.FormatOptions(rawValue: 0),
+                                                                       metrics: metrics,
+                                                                       views: views))
+
+                }
+                else {
+                    if idx == 0 {
+                        constraints += "H:|-(left)-[view\(idx)(width\(idx))]"
+                    }
+                    else if idx == subviews.count - 1 {
+                        constraints += "-(buttonGap)-[view\(idx)(width\(idx))]-(right)-|"
+
+                        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: constraints,
+                                                                           options: NSLayoutConstraint.FormatOptions(rawValue: 0),
+                                                                           metrics: metrics,
+                                                                           views: views))
+                    }
+                    else {
+                        constraints += "-(buttonGap)-[view\(idx)(width\(idx))]"
+                    }
+                }
+            }
+            else {
+                self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(left)-[view\(idx)]-(right)-|",
+                    options: NSLayoutConstraint.FormatOptions(rawValue: 0),
+                    metrics: ["left": (edgeInsets.left), "right": (edgeInsets.right)],
+                    views: views))
+
+                metrics["height\(idx)"] = (obj.frame.size.height)
+
+                if subviews.count == 1 {
+                    constraints += "V:|-(top)-[view\(idx)(height\(idx))]-(bottom)-|"
+
+                    self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: constraints,
+                                                                       options: NSLayoutConstraint.FormatOptions(rawValue: 0),
+                                                                       metrics: metrics,
+                                                                       views: views))
+                }
+                else {
+                    if idx == 0 {
+                        constraints += "V:|-(top)-[view\(idx)(height\(idx))]"
+
+                    }
+                    else if idx == subviews.count - 1 {
+                        constraints += "-(buttonGap)-[view\(idx)(height\(idx))]-(bottom)-|"
+
+                        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: constraints,
+                                                                           options: NSLayoutConstraint.FormatOptions(rawValue: 0),
+                                                                           metrics: metrics,
+                                                                           views: views))
+                    }
+                    else {
+                        constraints += "-(buttonGap)-[view\(idx)(height\(idx))]"
+                    }
+                }
+            }
+        }
+    }
+
+    public func removeSuperViewAllConstraints() {
+        guard let superview: UIView = self.superview else { return }
+
+        for c: NSLayoutConstraint in superview.constraints {
+            if c.firstItem === self || c.secondItem === self {
+                superview.removeConstraint(c)
+            }
+        }
+    }
+
+    public func removeConstraint(attribute: NSLayoutConstraint.Attribute) {
+        guard let superview: UIView = self.superview else { return }
+
+        for c: NSLayoutConstraint in superview.constraints {
+            if c.firstItem === self && c.firstAttribute == attribute {
+                superview.removeConstraint(c)
+            }
+            else if c.secondItem === self && c.secondAttribute == attribute {
+                superview.removeConstraint(c)
+            }
+        }
+    }
+
+    public func removeAllConstraints() {
+        self.removeSuperViewAllConstraints()
+        self.removeConstraints(self.constraints)
+        self.translatesAutoresizingMaskIntoConstraints = true
     }
 }
 
-//MARK: - UIView Extension Common
+// MARK: -
+private class ViewDidAppearCADisplayLink {
+    static let shared = ViewDidAppearCADisplayLink()
+    private init() {
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActiveNotification), name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+
+    var displayLink: CADisplayLink?
+    var views: [UIView] = [UIView]() {
+        didSet {
+            DispatchQueue.main.async {
+                if self.views.count > 0 {
+                    if self.displayLink == nil {
+                        self.start()
+                    }
+                }
+                else {
+                    self.stop()
+                }
+            }
+        }
+    }
+
+    @objc func applicationDidEnterBackgroundNotification() {
+        stop()
+        DispatchQueue.main.async {
+            for view: UIView in self.views {
+                self.setViewVisible(view: view, isVisible: false)
+            }
+        }
+    }
+
+    @objc func applicationDidBecomeActiveNotification() {
+        DispatchQueue.main.async {
+            for view: UIView in self.views {
+                self.setViewVisible(view: view, isVisible: true)
+            }
+        }
+        start()
+    }
+
+    @objc private func onViewDidAppear() {
+        guard self.views.count > 0 else {
+            stop()
+            return
+        }
+
+        DispatchQueue.main.async {
+            for view: UIView in self.views.reversed() {
+                autoreleasepool {
+                    self.setViewVisible(view: view, isVisible: view.isVisible)
+                    let windowRect: CGRect = view.superview?.convert(view.frame, to: nil) ?? .zero
+                    if windowRect == .zero {
+                        view.viewDidAppear?(false)
+                        view.viewDidAppear = nil
+                        if let index = self.views.firstIndex(of: view) {
+                            self.views.remove(at: index)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func setViewVisible(view: UIView, isVisible: Bool) {
+        if view.viewDidAppearIsVisible != isVisible {
+            view.viewDidAppearIsVisible = isVisible
+            view.viewDidAppear?(isVisible)
+        }
+    }
+
+    func start() {
+        stop()
+        displayLink = CADisplayLink(target: self, selector: #selector(onViewDidAppear))
+        displayLink?.add(to: .main, forMode: .common)
+        if #available(iOS 10.0, *) {
+            displayLink?.preferredFramesPerSecond = 5
+        } else {
+            displayLink?.frameInterval = 5
+        }
+    }
+
+    func stop() {
+        self.displayLink?.invalidate()
+        self.displayLink = nil
+    }
+
+}
+
+// MARK: - UIView Extension ViewDidAppearCADisplayLink
 extension UIView {
     private struct AssociatedKeys {
-        static var viewDidDisappear: UInt8 = 0
-        static var viewDidDisappearCADisplayLink: UInt8 = 0
-
+        static var viewDidAppearIsVisible: UInt8 = 0
         static var viewDidAppear: UInt8 = 0
-        static var viewDidAppearCADisplayLink: UInt8 = 0
     }
 
     public var topParentViewView: UIView {
-        guard let superview = superview else {
+        guard let superview: UIView = superview else {
             return  self
         }
         return superview.topParentViewView
-    }
 
+    }
     public var parentViewController: UIViewController? {
         var parentResponder: UIResponder? = self
         while parentResponder != nil {
@@ -1107,256 +1355,67 @@ extension UIView {
         return nil
     }
 
+    @available(iOS 11.0, *)
     public func copyView() -> AnyObject {
-        return NSKeyedUnarchiver.unarchiveObject(with: NSKeyedArchiver.archivedData(withRootObject: self))! as AnyObject
+        guard let value = try? NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false) else { return self }
+        guard let obj = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(value) else { return self }
+        return obj as AnyObject
     }
 
-    public func addSubViewAutoLayout(_ subview: UIView) {
-        self.addSubViewAutoLayout(subview, edgeInsets: UIEdgeInsets.zero)
-    }
-
-    public func addSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
-        self.addSubview(subview)
-        self.setSubViewAutoLayout(subview, edgeInsets: edgeInsets)
-    }
-
-    public func addSubViewAutoLayout(insertView: UIView, subview: UIView, edgeInsets: UIEdgeInsets, isFront: Bool) {
-        if (isFront) {
-            self.insertSubview(insertView, belowSubview:subview);
+    var viewDidAppearIsVisible: Bool {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppearIsVisible) as? Bool ?? false
         }
-        else {
-            self.insertSubview(insertView, aboveSubview:subview);
+        set {
+            objc_setAssociatedObject( self, &AssociatedKeys.viewDidAppearIsVisible, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
-        self.setSubViewAutoLayout(insertView, edgeInsets: edgeInsets)
     }
 
-    public func setSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
-        subview.translatesAutoresizingMaskIntoConstraints = false
+    public var viewDidAppear: BoolClosure? {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppear) as? BoolClosure
+        }
+        set {
+            objc_setAssociatedObject( self, &AssociatedKeys.viewDidAppear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-        let views: Dictionary = ["subview": subview]
-        let edgeInsetsDic: Dictionary = ["top" : (edgeInsets.top), "left" : (edgeInsets.left), "bottom" : (edgeInsets.bottom), "right" : (edgeInsets.right)]
-
-        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"H:|-(left)-[subview]-(right)-|",
-                                                           options:NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                           metrics:edgeInsetsDic,
-                                                           views:views))
-
-        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"V:|-(top)-[subview]-(bottom)-|",
-                                                           options:NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                           metrics:edgeInsetsDic,
-                                                           views:views))
-    }
-
-    public func addSubViewAutoLayout(subviews: Array<UIView>, addType: VIEW_ADD_TYPE, edgeInsets: UIEdgeInsets) {
-        var constraints = String()
-        var views = Dictionary<String,UIView>()
-        var metrics: Dictionary = ["top" : (edgeInsets.top), "left" : (edgeInsets.left), "bottom" : (edgeInsets.bottom), "right" : (edgeInsets.right)];
-
-        for (idx, obj) in subviews.enumerated() {
-            obj.translatesAutoresizingMaskIntoConstraints = false;
-            self.addSubview(obj)
-            views["view\(idx)"] = obj
-
-
-            if addType == .horizontal {
-                self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"V:|-(top)-[view\(idx)]-(bottom)-|",
-                    options:NSLayoutConstraint.FormatOptions(rawValue: 0),
-                    metrics:["top" : (edgeInsets.top), "bottom" : (edgeInsets.bottom)],
-                    views:views))
-
-                metrics["width\(idx)"] = (obj.frame.size.width)
-
-                if subviews.count == 1 {
-                    constraints += "H:|-(left)-[view\(idx)(width\(idx))]-(right)-|"
-
-                    self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
-                                                                       options:NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                                       metrics:metrics,
-                                                                       views:views))
-
+            DispatchQueue.main.async {
+                if newValue != nil {
+                    if ViewDidAppearCADisplayLink.shared.views.contains(self) == false {
+                        self.viewDidAppearIsVisible = !self.isVisible
+                        ViewDidAppearCADisplayLink.shared.views.append(self)
+                    }
                 }
                 else {
-                    if idx == 0 {
-                        constraints += "H:|-(left)-[view\(idx)(width\(idx))]"
-                    }
-                    else if idx == subviews.count - 1 {
-                        constraints += "[view\(idx)(width\(idx))]-(right)-|"
-
-                        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
-                                                                           options:NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                                           metrics:metrics,
-                                                                           views:views))
-                    }
-                    else {
-                        constraints += "[view\(idx)(width\(idx))]"
+                    if let index = ViewDidAppearCADisplayLink.shared.views.firstIndex(of: self) {
+                        ViewDidAppearCADisplayLink.shared.views.remove(at: index)
                     }
                 }
-
-
-            }
-            else {
-                self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:"H:|-(left)-[view\(idx)]-(right)-|",
-                    options:NSLayoutConstraint.FormatOptions(rawValue: 0),
-                    metrics:["left" : (edgeInsets.left), "right" : (edgeInsets.right)],
-                    views:views))
-
-                metrics["height\(idx)"] = (obj.frame.size.height)
-
-                if subviews.count == 1 {
-                    constraints += "V:|-(top)-[view\(idx)(height\(idx))]-(bottom)-|"
-
-                    self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
-                                                                       options:NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                                       metrics:metrics,
-                                                                       views:views))
-                }
-                else {
-                    if idx == 0 {
-                        constraints += "V:|-(top)-[view\(idx)(height\(idx))]"
-
-                    }
-                    else if idx == subviews.count - 1 {
-                        constraints += "[view\(idx)(height\(idx))]-(bottom)-|"
-
-                        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat:constraints,
-                                                                           options:NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                                           metrics:metrics,
-                                                                           views:views))
-                    }
-                    else {
-                        constraints += "[view\(idx)(height\(idx))]"
-                    }
-                }
-
-            }
-
-        }
-
-    }
-
-    public func removeSuperViewAllConstraints() {
-        guard let superview: UIView = self.superview else { return}
-
-        for c: NSLayoutConstraint in superview.constraints {
-            if c.firstItem === self || c.secondItem === self {
-                superview.removeConstraint(c)
             }
         }
     }
 
-    public func removeAllConstraints() {
-        self.removeSuperViewAllConstraints()
-        self.removeConstraints(self.constraints)
-        self.translatesAutoresizingMaskIntoConstraints = true
+    public var windowFrame: CGRect {
+        return superview?.convert(frame, to: nil) ?? .zero
     }
 
-
-    private var viewDidAppearCADisplayLink: CADisplayLink? {
-        get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppearCADisplayLink) as? CADisplayLink
-        }
-        set {
-            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidAppearCADisplayLink, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-
-    @objc private func onViewDidAppear() {
-        let windowRect = self.superview?.convert(self.frame, to: nil) ?? .zero
-        if windowRect == .zero {
-            self.viewDidAppearCADisplayLink?.invalidate()
-            self.viewDidAppearCADisplayLink = nil
-            return
-        }
-
-        if self.isShow {
-            self.viewDidAppearCADisplayLink?.invalidate()
-            self.viewDidAppearCADisplayLink = nil
-            self.viewDidAppear?()
-        }
-    }
-
-    public var viewDidAppear: VoidClosure? {
-        get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppear) as? VoidClosure
-        }
-        set {
-            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidAppear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
-            viewDidAppearCADisplayLink?.invalidate()
-            if newValue != nil {
-                viewDidAppearCADisplayLink = CADisplayLink(target: self, selector: #selector(onViewDidAppear))
-                viewDidAppearCADisplayLink?.add(to: .current, forMode: .common)
-                if #available(iOS 10.0, *) {
-                    viewDidAppearCADisplayLink?.preferredFramesPerSecond = 5
-                } else {
-                    viewDidAppearCADisplayLink?.frameInterval = 5
-                }
-            }
-            else {
-                viewDidAppearCADisplayLink = nil
-            }
-        }
-    }
-
-    private var viewDidDisappearCADisplayLink: CADisplayLink? {
-        get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidDisappearCADisplayLink) as? CADisplayLink
-        }
-        set {
-            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidDisappearCADisplayLink, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-
-    @objc private func onViewDidDisappear() {
-        let windowRect = self.superview?.convert(self.frame, to: nil) ?? .zero
-        if windowRect == .zero {
-            self.viewDidDisappearCADisplayLink?.invalidate()
-            self.viewDidDisappearCADisplayLink = nil
-            return
-        }
-
-        if self.isShow == false {
-            self.viewDidDisappearCADisplayLink?.invalidate()
-            self.viewDidDisappearCADisplayLink = nil
-            self.viewDidDisappear?()
-        }
-    }
-
-    public var viewDidDisappear: VoidClosure? {
-        get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidDisappear) as? VoidClosure
-        }
-        set {
-            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidDisappear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
-            viewDidDisappearCADisplayLink?.invalidate()
-            if newValue != nil {
-                viewDidDisappearCADisplayLink = CADisplayLink(target: self, selector: #selector(onViewDidDisappear))
-                viewDidDisappearCADisplayLink?.add(to: .current, forMode: .common)
-                if #available(iOS 10.0, *) {
-                    viewDidDisappearCADisplayLink?.preferredFramesPerSecond = 5
-                } else {
-                    viewDidDisappearCADisplayLink?.frameInterval = 5
-                }
-            }
-            else {
-                viewDidDisappearCADisplayLink = nil
-            }
-        }
-    }
-
-    public var isShow: Bool {
-        if self.window == nil {
-            return false
-        }
+    public var isVisible: Bool {
+        guard let window = self.window else { return false }
 
         var currentView: UIView = self
         while let superview = currentView.superview {
+            if window.bounds.intersects(currentView.windowFrame) == false {
+                return false
+            }
+
             if (superview.bounds).intersects(currentView.frame) == false {
                 return false
             }
 
             if currentView.isHidden {
+                return false
+            }
+
+            if currentView.alpha == 0 {
                 return false
             }
 
@@ -1367,7 +1426,7 @@ extension UIView {
     }
 }
 
-//MARK: - UIView Extension SafeArea
+// MARK: - UIView Extension SafeArea
 extension UIView {
     var safeTopAnchor: NSLayoutYAxisAnchor {
         if #available(iOS 11.0, *) {
