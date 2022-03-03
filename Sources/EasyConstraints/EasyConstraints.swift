@@ -306,7 +306,7 @@ public class EasyConstraints {
         }
         set {
             let constraint = self.getLayoutConstraint(.bottom)
-            if constraint?.firstItem === self {
+            if constraint?.firstItem === self.view {
                 self.setConstraint(.bottom, newValue * -1)
             }
             else {
