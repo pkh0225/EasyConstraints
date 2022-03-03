@@ -249,7 +249,7 @@ public class EasyConstraints {
         }
         set {
             let constraint = self.getLayoutConstraint(.leading)
-            if constraint?.secondItem === self {
+            if constraint?.secondItem === self.view {
                 self.setConstraint(.leading, newValue * -1)
             }
             else {
@@ -268,7 +268,7 @@ public class EasyConstraints {
         }
         set {
             let constraint = self.getLayoutConstraint(.trailing)
-            if constraint?.firstItem === self {
+            if constraint?.firstItem === self.view {
                 self.setConstraint(.trailing, newValue * -1)
             }
             else {
@@ -287,7 +287,7 @@ public class EasyConstraints {
         }
         set {
             let constraint = self.getLayoutConstraint(.top)
-            if constraint?.secondItem === self {
+            if constraint?.secondItem === self.view {
                 self.setConstraint(.top, newValue * -1)
             }
             else {
@@ -343,7 +343,7 @@ public class EasyConstraints {
         }
         set {
             let constraint = self.getLayoutConstraint(.centerX)
-            if constraint?.secondItem === self {
+            if constraint?.secondItem === self.view {
                 self.setConstraint(.centerX, newValue * -1)
             }
             else {
@@ -362,7 +362,7 @@ public class EasyConstraints {
         }
         set {
             let constraint = self.getLayoutConstraint(.centerY)
-            if constraint?.secondItem === self {
+            if constraint?.secondItem === self.view {
                 self.setConstraint(.centerY, newValue * -1)
             }
             else {
@@ -629,7 +629,7 @@ public class EasyConstraints {
             switch layoutAttribute {
             case .width, .height:
                 if type(of: constraint) === NSLayoutConstraint.self {
-                    if  constraint.firstItem === self && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
+                    if  constraint.firstItem === self.view && constraint.firstAttribute == layoutAttribute && constraint.secondItem == nil {
                         if self.view is UIButton || self.view is UILabel || self.view is UIImageView {
                             constraintsTemp.append(constraint)
                         }
@@ -922,7 +922,7 @@ public class EasyConstraints {
                     c.constant = 0
                 }
                 else {
-                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
+                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self.view, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
                     self.view.addConstraint(constraint)
                     self.goneInfo.widthEmptyConstraint = constraint
                     if self.view.frame.size.width != 0 {
@@ -949,7 +949,7 @@ public class EasyConstraints {
                     c.constant = 0
                 }
                 else {
-                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
+                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: self.view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
                     self.view.addConstraint(constraint)
                     self.goneInfo.heightEmptyConstraint = constraint
                     if self.view.frame.size.height != 0 {

@@ -64,7 +64,7 @@ let value = view.ec.leading // get AutoLayout Constraint value
 
 let defaultValue = view.ec.widthDefault // first set AutoLayout Constraint value
 
-view.ec.isGone = true // Android view gone function
+view.ec.gone = true // Android view gone function
 
 view.ec.reset(.top, .trailing, .width, .height) // set Default Constraint Value
 
