@@ -1332,7 +1332,7 @@ private class ViewDidAppearCADisplayLink {
 
 // MARK: - UIView Extension ViewDidAppearCADisplayLink
 extension UIView {
-    private struct AssociatedKeys {
+    private struct ViewDidAppearCADisplayLinkKeys {
         static var viewDidAppearIsVisible: UInt8 = 0
         static var viewDidAppear: UInt8 = 0
     }
@@ -1364,19 +1364,19 @@ extension UIView {
 
     var viewDidAppearIsVisible: Bool {
         get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppearIsVisible) as? Bool ?? false
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.viewDidAppearIsVisible) as? Bool ?? false
         }
         set {
-            objc_setAssociatedObject( self, &AssociatedKeys.viewDidAppearIsVisible, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.viewDidAppearIsVisible, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 
     public var viewDidAppear: BoolClosure? {
         get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidAppear) as? BoolClosure
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.viewDidAppear) as? BoolClosure
         }
         set {
-            objc_setAssociatedObject( self, &AssociatedKeys.viewDidAppear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.viewDidAppear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
             DispatchQueue.main.async {
                 if newValue != nil {
