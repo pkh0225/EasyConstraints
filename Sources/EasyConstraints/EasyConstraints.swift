@@ -243,7 +243,7 @@ public class EasyConstraints {
         self.view = view
     }
 
-    var leading: CGFloat {
+    public var leading: CGFloat {
         get {
             return self.getConstraint(.leading)
         }
@@ -257,12 +257,12 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult func leading(_ value: CGFloat) -> EasyConstraints {
+    @discardableResult public func leading(_ value: CGFloat) -> EasyConstraints {
         leading = value
         return self
     }
 
-    var trailing: CGFloat {
+    public var trailing: CGFloat {
         get {
             return self.getConstraint(.trailing)
         }
@@ -276,12 +276,12 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult func trailing(_ value: CGFloat) -> EasyConstraints {
+    @discardableResult public func trailing(_ value: CGFloat) -> EasyConstraints {
         trailing = value
         return self
     }
 
-    var top: CGFloat {
+    public var top: CGFloat {
         get {
             return self.getConstraint(.top)
         }
@@ -295,12 +295,12 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult func top(_ value: CGFloat) -> EasyConstraints {
+    @discardableResult public func top(_ value: CGFloat) -> EasyConstraints {
         top = value
         return self
     }
 
-    var bottom: CGFloat {
+    public var bottom: CGFloat {
         get {
             return self.getConstraint(.bottom)
         }
@@ -314,30 +314,30 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult func bottom(_ value: CGFloat) -> EasyConstraints {
+    @discardableResult public func bottom(_ value: CGFloat) -> EasyConstraints {
         bottom = value
         return self
     }
 
-    var width: CGFloat {
+    public var width: CGFloat {
         get { return self.getConstraint(.width) }
         set { self.setConstraint(.width, newValue) }
     }
-    @discardableResult func width(_ value: CGFloat) -> EasyConstraints {
+    @discardableResult public func width(_ value: CGFloat) -> EasyConstraints {
         width = value
         return self
     }
 
-    var height: CGFloat {
+    public var height: CGFloat {
         get { return self.getConstraint(.height) }
         set { self.setConstraint(.height, newValue) }
     }
-    @discardableResult func height(_ value: CGFloat) -> EasyConstraints {
+    @discardableResult public func height(_ value: CGFloat) -> EasyConstraints {
         height = value
         return self
     }
 
-    var centerX: CGFloat {
+    public var centerX: CGFloat {
         get {
             return self.getConstraint(.centerX)
         }
@@ -351,12 +351,12 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult func centerX(_ value: CGFloat) -> EasyConstraints {
+    @discardableResult public func centerX(_ value: CGFloat) -> EasyConstraints {
         centerX = value
         return self
     }
 
-    var centerY: CGFloat {
+    public var centerY: CGFloat {
         get {
             return self.getConstraint(.centerY)
         }
@@ -370,7 +370,7 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult func centerY(_ value: CGFloat) -> EasyConstraints {
+    @discardableResult public func centerY(_ value: CGFloat) -> EasyConstraints {
         centerY = value
         return self
     }
