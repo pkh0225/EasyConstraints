@@ -1,5 +1,7 @@
 # Easy AutoLayout - UIView Extension
 
+test version 0.1.3
+
 ## 🎊 No more @IBOutlets
 🕵🏻‍♂️ With this extension, now you don't have to @IBOulet from your storyboard to get constraints.
 
