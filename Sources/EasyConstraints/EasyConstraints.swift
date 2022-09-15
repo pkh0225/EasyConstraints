@@ -1317,7 +1317,10 @@ private class ViewDidAppearCADisplayLink {
         if view.viewDidAppearIsVisible != isVisible {
             view.viewDidAppearIsVisible = isVisible
             view.viewDidAppear?(isVisible)
-            view.impressionLog?(isVisible)
+            if isVisible {
+                view.impressionLog?()
+            }
+            
         }
     }
 
@@ -1407,9 +1410,9 @@ extension UIView {
         }
     }
     
-    public var impressionLog: BoolClosure? {
+    public var impressionLog: VoidClosure? {
         get {
-            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionLog) as? BoolClosure
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionLog) as? VoidClosure
         }
         set {
             objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.impressionLog, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
