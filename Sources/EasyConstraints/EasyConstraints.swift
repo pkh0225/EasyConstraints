@@ -1317,6 +1317,7 @@ private class ViewDidAppearCADisplayLink {
         if view.viewDidAppearIsVisible != isVisible {
             view.viewDidAppearIsVisible = isVisible
             view.viewDidAppear?(isVisible)
+            view.impressionLog?(isVisible)
         }
     }
 
@@ -1344,6 +1345,7 @@ extension UIView {
     private struct ViewDidAppearCADisplayLinkKeys {
         static var viewDidAppearIsVisible: UInt8 = 0
         static var viewDidAppear: UInt8 = 0
+        static var impressionLog: UInt8 = 0
     }
 
     public var topParentViewView: UIView {
@@ -1395,8 +1397,35 @@ extension UIView {
                     }
                 }
                 else {
-                    if let index = ViewDidAppearCADisplayLink.shared.views.firstIndex(of: self) {
-                        ViewDidAppearCADisplayLink.shared.views.remove(at: index)
+                    if self.impressionLog == nil {
+                        if let index = ViewDidAppearCADisplayLink.shared.views.firstIndex(of: self) {
+                            ViewDidAppearCADisplayLink.shared.views.remove(at: index)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public var impressionLog: BoolClosure? {
+        get {
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionLog) as? BoolClosure
+        }
+        set {
+            objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.impressionLog, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
+            DispatchQueue.main.async {
+                if newValue != nil {
+                    if ViewDidAppearCADisplayLink.shared.views.contains(self) == false {
+                        self.viewDidAppearIsVisible = !self.isVisible
+                        ViewDidAppearCADisplayLink.shared.views.append(self)
+                    }
+                }
+                else {
+                    if self.viewDidAppear == nil {
+                        if let index = ViewDidAppearCADisplayLink.shared.views.firstIndex(of: self) {
+                            ViewDidAppearCADisplayLink.shared.views.remove(at: index)
+                        }
                     }
                 }
             }
