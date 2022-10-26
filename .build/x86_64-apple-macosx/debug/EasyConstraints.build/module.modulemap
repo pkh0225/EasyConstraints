@@ -1,4 +1,0 @@
-module EasyConstraints {
-    header "/Users/gil-hopark/Documents/GitHub/EasyConstraints/.build/x86_64-apple-macosx/debug/EasyConstraints.build/EasyConstraints-Swift.h"
-    requires objc
-}
