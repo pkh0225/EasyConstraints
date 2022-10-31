@@ -1271,7 +1271,8 @@ private class ViewDidAppearCADisplayLink {
             }
         }
     }
-
+    
+    
     @objc func applicationDidEnterBackgroundNotification() {
         stop()
         DispatchQueue.main.async {
@@ -1297,7 +1298,7 @@ private class ViewDidAppearCADisplayLink {
         }
 
         DispatchQueue.main.async {
-            for view: UIView in self.views.reversed() {
+            for view: UIView in self.views {
                 autoreleasepool {
                     self.setViewVisible(view: view, isVisible: view.isVisible)
                     let windowRect: CGRect = view.superview?.convert(view.frame, to: nil) ?? .zero
@@ -1317,11 +1318,32 @@ private class ViewDidAppearCADisplayLink {
         if view.viewDidAppearIsVisible != isVisible {
             view.viewDidAppearIsVisible = isVisible
             view.viewDidAppear?(isVisible)
-            if isVisible {
-                view.impressionLog?()
-            }
-            
         }
+        
+        if impressionLogZone(view: view) {
+            view.impressionLog?()
+        }
+    }
+    
+    func impressionLogZone(view: UIView) -> Bool {
+        guard view.impressionLogIsVisible == false else { return false }
+        
+        let myFrame: CGRect = view.convert(view.bounds, to: view.superview)
+        let intersection: CGRect = view.superview?.bounds.intersection(myFrame) ?? .zero
+//        print("intersection: \(intersection)")
+        
+        let heightPercent: CGFloat = intersection.height / view.bounds.height
+        let widthPercent: CGFloat = intersection.width / view.bounds.width
+        let visiblePercent: CGFloat = widthPercent * heightPercent
+        
+//        print("visiblePercent: \(visiblePercent)")
+        guard visiblePercent > 0 else { return false }
+        
+        if visiblePercent < view.impressionCheck {
+            return false
+        }
+        view.impressionLogIsVisible = true
+        return true
     }
 
     func start() {
@@ -1347,8 +1369,10 @@ private class ViewDidAppearCADisplayLink {
 extension UIView {
     private struct ViewDidAppearCADisplayLinkKeys {
         static var viewDidAppearIsVisible: UInt8 = 0
+        static var impressionLogIsVisible: UInt8 = 0
         static var viewDidAppear: UInt8 = 0
         static var impressionLog: UInt8 = 0
+        static var impressionCheck: UInt8 = 0
     }
 
     public var topParentViewView: UIView {
@@ -1376,11 +1400,15 @@ extension UIView {
         return obj as AnyObject
     }
 
-    var viewDidAppearIsVisible: Bool {
+    var viewDidAppearIsVisible: Bool? {
         get {
-            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.viewDidAppearIsVisible) as? Bool ?? false
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.viewDidAppearIsVisible) as? Bool
         }
         set {
+            
+            if let value = newValue, value == true {
+                impressionLogIsVisible = false
+            }
             objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.viewDidAppearIsVisible, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
@@ -1391,16 +1419,15 @@ extension UIView {
         }
         set {
             objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.viewDidAppear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
             DispatchQueue.main.async {
                 if newValue != nil {
                     if ViewDidAppearCADisplayLink.shared.views.contains(self) == false {
-                        self.viewDidAppearIsVisible = !self.isVisible
+                        
                         ViewDidAppearCADisplayLink.shared.views.append(self)
                     }
                 }
                 else {
-                    if self.impressionLog == nil {
+                    if self.viewDidAppear == nil, self.impressionLog == nil {
                         if let index = ViewDidAppearCADisplayLink.shared.views.firstIndex(of: self) {
                             ViewDidAppearCADisplayLink.shared.views.remove(at: index)
                         }
@@ -1410,22 +1437,38 @@ extension UIView {
         }
     }
     
+    var impressionCheck: CGFloat { // (0.01 ~ 1) default 0.5
+        get {
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionCheck) as? CGFloat ?? 0.5
+        }
+        set {
+            objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.impressionCheck, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    var impressionLogIsVisible: Bool? {
+        get {
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionLogIsVisible) as? Bool
+        }
+        set {
+            objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.impressionLogIsVisible, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
     public var impressionLog: VoidClosure? {
         get {
             return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionLog) as? VoidClosure
         }
         set {
             objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.impressionLog, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
             DispatchQueue.main.async {
                 if newValue != nil {
                     if ViewDidAppearCADisplayLink.shared.views.contains(self) == false {
-                        self.viewDidAppearIsVisible = !self.isVisible
                         ViewDidAppearCADisplayLink.shared.views.append(self)
                     }
                 }
                 else {
-                    if self.viewDidAppear == nil {
+                    if self.viewDidAppear == nil, self.impressionLog == nil {
                         if let index = ViewDidAppearCADisplayLink.shared.views.firstIndex(of: self) {
                             ViewDidAppearCADisplayLink.shared.views.remove(at: index)
                         }
