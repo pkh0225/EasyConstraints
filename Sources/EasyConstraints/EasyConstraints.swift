@@ -1400,7 +1400,7 @@ extension UIView {
         return obj as AnyObject
     }
 
-    var viewDidAppearIsVisible: Bool? {
+    public var viewDidAppearIsVisible: Bool? {
         get {
             return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.viewDidAppearIsVisible) as? Bool
         }
@@ -1437,7 +1437,7 @@ extension UIView {
         }
     }
     
-    var impressionCheck: CGFloat { // (0.01 ~ 1) default 0.5
+    public var impressionCheck: CGFloat { // (0.01 ~ 1) default 0.5
         get {
             return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionCheck) as? CGFloat ?? 0.5
         }
@@ -1446,7 +1446,7 @@ extension UIView {
         }
     }
     
-    var impressionLogIsVisible: Bool? {
+    public var impressionLogIsVisible: Bool? {
         get {
             return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionLogIsVisible) as? Bool
         }
