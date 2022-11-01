@@ -325,14 +325,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NKJ-Ed-8KV">
-                                                    <rect key="frame" x="0.0" y="149" width="375" height="2"/>
+                                                    <rect key="frame" x="0.0" y="90" width="375" height="2"/>
                                                     <color key="backgroundColor" systemColor="systemRedColor"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="2" id="hoS-gY-c13"/>
                                                     </constraints>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pdb-jd-y2f">
-                                                    <rect key="frame" x="161.5" y="137" width="52" height="26.5"/>
+                                                    <rect key="frame" x="161.5" y="137" width="52" height="26"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="22"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -340,9 +340,10 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="pdb-jd-y2f" firstAttribute="centerY" secondItem="exH-zy-1Au" secondAttribute="centerY" id="4av-eL-CcA"/>
+                                                <constraint firstItem="NKJ-Ed-8KV" firstAttribute="top" secondItem="exH-zy-1Au" secondAttribute="top" constant="90" id="HtC-ek-pV6"/>
                                                 <constraint firstAttribute="trailing" secondItem="NKJ-Ed-8KV" secondAttribute="trailing" id="KFx-h1-2oG"/>
                                                 <constraint firstItem="pdb-jd-y2f" firstAttribute="centerX" secondItem="exH-zy-1Au" secondAttribute="centerX" id="fih-Od-Szd"/>
-                                                <constraint firstItem="NKJ-Ed-8KV" firstAttribute="centerY" secondItem="exH-zy-1Au" secondAttribute="centerY" id="rdN-kK-cEW"/>
+                                                <constraint firstItem="pdb-jd-y2f" firstAttribute="top" secondItem="exH-zy-1Au" secondAttribute="top" constant="137" id="u0O-Nm-vrt"/>
                                                 <constraint firstItem="NKJ-Ed-8KV" firstAttribute="leading" secondItem="exH-zy-1Au" secondAttribute="leading" id="uQu-CA-Y3O"/>
                                             </constraints>
                                         </collectionViewCellContentView>
@@ -377,7 +378,7 @@
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b0L-mQ-Gpc">
-                                                                        <rect key="frame" x="63" y="0.0" width="2" height="128"/>
+                                                                        <rect key="frame" x="38" y="0.0" width="2" height="128"/>
                                                                         <color key="backgroundColor" systemColor="systemRedColor"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="width" constant="2" id="b0G-vB-MnO"/>
@@ -393,8 +394,8 @@
                                                                 <constraints>
                                                                     <constraint firstAttribute="bottom" secondItem="b0L-mQ-Gpc" secondAttribute="bottom" id="GHP-lF-IbE"/>
                                                                     <constraint firstItem="b0L-mQ-Gpc" firstAttribute="top" secondItem="GTE-rz-LiW" secondAttribute="top" id="OX9-Jx-h1k"/>
-                                                                    <constraint firstItem="b0L-mQ-Gpc" firstAttribute="centerX" secondItem="GTE-rz-LiW" secondAttribute="centerX" id="WQ5-hw-9pv"/>
                                                                     <constraint firstItem="hbD-PU-5ar" firstAttribute="centerX" secondItem="GTE-rz-LiW" secondAttribute="centerX" id="bc2-St-Xc6"/>
+                                                                    <constraint firstItem="b0L-mQ-Gpc" firstAttribute="leading" secondItem="GTE-rz-LiW" secondAttribute="leading" constant="38" id="eXt-kS-plm"/>
                                                                     <constraint firstItem="hbD-PU-5ar" firstAttribute="centerY" secondItem="GTE-rz-LiW" secondAttribute="centerY" id="hyx-EE-rab"/>
                                                                 </constraints>
                                                             </collectionViewCellContentView>

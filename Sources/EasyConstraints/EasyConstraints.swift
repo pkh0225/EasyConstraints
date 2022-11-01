@@ -1439,7 +1439,7 @@ extension UIView {
     
     public var impressionCheck: CGFloat { // (0.01 ~ 1) default 0.5
         get {
-            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionCheck) as? CGFloat ?? 0.5
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionCheck) as? CGFloat ?? 0.3
         }
         set {
             objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.impressionCheck, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
