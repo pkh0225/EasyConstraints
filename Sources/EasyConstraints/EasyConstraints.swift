@@ -1320,14 +1320,21 @@ private class ViewDidAppearCADisplayLink {
             view.viewDidAppear?(isVisible)
         }
         
-        if impressionLogZone(view: view) {
-            view.impressionLog?()
+        if view.impressionLogIsVisible == false {
+            if view.isImpressionCheckZone {
+                if impressionLogZone(view: view) {
+                    view.impressionLogIsVisible = true
+                    view.impressionLog?()
+                }
+            }
+            else {
+                view.impressionLogIsVisible = true
+                view.impressionLog?()
+            }
         }
     }
     
     func impressionLogZone(view: UIView) -> Bool {
-        guard view.impressionLogIsVisible == false else { return false }
-        
         let myFrame: CGRect = view.convert(view.bounds, to: view.superview)
         let intersection: CGRect = view.superview?.bounds.intersection(myFrame) ?? .zero
 //        print("intersection: \(intersection)")
@@ -1339,10 +1346,9 @@ private class ViewDidAppearCADisplayLink {
 //        print("visiblePercent: \(visiblePercent)")
         guard visiblePercent > 0 else { return false }
         
-        if visiblePercent < view.impressionCheck {
+        if visiblePercent < view.impressionCheckZonePercent {
             return false
         }
-        view.impressionLogIsVisible = true
         return true
     }
 
@@ -1372,7 +1378,8 @@ extension UIView {
         static var impressionLogIsVisible: UInt8 = 0
         static var viewDidAppear: UInt8 = 0
         static var impressionLog: UInt8 = 0
-        static var impressionCheck: UInt8 = 0
+        static var impressionCheckZonePercent: UInt8 = 0
+        static var isImpressionCheckZone: UInt8 = 0
     }
 
     public var topParentViewView: UIView {
@@ -1422,7 +1429,6 @@ extension UIView {
             DispatchQueue.main.async {
                 if newValue != nil {
                     if ViewDidAppearCADisplayLink.shared.views.contains(self) == false {
-                        
                         ViewDidAppearCADisplayLink.shared.views.append(self)
                     }
                 }
@@ -1436,13 +1442,22 @@ extension UIView {
             }
         }
     }
-    
-    public var impressionCheck: CGFloat { // (0.01 ~ 1) default 0.5
+
+    public var isImpressionCheckZone: Bool {
         get {
-            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionCheck) as? CGFloat ?? 0.3
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.isImpressionCheckZone) as? Bool ?? false
         }
         set {
-            objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.impressionCheck, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.isImpressionCheckZone, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    public var impressionCheckZonePercent: CGFloat { // (0.01 ~ 1) default 0.3
+        get {
+            return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.impressionCheckZonePercent) as? CGFloat ?? 0.3
+        }
+        set {
+            objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.impressionCheckZonePercent, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     

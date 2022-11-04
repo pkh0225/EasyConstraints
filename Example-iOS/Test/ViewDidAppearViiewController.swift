@@ -77,6 +77,7 @@ class UITestCell: UICollectionViewCell {
         self.viewDidAppear = { isShow in
             print("\n111 viewDidAppear: \(self.tag) : \(isShow)")
         }
+        self.isImpressionCheckZone = true
         self.impressionLog = {
             print("222 impressionLog: \(self.tag)")
         }
@@ -127,6 +128,7 @@ class UITest2SubCell: UICollectionViewCell {
         self.viewDidAppear = { isShow in
             print("\n333 viewDidAppear: \(self.tag) : \(isShow)")
         }
+        self.isImpressionCheckZone = true
         self.impressionLog = {
             print("444 impressionLog: \(self.tag)")
         }
