@@ -74,12 +74,12 @@ class UITestCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        self.viewDidAppear = { isShow in
-            print("\n111 viewDidAppear: \(self.tag) : \(isShow)")
-        }
+//        self.viewDidAppear = { isShow in
+//            print("\n세로 viewDidAppear: \(self.tag) : \(isShow)")
+//        }
         self.isImpressionCheckZone = true
         self.impressionLog = {
-            print("222 impressionLog: \(self.tag)")
+            print("세로 impressionLog: \(self.tag)")
         }
     }
 }
@@ -104,17 +104,23 @@ class UITest2Cell: UICollectionViewCell, UICollectionViewDelegate, UICollectionV
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let viewDidAppear = cell.viewDidAppear {
-            cell.viewDidAppearIsVisible = true
-            viewDidAppear(true)
-        }
+//        cell.viewDidAppearIsVisible = true
+//        if let viewDidAppear = cell.viewDidAppear {
+//            viewDidAppear(true)
+//        }
+//
+//        cell.impressionLogIsVisible = true
+//        if let impressionLog = cell.impressionLog {
+//            impressionLog()
+//        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let viewDidAppear = cell.viewDidAppear {
-            cell.viewDidAppearIsVisible = false
-            viewDidAppear(false)
-        }
+//        cell.viewDidAppearIsVisible = false
+//        cell.impressionLogIsVisible = false
+//        if let viewDidAppear = cell.viewDidAppear {
+//            viewDidAppear(false)
+//        }
     }
     
 }
@@ -125,12 +131,12 @@ class UITest2SubCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
-        self.viewDidAppear = { isShow in
-            print("\n333 viewDidAppear: \(self.tag) : \(isShow)")
-        }
+//        self.viewDidAppear = { isShow in
+//            print("\n가로 viewDidAppear: \(self.tag) : \(isShow)")
+//        }
         self.isImpressionCheckZone = true
         self.impressionLog = {
-            print("444 impressionLog: \(self.tag)")
+            print("가로 impressionLog: \(self.tag)")
         }
     }
 }

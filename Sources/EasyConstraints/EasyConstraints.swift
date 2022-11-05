@@ -1297,17 +1297,16 @@ private class ViewDidAppearCADisplayLink {
             return
         }
 
-        DispatchQueue.main.async {
-            for view: UIView in self.views {
-                autoreleasepool {
-                    self.setViewVisible(view: view, isVisible: view.isVisible)
-                    let windowRect: CGRect = view.superview?.convert(view.frame, to: nil) ?? .zero
-                    if windowRect == .zero {
-                        view.viewDidAppear?(false)
-                        view.viewDidAppear = nil
-                        if let index = self.views.firstIndex(of: view) {
-                            self.views.remove(at: index)
-                        }
+        for view: UIView in self.views {
+            autoreleasepool {
+                self.setViewVisible(view: view, isVisible: view.isVisible)
+                let windowRect: CGRect = view.superview?.convert(view.frame, to: nil) ?? .zero
+                if windowRect == .zero {
+                    view.viewDidAppear?(false)
+                    view.viewDidAppear = nil
+                    view.impressionLog = nil
+                    if let index = self.views.firstIndex(of: view) {
+                        self.views.remove(at: index)
                     }
                 }
             }
@@ -1318,38 +1317,20 @@ private class ViewDidAppearCADisplayLink {
         if view.viewDidAppearIsVisible != isVisible {
             view.viewDidAppearIsVisible = isVisible
             view.viewDidAppear?(isVisible)
+            if isVisible, view.isImpressionCheckZone == false {
+                view.impressionLog?()
+            }
+            if isVisible == false {
+                view.impressionLogIsVisible = false
+            }
         }
         
-        if view.impressionLogIsVisible == false {
-            if view.isImpressionCheckZone {
-                if impressionLogZone(view: view) {
-                    view.impressionLogIsVisible = true
-                    view.impressionLog?()
-                }
-            }
-            else {
+        if isVisible, view.isImpressionCheckZone, view.impressionLogIsVisible != true {
+            if view.isVisiblePercentCheckZone() {
                 view.impressionLogIsVisible = true
                 view.impressionLog?()
             }
         }
-    }
-    
-    func impressionLogZone(view: UIView) -> Bool {
-        let myFrame: CGRect = view.convert(view.bounds, to: view.superview)
-        let intersection: CGRect = view.superview?.bounds.intersection(myFrame) ?? .zero
-//        print("intersection: \(intersection)")
-        
-        let heightPercent: CGFloat = intersection.height / view.bounds.height
-        let widthPercent: CGFloat = intersection.width / view.bounds.width
-        let visiblePercent: CGFloat = widthPercent * heightPercent
-        
-//        print("visiblePercent: \(visiblePercent)")
-        guard visiblePercent > 0 else { return false }
-        
-        if visiblePercent < view.impressionCheckZonePercent {
-            return false
-        }
-        return true
     }
 
     func start() {
@@ -1412,10 +1393,6 @@ extension UIView {
             return objc_getAssociatedObject(self, &ViewDidAppearCADisplayLinkKeys.viewDidAppearIsVisible) as? Bool
         }
         set {
-            
-            if let value = newValue, value == true {
-                impressionLogIsVisible = false
-            }
             objc_setAssociatedObject( self, &ViewDidAppearCADisplayLinkKeys.viewDidAppearIsVisible, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
@@ -1521,6 +1498,28 @@ extension UIView {
             currentView = superview
         }
 
+        return true
+    }
+    
+    
+    /// 뷰의 보이는 영역 %로 체크
+    /// - Parameter percent: 0.01~ 1 사이값
+    /// - Returns: true / false
+    public func isVisiblePercentCheckZone() -> Bool {
+        let myFrame: CGRect = self.convert(self.bounds, to: self.superview)
+        let intersection: CGRect = self.superview?.bounds.intersection(myFrame) ?? .zero
+//        print("intersection: \(intersection)")
+        
+        let heightPercent: CGFloat = intersection.height / self.bounds.height
+        let widthPercent: CGFloat = intersection.width / self.bounds.width
+        let visiblePercent: CGFloat = widthPercent * heightPercent
+        
+//        print("visiblePercent: \(visiblePercent)")
+        guard visiblePercent > 0 else { return false }
+        
+        if visiblePercent < self.impressionCheckZonePercent {
+            return false
+        }
         return true
     }
 }
