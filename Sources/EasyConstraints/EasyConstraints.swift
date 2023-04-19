@@ -1285,7 +1285,7 @@ private class ViewDidAppearCADisplayLink {
     @objc func applicationDidBecomeActiveNotification() {
         DispatchQueue.main.async {
             for view: UIView in self.views {
-                self.setViewVisible(view: view, isVisible: true)
+                self.setViewVisible(view: view, isVisible: view.isVisible)
             }
         }
         start()
