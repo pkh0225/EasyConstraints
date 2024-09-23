@@ -1,6 +1,6 @@
 # Easy AutoLayout - UIView Extension
 
-test version 0.1.3
+[![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
 
 ## 🎊 No more @IBOutlets
 🕵🏻‍♂️ With this extension, now you don't have to @IBOulet from your storyboard to get constraints.
