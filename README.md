@@ -19,34 +19,6 @@
 
 > isGone, isGoneWidth, isGoneHeight
 
-#### + 👻👻 viewDidDisappear Timer
-
-```
-    public var viewDidDisappear: VoidClosure? {
-        get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.viewDidDisappear) as? VoidClosure
-        }
-        set {
-            objc_setAssociatedObject ( self, &AssociatedKeys.viewDidDisappear, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            
-            viewDidDisappearCADisplayLink?.invalidate()
-            if newValue != nil {
-                viewDidDisappearCADisplayLink = CADisplayLink(target: self, selector: #selector(onViewDidDisappear))
-                viewDidDisappearCADisplayLink?.add(to: .current, forMode: .common)
-                if #available(iOS 10.0, *) {
-                    viewDidDisappearCADisplayLink?.preferredFramesPerSecond = 5
-                } else {
-                    viewDidDisappearCADisplayLink?.frameInterval = 5
-                }
-            }
-            else {
-                viewDidDisappearCADisplayLink = nil
-            }
-        }
-    }
-```
-
-
 <br>
 
 ![SampleTestApp](https://github.com/pkh0225/EasyConstraints/blob/master/Images/Sample.png)
