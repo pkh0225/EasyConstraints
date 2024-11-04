@@ -44,9 +44,6 @@ class RootViewController: UITableViewController {
         case 0:
             let vc = storyboard.instantiateViewController(withIdentifier: "AutoLayoutController") as! AutoLayoutController
             self.navigationController?.pushViewController(vc, animated: true)
-        case 1:
-            let vc = storyboard.instantiateViewController(withIdentifier: "ViewDidAppearViiewController") as! ViewDidAppearViiewController
-            self.navigationController?.pushViewController(vc, animated: true)
         default:
             break
         }

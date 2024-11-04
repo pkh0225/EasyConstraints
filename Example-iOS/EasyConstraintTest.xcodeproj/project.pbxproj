@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		20FA2F00290F5FC70043A245 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FA2EFF290F5FC70043A245 /* RootViewController.swift */; };
-		20FA2F02290F73E10043A245 /* ViewDidAppearViiewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FA2F01290F73E10043A245 /* ViewDidAppearViiewController.swift */; };
 		520F389721229A890081B956 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520F389621229A890081B956 /* AppDelegate.swift */; };
 		520F389C21229A890081B956 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 520F389A21229A890081B956 /* Main.storyboard */; };
 		520F389E21229A8A0081B956 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 520F389D21229A8A0081B956 /* Assets.xcassets */; };
@@ -19,7 +18,6 @@
 
 /* Begin PBXFileReference section */
 		20FA2EFF290F5FC70043A245 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
-		20FA2F01290F73E10043A245 /* ViewDidAppearViiewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDidAppearViiewController.swift; sourceTree = "<group>"; };
 		520F389321229A890081B956 /* EasyConstraintTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyConstraintTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		520F389621229A890081B956 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		520F389B21229A890081B956 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -64,7 +62,6 @@
 				520F389621229A890081B956 /* AppDelegate.swift */,
 				20FA2EFF290F5FC70043A245 /* RootViewController.swift */,
 				520F38EE21229FDA0081B956 /* AutoLayoutController.swift */,
-				20FA2F01290F73E10043A245 /* ViewDidAppearViiewController.swift */,
 				520F389A21229A890081B956 /* Main.storyboard */,
 				520F389D21229A8A0081B956 /* Assets.xcassets */,
 				520F389F21229A8A0081B956 /* LaunchScreen.storyboard */,
@@ -135,6 +132,8 @@
 				Base,
 			);
 			mainGroup = 520F388A21229A890081B956;
+			packageReferences = (
+			);
 			productRefGroup = 520F389421229A890081B956 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -163,7 +162,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				520F38EF21229FDA0081B956 /* AutoLayoutController.swift in Sources */,
-				20FA2F02290F73E10043A245 /* ViewDidAppearViiewController.swift in Sources */,
 				5BAD519E27C71F7A001A3959 /* EasyConstraints.swift in Sources */,
 				20FA2F00290F5FC70043A245 /* RootViewController.swift in Sources */,
 				520F389721229A890081B956 /* AppDelegate.swift in Sources */,
