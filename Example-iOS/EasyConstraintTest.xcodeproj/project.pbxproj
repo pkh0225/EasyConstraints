@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		20BA6A942CD8760E00F0A4B2 /* MakeLayoutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BA6A932CD875FE00F0A4B2 /* MakeLayoutController.swift */; };
 		20FA2F00290F5FC70043A245 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20FA2EFF290F5FC70043A245 /* RootViewController.swift */; };
 		520F389721229A890081B956 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520F389621229A890081B956 /* AppDelegate.swift */; };
 		520F389C21229A890081B956 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 520F389A21229A890081B956 /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		20BA6A932CD875FE00F0A4B2 /* MakeLayoutController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeLayoutController.swift; sourceTree = "<group>"; };
 		20FA2EFF290F5FC70043A245 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		520F389321229A890081B956 /* EasyConstraintTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasyConstraintTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		520F389621229A890081B956 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 				520F389621229A890081B956 /* AppDelegate.swift */,
 				20FA2EFF290F5FC70043A245 /* RootViewController.swift */,
 				520F38EE21229FDA0081B956 /* AutoLayoutController.swift */,
+				20BA6A932CD875FE00F0A4B2 /* MakeLayoutController.swift */,
 				520F389A21229A890081B956 /* Main.storyboard */,
 				520F389D21229A8A0081B956 /* Assets.xcassets */,
 				520F389F21229A8A0081B956 /* LaunchScreen.storyboard */,
@@ -164,6 +167,7 @@
 				520F38EF21229FDA0081B956 /* AutoLayoutController.swift in Sources */,
 				5BAD519E27C71F7A001A3959 /* EasyConstraints.swift in Sources */,
 				20FA2F00290F5FC70043A245 /* RootViewController.swift in Sources */,
+				20BA6A942CD8760E00F0A4B2 /* MakeLayoutController.swift in Sources */,
 				520F389721229A890081B956 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

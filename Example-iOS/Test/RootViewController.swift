@@ -29,7 +29,7 @@ class RootViewController: UITableViewController {
         case 0:
             cell.textLabel?.text = "Constraints Test"
         case 1:
-            cell.textLabel?.text = "viewDidAppear Test"
+            cell.textLabel?.text = "makeLayout Test"
         default:
             cell.textLabel?.text = "none"
         }
@@ -45,7 +45,16 @@ class RootViewController: UITableViewController {
             let vc = storyboard.instantiateViewController(withIdentifier: "AutoLayoutController") as! AutoLayoutController
             self.navigationController?.pushViewController(vc, animated: true)
         default:
+            self.navigationController?.pushViewController(MakeLayoutController(), animated: true)
             break
         }
     }
+}
+
+func randomColor() -> UIColor {
+    let red = CGFloat.random(in: 0...1)
+    let green = CGFloat.random(in: 0...1)
+    let blue = CGFloat.random(in: 0...1)
+
+    return UIColor(red: red, green: green, blue: blue, alpha: 1.0)
 }

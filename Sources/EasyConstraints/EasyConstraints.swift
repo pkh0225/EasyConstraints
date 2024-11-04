@@ -95,7 +95,37 @@ extension NSLayoutConstraint.Attribute {
     }
 }
 
-// MARK: -
+// MARK: - EasyConstraints
+///## 🎊 No more @IBOutlets
+///🕵🏻‍♂️ With this extension, now you don't have to @IBOulet from your storyboard to get constraints.
+///
+///### Get & Set Constraints - as you wish
+///
+///> widthConstraint, heightConstraint, topConstraint, leadingConstraint, bottomConstraint,  trailingConstraint, centerXConstraint, centerYConstraint
+///
+///### Get Default Constraints - constraints that you first set in SB
+///
+///> widthDefaultConstraint, heightDefaultConstraint, topDefaultConstraint, leadingDefaultConstraint, bottomDefaultConstraint, trailingDefaultConstraint, centerXDefaultConstraint, centerYDefaultConstraint
+///
+///## USE like this
+///
+///```swift
+///view.ea.leading = value // set AutoLayout Constraint value
+///view.ea.leading(10).top(10).trailing(10).bottom(10) // set AutoLayout Constraint value
+///
+///let value = view.ec.leading // get AutoLayout Constraint value
+///
+///let defaultValue = view.ec.widthDefault // first set AutoLayout Constraint value
+///
+///view.ec.gone = true // Android view gone function
+///
+///view.ec.reset(.top, .trailing, .width, .height) // set Default Constraint Value
+///
+///view.viewDidDisappear = {
+///    print("viewDidDisappear ")
+///}
+///
+///```
 public class EasyConstraints {
     private lazy var constraintInfo: ConstraintInfo = { return ConstraintInfo() }()
     private class ConstraintInfo {
@@ -257,7 +287,9 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult public func leading(_ value: CGFloat) -> EasyConstraints {
+
+    @discardableResult
+    public func leading(_ value: CGFloat) -> EasyConstraints {
         leading = value
         return self
     }
@@ -276,7 +308,9 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult public func trailing(_ value: CGFloat) -> EasyConstraints {
+
+    @discardableResult
+    public func trailing(_ value: CGFloat) -> EasyConstraints {
         trailing = value
         return self
     }
@@ -295,7 +329,9 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult public func top(_ value: CGFloat) -> EasyConstraints {
+
+    @discardableResult
+    public func top(_ value: CGFloat) -> EasyConstraints {
         top = value
         return self
     }
@@ -314,7 +350,9 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult public func bottom(_ value: CGFloat) -> EasyConstraints {
+
+    @discardableResult
+    public func bottom(_ value: CGFloat) -> EasyConstraints {
         bottom = value
         return self
     }
@@ -323,7 +361,9 @@ public class EasyConstraints {
         get { return self.getConstraint(.width) }
         set { self.setConstraint(.width, newValue) }
     }
-    @discardableResult public func width(_ value: CGFloat) -> EasyConstraints {
+
+    @discardableResult
+    public func width(_ value: CGFloat) -> EasyConstraints {
         width = value
         return self
     }
@@ -332,7 +372,9 @@ public class EasyConstraints {
         get { return self.getConstraint(.height) }
         set { self.setConstraint(.height, newValue) }
     }
-    @discardableResult public func height(_ value: CGFloat) -> EasyConstraints {
+
+    @discardableResult
+    public func height(_ value: CGFloat) -> EasyConstraints {
         height = value
         return self
     }
@@ -351,7 +393,9 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult public func centerX(_ value: CGFloat) -> EasyConstraints {
+
+    @discardableResult
+    public func centerX(_ value: CGFloat) -> EasyConstraints {
         centerX = value
         return self
     }
@@ -370,7 +414,9 @@ public class EasyConstraints {
             }
         }
     }
-    @discardableResult public func centerY(_ value: CGFloat) -> EasyConstraints {
+
+    @discardableResult
+    public func centerY(_ value: CGFloat) -> EasyConstraints {
         centerY = value
         return self
     }
@@ -612,7 +658,8 @@ public class EasyConstraints {
         return constraintsTemp.first
     }
 
-    @inline(__always) private func getContraints(_ view: UIView, checkSub: Bool = false) -> [NSLayoutConstraint] {
+    @inline(__always)
+    private func getContraints(_ view: UIView, checkSub: Bool = false) -> [NSLayoutConstraint] {
         var result: [NSLayoutConstraint] = [NSLayoutConstraint]()
         result.reserveCapacity(100)
         if checkSub {
@@ -626,7 +673,8 @@ public class EasyConstraints {
         return result
     }
 
-    @inline(__always) private func getAttributeConstrains(constraints: [NSLayoutConstraint], layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
+    @inline(__always)
+    private func getAttributeConstrains(constraints: [NSLayoutConstraint], layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
         var constraintsTemp: [NSLayoutConstraint] = [NSLayoutConstraint]()
         constraintsTemp.reserveCapacity(100)
         for constraint: NSLayoutConstraint in constraints {
@@ -759,7 +807,8 @@ public class EasyConstraints {
         return constraintsTemp
     }
 
-    @inline(__always) private func getLayoutAllConstraints(_ layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
+    @inline(__always)
+    private func getLayoutAllConstraints(_ layoutAttribute: NSLayoutConstraint.Attribute) -> [NSLayoutConstraint] {
         guard let view = self.view else { return [] }
         var resultConstraints: [NSLayoutConstraint] = [NSLayoutConstraint]()
         resultConstraints.reserveCapacity(100)
@@ -879,18 +928,31 @@ public class EasyConstraints {
         }
     }
 
+    /// 문자열을 파싱하는 함수
+    /// - Note: 이 함수는 **String**을 **Int**로 변환하며, 변환에 실패하면 `nil`을 반환합니다.
+    /// - Example:
+    /// ```swift
+    /// let value = parseToInt("123") // 123
+    /// let invalidValue = parseToInt("abc") // nil
+    /// ```
+    func parseToInt(_ string: String) -> Int? {
+        return Int(string)
+    }
+
+
     /// gone
     ///
+    ///  - leading = GoneType(rawValue: 1 << 0)
+    ///  - trailing = GoneType(rawValue: 1 << 1)
+    ///  - top = GoneType(rawValue: 1 << 2)
+    ///  - bottom = GoneType(rawValue: 1 << 3)
+    ///  - width = GoneType(rawValue: 1 << 4)
+    ///  - height = GoneType(rawValue: 1 << 5)
     ///
-    ///  GontType
+    ///  - Note:  안드로이드 gone과 유사
     ///
-    ///  leading = GoneType(rawValue: 1 << 0)
-    ///  trailing = GoneType(rawValue: 1 << 1)
-    ///  top = GoneType(rawValue: 1 << 2)
-    ///  bottom = GoneType(rawValue: 1 << 3)
-    ///  width = GoneType(rawValue: 1 << 4)
-    ///  height = GoneType(rawValue: 1 << 5)
-    ///
+    /// - Example:
+    /// ```swift
     ///  size: GoneType = [.width, .height]
     ///
     ///  widthLeading: GoneType = [.width, .leading]
@@ -903,7 +965,7 @@ public class EasyConstraints {
     ///
     ///  padding: GoneType = [.leading, .trailing, .top, .bottom]
     ///  all: GoneType = [.leading, .trailing, .top, .bottom, .width, .height]
-    ///
+    ///```
     ///
     /// - Parameter type: GoneType
     public func gone(_ type: GoneType = .all) {
@@ -1101,16 +1163,12 @@ extension UIView {
         }
     }
 
-    public func addSubViewAutoLayout(_ subview: UIView) {
-        self.addSubViewAutoLayout(subview, edgeInsets: UIEdgeInsets.zero)
-    }
-
-    public func addSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
+    public func addSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets = .zero) {
         self.addSubview(subview)
         self.setSubViewAutoLayout(subview, edgeInsets: edgeInsets)
     }
 
-    public func addSubViewAutoLayout(insertView: UIView, subview: UIView, edgeInsets: UIEdgeInsets, isFront: Bool) {
+    public func addSubViewAutoLayout(insertView: UIView, subview: UIView, edgeInsets: UIEdgeInsets = .zero, isFront: Bool) {
         if isFront {
             self.insertSubview(insertView, belowSubview: subview)
         }
@@ -1120,7 +1178,7 @@ extension UIView {
         self.setSubViewAutoLayout(insertView, edgeInsets: edgeInsets)
     }
 
-    public func setSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
+    private func setSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
         subview.translatesAutoresizingMaskIntoConstraints = false
 
         let views: Dictionary = ["subview": subview]
@@ -1137,84 +1195,77 @@ extension UIView {
                                                            views: views))
     }
 
-    public func addSubViewAutoLayout(subviews: [UIView], addType: VIEW_ADD_TYPE, edgeInsets: UIEdgeInsets, buttonGap: CGFloat = 0.0) {
-        var constraints: String = String()
-        var views = [String: UIView]()
-        var metrics: Dictionary = ["top": (edgeInsets.top), "left": (edgeInsets.left), "bottom": (edgeInsets.bottom), "right": (edgeInsets.right), "buttonGap": buttonGap]
+    public func addSubViewAutoLayout(subviews: [UIView],
+                                     addType: VIEW_ADD_TYPE,
+                                     edgeInsets: UIEdgeInsets,
+                                     itemSpacing: CGFloat = 0.0,
+                                     isSquare: Bool = true) {
+        guard !subviews.isEmpty else { return }
 
-        for (idx, obj) in subviews.enumerated() {
-            obj.translatesAutoresizingMaskIntoConstraints = false
-            self.addSubview(obj)
-            views["view\(idx)"] = obj
+        subviews.forEach {
+            self.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
 
-            if addType == .horizontal {
-                self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-(top)-[view\(idx)]-(bottom)-|",
-                    options: NSLayoutConstraint.FormatOptions(rawValue: 0),
-                    metrics: ["top": (edgeInsets.top), "bottom": (edgeInsets.bottom)],
-                    views: views))
-
-                metrics["width\(idx)"] = (obj.frame.size.width)
-
-                if subviews.count == 1 {
-                    constraints += "H:|-(left)-[view\(idx)(width\(idx))]-(right)-|"
-
-                    self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: constraints,
-                                                                       options: NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                                       metrics: metrics,
-                                                                       views: views))
-
+        if addType == .horizontal {
+            for i in 1..<subviews.count {
+                if isSquare {
+                    NSLayoutConstraint.activate([
+                        subviews[i].widthAnchor.constraint(equalTo: subviews.first!.widthAnchor)])
                 }
                 else {
-                    if idx == 0 {
-                        constraints += "H:|-(left)-[view\(idx)(width\(idx))]"
-                    }
-                    else if idx == subviews.count - 1 {
-                        constraints += "-(buttonGap)-[view\(idx)(width\(idx))]-(right)-|"
-
-                        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: constraints,
-                                                                           options: NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                                           metrics: metrics,
-                                                                           views: views))
-                    }
-                    else {
-                        constraints += "-(buttonGap)-[view\(idx)(width\(idx))]"
-                    }
+                    NSLayoutConstraint.activate([
+                        subviews[i].widthAnchor.constraint(equalToConstant: subviews[i].frame.size.width)])
                 }
             }
-            else {
-                self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(left)-[view\(idx)]-(right)-|",
-                    options: NSLayoutConstraint.FormatOptions(rawValue: 0),
-                    metrics: ["left": (edgeInsets.left), "right": (edgeInsets.right)],
-                    views: views))
 
-                metrics["height\(idx)"] = (obj.frame.size.height)
+            NSLayoutConstraint.activate([
+                subviews[0].topAnchor.constraint(equalTo: self.topAnchor, constant: edgeInsets.top),
+                subviews[0].leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: edgeInsets.left),
+                subviews[0].bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -edgeInsets.bottom),
+            ])
 
-                if subviews.count == 1 {
-                    constraints += "V:|-(top)-[view\(idx)(height\(idx))]-(bottom)-|"
+            for i in 1..<subviews.count {
+                NSLayoutConstraint.activate([
+                    subviews[i].leadingAnchor.constraint(equalTo: subviews[i-1].trailingAnchor, constant: itemSpacing),
+                    subviews[i].topAnchor.constraint(equalTo: self.topAnchor, constant: edgeInsets.top),
+                    subviews[i].bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -edgeInsets.bottom)
+                ])
+            }
 
-                    self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: constraints,
-                                                                       options: NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                                       metrics: metrics,
-                                                                       views: views))
+            NSLayoutConstraint.activate([
+                subviews.last!.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -edgeInsets.right)
+            ])
+        }
+        else {
+            for i in 1..<subviews.count {
+                if isSquare {
+                    NSLayoutConstraint.activate([
+                        subviews[i].heightAnchor.constraint(equalTo: subviews.first!.heightAnchor)])
                 }
                 else {
-                    if idx == 0 {
-                        constraints += "V:|-(top)-[view\(idx)(height\(idx))]"
-
-                    }
-                    else if idx == subviews.count - 1 {
-                        constraints += "-(buttonGap)-[view\(idx)(height\(idx))]-(bottom)-|"
-
-                        self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: constraints,
-                                                                           options: NSLayoutConstraint.FormatOptions(rawValue: 0),
-                                                                           metrics: metrics,
-                                                                           views: views))
-                    }
-                    else {
-                        constraints += "-(buttonGap)-[view\(idx)(height\(idx))]"
-                    }
+                    NSLayoutConstraint.activate([
+                        subviews[i].heightAnchor.constraint(equalToConstant: subviews[i].frame.size.height)])
                 }
             }
+
+            NSLayoutConstraint.activate([
+                subviews[0].topAnchor.constraint(equalTo: self.topAnchor, constant: edgeInsets.top),
+                subviews[0].leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: edgeInsets.left),
+                subviews[0].trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -edgeInsets.right),
+            ])
+
+            for i in 1..<subviews.count {
+                NSLayoutConstraint.activate([
+                    subviews[i].topAnchor.constraint(equalTo: subviews[i-1].bottomAnchor, constant: itemSpacing),
+                    subviews[i].leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: edgeInsets.left),
+                    subviews[i].trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -edgeInsets.right)
+                ])
+            }
+
+            NSLayoutConstraint.activate([
+                subviews.last!.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -edgeInsets.bottom)
+            ])
         }
     }
 
@@ -1246,6 +1297,18 @@ extension UIView {
         self.removeConstraints(self.constraints)
         self.translatesAutoresizingMaskIntoConstraints = true
     }
+
+    public func addSubViewSafeArea(subView: UIView, insets: UIEdgeInsets = .zero) {
+        subView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(subView)
+
+        NSLayoutConstraint.activate([
+            self.safeLeftAnchor.constraint(equalTo: subView.leftAnchor, constant: -insets.left),
+            self.safeRightAnchor.constraint(equalTo: subView.rightAnchor, constant: insets.right),
+            self.safeTopAnchor.constraint(equalTo: subView.topAnchor, constant: -insets.top),
+            self.safeBottomAnchor.constraint(equalTo: subView.bottomAnchor, constant: insets.bottom)
+        ])
+    }
 }
 
 extension UIView {
@@ -1259,36 +1322,28 @@ extension UIView {
 
 // MARK: - UIView Extension SafeArea
 extension UIView {
-    var safeTopAnchor: NSLayoutYAxisAnchor {
-        if #available(iOS 11.0, *) {
-            return self.safeAreaLayoutGuide.topAnchor
-        } else {
-            return self.topAnchor
-        }
+    public var safeTopAnchor: NSLayoutYAxisAnchor {
+        return self.safeAreaLayoutGuide.topAnchor
     }
 
-    var safeLeftAnchor: NSLayoutXAxisAnchor {
-        if #available(iOS 11.0, *){
-            return self.safeAreaLayoutGuide.leftAnchor
-        }else {
-            return self.leftAnchor
-        }
+    public var safeLeftAnchor: NSLayoutXAxisAnchor {
+        return self.safeAreaLayoutGuide.leftAnchor
     }
 
-    var safeRightAnchor: NSLayoutXAxisAnchor {
-        if #available(iOS 11.0, *){
-            return self.safeAreaLayoutGuide.rightAnchor
-        }else {
-            return self.rightAnchor
-        }
+    public var safeLeadingAnchor: NSLayoutXAxisAnchor {
+        return self.safeAreaLayoutGuide.leadingAnchor
     }
 
-    var safeBottomAnchor: NSLayoutYAxisAnchor {
-        if #available(iOS 11.0, *) {
-            return self.safeAreaLayoutGuide.bottomAnchor
-        } else {
-            return self.bottomAnchor
-        }
+    public var safeRightAnchor: NSLayoutXAxisAnchor {
+        return self.safeAreaLayoutGuide.rightAnchor
+    }
+
+    public var safeTrailingAnchor: NSLayoutXAxisAnchor {
+        return self.safeAreaLayoutGuide.trailingAnchor
+    }
+
+    public var safeBottomAnchor: NSLayoutYAxisAnchor {
+        return self.safeAreaLayoutGuide.bottomAnchor
     }
 }
 
