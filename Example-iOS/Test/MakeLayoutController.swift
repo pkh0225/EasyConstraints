@@ -37,6 +37,8 @@ class MakeLayoutController: UIViewController {
                 view.backgroundColor = randomColor()
                 view.layer.borderColor = #colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1).cgColor
                 view.layer.borderWidth = 1
+                view.layer.cornerRadius = 25
+                view.layer.masksToBounds = true
                 hSubViews.append(view)
             }
             horizontal.addSubViewAutoLayout(subviews: hSubViews,
