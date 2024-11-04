@@ -15,26 +15,28 @@ class MakeLayoutController: UIViewController {
         self.view.backgroundColor = .white
 
         let safeView = UIView()
-        safeView.backgroundColor = randomColor()
+        safeView.backgroundColor = .lightGray
         self.view.addSubViewSafeArea(subView: safeView)
 
         let bodyView = UIView()
-        bodyView.backgroundColor = randomColor()
+        bodyView.backgroundColor = .gray
         self.view.addSubViewSafeArea(subView: bodyView, insets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
 
 
         var hViews: [UIView] = []
         for _ in 0..<5 {
             let horizontal = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-            horizontal.backgroundColor = randomColor()
+            horizontal.backgroundColor = #colorLiteral(red: 0, green: 0.6771108508, blue: 0.3271353841, alpha: 1)
             horizontal.layer.borderColor = UIColor.black.cgColor
-            horizontal.layer.borderWidth = 5
+            horizontal.layer.borderWidth = 3
             hViews.append(horizontal)
 
             var hSubViews: [UIView] = []
             for _ in 0..<5 {
-                let view = UIView()
+                let view = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
                 view.backgroundColor = randomColor()
+                view.layer.borderColor = #colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1).cgColor
+                view.layer.borderWidth = 1
                 hSubViews.append(view)
             }
             horizontal.addSubViewAutoLayout(subviews: hSubViews,

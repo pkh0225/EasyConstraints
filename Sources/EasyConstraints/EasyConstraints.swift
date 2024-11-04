@@ -862,7 +862,14 @@ public class EasyConstraints {
 
         if constraintsTemp.count == 0 {
             if errorCheck {
-                assertionFailure("\n\n🔗 ------------------------------------------------ \n\(view.constraints)\nAutoLayout Not Make layoutAttribute : \(layoutAttribute.string) \nView: \(self)\n🔗 ------------------------------------------------ \n\n")
+                assertionFailure("""
+
+                                    🔗 ------------------------------------------------ 
+                                    \(view.constraints)
+                                    AutoLayout Not Make layoutAttribute : \(layoutAttribute.string) \nView: \(self)
+                                    🔗 ------------------------------------------------
+                                    
+                                 """)
             }
             return nil
         }
@@ -991,7 +998,15 @@ public class EasyConstraints {
                     c.constant = 0
                 }
                 else {
-                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: view, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1, constant: 0)
+                    let constraint: NSLayoutConstraint = NSLayoutConstraint(
+                        item: view,
+                        attribute: .width,
+                        relatedBy: .equal,
+                        toItem: nil,
+                        attribute: .width,
+                        multiplier: 1,
+                        constant: 0
+                    )
                     view.addConstraint(constraint)
                     self.goneInfo.widthEmptyConstraint = constraint
                     if view.frame.size.width != 0 {
@@ -1018,7 +1033,15 @@ public class EasyConstraints {
                     c.constant = 0
                 }
                 else {
-                    let constraint: NSLayoutConstraint = NSLayoutConstraint(item: view, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 0)
+                    let constraint: NSLayoutConstraint = NSLayoutConstraint(
+                        item: view,
+                        attribute: .height,
+                        relatedBy: .equal,
+                        toItem: nil,
+                        attribute: .height,
+                        multiplier: 1,
+                        constant: 0
+                    )
                     view.addConstraint(constraint)
                     self.goneInfo.heightEmptyConstraint = constraint
                     if view.frame.size.height != 0 {
@@ -1182,7 +1205,12 @@ extension UIView {
         subview.translatesAutoresizingMaskIntoConstraints = false
 
         let views: Dictionary = ["subview": subview]
-        let edgeInsetsDic: Dictionary = ["top": (edgeInsets.top), "left": (edgeInsets.left), "bottom": (edgeInsets.bottom), "right": (edgeInsets.right)]
+        let edgeInsetsDic: Dictionary = [
+            "top": (edgeInsets.top),
+            "left": (edgeInsets.left),
+            "bottom": (edgeInsets.bottom),
+            "right": (edgeInsets.right)
+        ]
 
         self.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(left)-[subview]-(right)-|",
                                                            options: NSLayoutConstraint.FormatOptions(rawValue: 0),
@@ -1197,7 +1225,7 @@ extension UIView {
 
     public func addSubViewAutoLayout(subviews: [UIView],
                                      addType: VIEW_ADD_TYPE,
-                                     edgeInsets: UIEdgeInsets,
+                                     edgeInsets: UIEdgeInsets = .zero,
                                      itemSpacing: CGFloat = 0.0,
                                      isSquare: Bool = true) {
         guard !subviews.isEmpty else { return }
