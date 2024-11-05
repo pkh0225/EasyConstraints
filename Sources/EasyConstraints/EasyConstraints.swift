@@ -1326,16 +1326,27 @@ extension UIView {
         self.translatesAutoresizingMaskIntoConstraints = true
     }
 
-    public func addSubViewSafeArea(subView: UIView, insets: UIEdgeInsets = .zero) {
+    public func addSubViewSafeArea(subView: UIView, insets: UIEdgeInsets = .zero, safeBottom: Bool = true) {
         subView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(subView)
 
-        NSLayoutConstraint.activate([
-            self.safeLeftAnchor.constraint(equalTo: subView.leftAnchor, constant: -insets.left),
-            self.safeRightAnchor.constraint(equalTo: subView.rightAnchor, constant: insets.right),
-            self.safeTopAnchor.constraint(equalTo: subView.topAnchor, constant: -insets.top),
-            self.safeBottomAnchor.constraint(equalTo: subView.bottomAnchor, constant: insets.bottom)
-        ])
+        if safeBottom {
+            NSLayoutConstraint.activate([
+                self.safeLeftAnchor.constraint(equalTo: subView.leftAnchor, constant: -insets.left),
+                self.safeRightAnchor.constraint(equalTo: subView.rightAnchor, constant: insets.right),
+                self.safeTopAnchor.constraint(equalTo: subView.topAnchor, constant: -insets.top),
+                self.safeBottomAnchor.constraint(equalTo: subView.bottomAnchor, constant: insets.bottom)
+            ])
+        }
+        else {
+            NSLayoutConstraint.activate([
+                self.safeLeftAnchor.constraint(equalTo: subView.leftAnchor, constant: -insets.left),
+                self.safeRightAnchor.constraint(equalTo: subView.rightAnchor, constant: insets.right),
+                self.safeTopAnchor.constraint(equalTo: subView.topAnchor, constant: -insets.top),
+                self.bottomAnchor.constraint(equalTo: subView.bottomAnchor, constant: insets.bottom)
+            ])
+        }
+
     }
 }
 
