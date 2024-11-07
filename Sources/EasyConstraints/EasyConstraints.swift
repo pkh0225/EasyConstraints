@@ -8,9 +8,6 @@
 
 import UIKit
 
-public typealias VoidClosure = () -> Void
-public typealias BoolClosure = (_ value: Bool) -> Void
-
 public enum VIEW_ADD_TYPE  {
     case horizontal
     case vertical
