@@ -13,10 +13,11 @@ public enum VIEW_ADD_TYPE  {
     case vertical
 }
 
+@MainActor
 public struct GoneType: OptionSet {
     public let rawValue: Int
 
-    public init(rawValue: Int) {
+    nonisolated public init(rawValue: Int) {
         self.rawValue = rawValue
     }
 
@@ -123,6 +124,7 @@ extension NSLayoutConstraint.Attribute {
 ///}
 ///
 ///```
+@MainActor
 public class EasyConstraints {
     private lazy var constraintInfo: ConstraintInfo = { return ConstraintInfo() }()
     private class ConstraintInfo {
@@ -1162,7 +1164,7 @@ public class EasyConstraints {
 // MARK: - UIView Extension EasyConstraints
 extension UIView {
     private struct EasyConstraintsKey {
-        static var easyConstraints: UInt8 = 0
+        nonisolated(unsafe) static var easyConstraints: UInt8 = 0
     }
 
     public var ec: EasyConstraints {
