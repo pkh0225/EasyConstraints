@@ -13,8 +13,7 @@ public enum VIEW_ADD_TYPE  {
     case vertical
 }
 
-@MainActor
-public struct GoneType: OptionSet {
+public struct GoneType: OptionSet, @unchecked Sendable {
     public let rawValue: Int
 
     nonisolated public init(rawValue: Int) {
