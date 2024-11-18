@@ -4,7 +4,7 @@
 //  Created by pkh on 2018. 8. 14..
 //  Copyright © 2018년 pkh. All rights reserved.
 
-#if os(iOS) || os(tvOS)
+#if os(iOS)
 
 import UIKit
 

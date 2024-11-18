@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import EasyConstraints
 
 class AutoLayoutController: UIViewController {
 
