@@ -31,6 +31,18 @@
 
 
 ```
+// make constraints
+let testView = UIView()
+testView.backgroundColor = .red
+testView.ec
+    .addSuperView(self.view)
+    .makeConstraints {
+        $0.leading = (bodyView.leadingAnchor, 0)
+        $0.top = (bodyView.topAnchor, 0)
+    }
+            
+
+// set get
 view.ea.leading = value // set AutoLayout Constraint value
 view.ea.leading(10).top(10).trailing(10).bottom(10) // set AutoLayout Constraint value
 
