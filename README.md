@@ -37,8 +37,8 @@ testView.backgroundColor = .red
 testView.ec
     .addSuperView(self.view)
     .makeConstraints {
-        $0.leading = (bodyView.leadingAnchor, 0)
-        $0.top = (bodyView.topAnchor, 0)
+        $0.leading = (self.view.leadingAnchor, 0)
+        $0.top = (self.view.topAnchor, 0)
     }
             
 
