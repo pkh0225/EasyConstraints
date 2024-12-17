@@ -1242,13 +1242,13 @@ extension EasyConstraints {
 //        self.view?.centerYAnchor.constraint(equalTo: anchor, constant: c).isActive = true
 //        return self
 //    }
-
-    @discardableResult
-    public func makeCenterConstraints(equalTo view: UIView, offsetX: CGFloat = 0, offsetY: CGFloat = 0) -> Self {
-        self.view?.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: offsetX).isActive = true
-        self.view?.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: offsetY).isActive = true
-        return self
-    }
+//
+//    @discardableResult
+//    public func makeCenterConstraints(equalTo view: UIView, offsetX: CGFloat = 0, offsetY: CGFloat = 0) -> Self {
+//        self.view?.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: offsetX).isActive = true
+//        self.view?.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: offsetY).isActive = true
+//        return self
+//    }
 
     @discardableResult
     public func addSuperView(_ superView: UIView) -> Self {
