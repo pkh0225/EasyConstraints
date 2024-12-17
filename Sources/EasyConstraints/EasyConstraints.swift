@@ -1160,6 +1160,156 @@ public class EasyConstraints {
     }
 }
 
+// ECAnchor 구조체: 앵커 설정 값을 저장
+public struct ECAnchor {
+    public var left: (anchor: NSLayoutXAxisAnchor, constant: CGFloat)?
+    public var right: (anchor: NSLayoutXAxisAnchor, constant: CGFloat)?
+    public var top: (anchor: NSLayoutYAxisAnchor, constant: CGFloat)?
+    public var bottom: (anchor: NSLayoutYAxisAnchor, constant: CGFloat)?
+
+    public var leading: (anchor: NSLayoutXAxisAnchor, constant: CGFloat)?
+    public var trailing: (anchor: NSLayoutXAxisAnchor, constant: CGFloat)?
+
+    public var centerX: (anchor: NSLayoutXAxisAnchor, constant: CGFloat)?
+    public var centerY: (anchor: NSLayoutYAxisAnchor, constant: CGFloat)?
+
+    public var firstBaseline: (anchor: NSLayoutYAxisAnchor, constant: CGFloat)?
+    public var lastBaseline: (anchor: NSLayoutYAxisAnchor, constant: CGFloat)?
+
+    public var width: CGFloat?
+    public var height: CGFloat?
+    public var widthAnchor: (anchor: NSLayoutDimension, multiplier: CGFloat)?
+    public var heightAnchor: (anchor: NSLayoutDimension, multiplier: CGFloat)?
+}
+
+extension EasyConstraints {
+//    @discardableResult
+//    public func makeLeftConstraint(equalTo anchor: NSLayoutXAxisAnchor, constant c: CGFloat = 0) -> Self {
+//        self.view?.leftAnchor.constraint(equalTo: anchor, constant: c).isActive = true
+//        return self
+//    }
+//
+//    @discardableResult
+//    public func makeRightConstraint(equalTo anchor: NSLayoutXAxisAnchor, constant c: CGFloat = 0) -> Self {
+//        self.view?.rightAnchor.constraint(equalTo: anchor, constant: c).isActive = true
+//        return self
+//    }
+//
+//    @discardableResult
+//    public func makeTopConstraint(equalTo anchor: NSLayoutYAxisAnchor, constant c: CGFloat = 0) -> Self {
+//        self.view?.topAnchor.constraint(equalTo: anchor, constant: c).isActive = true
+//        return self
+//    }
+//
+//    @discardableResult
+//    public func makeBottomConstraint(equalTo anchor: NSLayoutYAxisAnchor, constant c: CGFloat = 0) -> Self {
+//        self.view?.bottomAnchor.constraint(equalTo: anchor, constant: c).isActive = true
+//        return self
+//    }
+//
+//    @discardableResult
+//    public func makeWidthConstraint(equalToConstant constant: CGFloat) -> Self {
+//        self.view?.widthAnchor.constraint(equalToConstant: constant).isActive = true
+//        return self
+//    }
+//
+//    @discardableResult
+//    public func makeHeightConstraint(equalToConstant constant: CGFloat) -> Self {
+//        self.view?.heightAnchor.constraint(equalToConstant: constant).isActive = true
+//        return self
+//    }
+//
+//    @discardableResult
+//    public func makeWidthConstraint(equalTo anchor: NSLayoutDimension, multiplier: CGFloat = 1.0) -> Self {
+//        self.view?.widthAnchor.constraint(equalTo: anchor, multiplier: multiplier).isActive = true
+//        return self
+//    }
+//
+//    @discardableResult
+//    public func makeHeightConstraint(equalTo anchor: NSLayoutDimension, multiplier: CGFloat = 1.0) -> Self {
+//        self.view?.heightAnchor.constraint(equalTo: anchor, multiplier: multiplier).isActive = true
+//        return self
+//    }
+//
+//    @discardableResult
+//    public func makeCenterXConstraint(equalTo anchor: NSLayoutXAxisAnchor, constant c: CGFloat = 0) -> Self {
+//        self.view?.centerXAnchor.constraint(equalTo: anchor, constant: c).isActive = true
+//        return self
+//    }
+//
+//    @discardableResult
+//    public func makeCenterYConstraint(equalTo anchor: NSLayoutYAxisAnchor, constant c: CGFloat = 0) -> Self {
+//        self.view?.centerYAnchor.constraint(equalTo: anchor, constant: c).isActive = true
+//        return self
+//    }
+
+    @discardableResult
+    public func makeCenterConstraints(equalTo view: UIView, offsetX: CGFloat = 0, offsetY: CGFloat = 0) -> Self {
+        self.view?.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: offsetX).isActive = true
+        self.view?.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: offsetY).isActive = true
+        return self
+    }
+
+    @discardableResult
+    public func addSuperView(_ superView: UIView) -> Self {
+        guard let view = self.view else { return self }
+        superView.addSubview(view)
+        return self
+    }
+
+    @discardableResult
+    public func makeConstraints(_ closure: (inout ECAnchor) -> Void) -> Self {
+        var anchor = ECAnchor()
+        closure(&anchor)
+        self.view?.translatesAutoresizingMaskIntoConstraints = false
+        // 앵커 설정 적용
+        if let left = anchor.left {
+            self.view?.leftAnchor.constraint(equalTo: left.anchor, constant: left.constant).isActive = true
+        }
+        if let right = anchor.right {
+            self.view?.rightAnchor.constraint(equalTo: right.anchor, constant: right.constant).isActive = true
+        }
+        if let top = anchor.top {
+            self.view?.topAnchor.constraint(equalTo: top.anchor, constant: top.constant).isActive = true
+        }
+        if let bottom = anchor.bottom {
+            self.view?.bottomAnchor.constraint(equalTo: bottom.anchor, constant: bottom.constant).isActive = true
+        }
+        if let leading = anchor.leading {
+            self.view?.leadingAnchor.constraint(equalTo: leading.anchor, constant: leading.constant).isActive = true
+        }
+        if let trailing = anchor.trailing {
+            self.view?.trailingAnchor.constraint(equalTo: trailing.anchor, constant: trailing.constant).isActive = true
+        }
+        if let centerX = anchor.centerX {
+            self.view?.centerXAnchor.constraint(equalTo: centerX.anchor, constant: centerX.constant).isActive = true
+        }
+        if let centerY = anchor.centerY {
+            self.view?.centerYAnchor.constraint(equalTo: centerY.anchor, constant: centerY.constant).isActive = true
+        }
+        if let firstBaseline = anchor.firstBaseline {
+            self.view?.firstBaselineAnchor.constraint(equalTo: firstBaseline.anchor, constant: firstBaseline.constant).isActive = true
+        }
+        if let lastBaseline = anchor.lastBaseline {
+            self.view?.lastBaselineAnchor.constraint(equalTo: lastBaseline.anchor, constant: lastBaseline.constant).isActive = true
+        }
+        if let width = anchor.width {
+            self.view?.widthAnchor.constraint(equalToConstant: width).isActive = true
+        }
+        if let height = anchor.height {
+            self.view?.heightAnchor.constraint(equalToConstant: height).isActive = true
+        }
+        if let widthAnchor = anchor.widthAnchor {
+            self.view?.widthAnchor.constraint(equalTo: widthAnchor.anchor, multiplier: widthAnchor.multiplier).isActive = true
+        }
+        if let heightAnchor = anchor.heightAnchor {
+            self.view?.heightAnchor.constraint(equalTo: heightAnchor.anchor, multiplier: heightAnchor.multiplier).isActive = true
+        }
+
+        return self
+    }
+}
+
 // MARK: - UIView Extension EasyConstraints
 extension UIView {
     private struct EasyConstraintsKey {
@@ -1225,7 +1375,7 @@ extension UIView {
                                      addType: VIEW_ADD_TYPE,
                                      edgeInsets: UIEdgeInsets = .zero,
                                      itemSpacing: CGFloat = 0.0,
-                                     isSquare: Bool = true) {
+                                     equally: Bool = true) {
         guard !subviews.isEmpty else { return }
 
         subviews.forEach {
@@ -1234,14 +1384,10 @@ extension UIView {
         }
 
         if addType == .horizontal {
-            for i in 1..<subviews.count {
-                if isSquare {
+            if equally {
+                for i in 1..<subviews.count {
                     NSLayoutConstraint.activate([
                         subviews[i].widthAnchor.constraint(equalTo: subviews.first!.widthAnchor)])
-                }
-                else {
-                    NSLayoutConstraint.activate([
-                        subviews[i].widthAnchor.constraint(equalToConstant: subviews[i].frame.size.width)])
                 }
             }
 
@@ -1264,14 +1410,10 @@ extension UIView {
             ])
         }
         else {
-            for i in 1..<subviews.count {
-                if isSquare {
+            if equally {
+                for i in 1..<subviews.count {
                     NSLayoutConstraint.activate([
                         subviews[i].heightAnchor.constraint(equalTo: subviews.first!.heightAnchor)])
-                }
-                else {
-                    NSLayoutConstraint.activate([
-                        subviews[i].heightAnchor.constraint(equalToConstant: subviews[i].frame.size.height)])
                 }
             }
 
