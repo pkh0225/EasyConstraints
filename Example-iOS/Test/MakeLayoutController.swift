@@ -85,31 +85,32 @@ class MakeLayoutController: UIViewController {
                 view.translatesAutoresizingMaskIntoConstraints = false
                 hSubViews.append(view)
             }
-            horizontal.addSubViewAutoLayout(subviews: hSubViews,
-                                            addType: .horizontal,
-                                            edgeInsets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10),
-                                            itemSpacing: 5,
-                                            equally: true)
+            horizontal.addSubViewAutoLayout(
+                subviews: hSubViews,
+                addType: .horizontal,
+                edgeInsets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10),
+                itemSpacing: 5,
+                equally: true
+            )
 
         }
 
-
-        bodyView.addSubViewAutoLayout(subviews: hViews,
-                                      addType: .vertical,
-                                      edgeInsets: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20),
-                                      itemSpacing: 20,
-                                      equally: true)
+        bodyView.addSubViewAutoLayout(
+            subviews: hViews,
+            addType: .vertical,
+            edgeInsets: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20),
+            itemSpacing: 20,
+            equally: true
+        )
     }
 
     func testAutoSize() {
         let autoSizeView = UIView()
         autoSizeView.backgroundColor = .red
-        autoSizeView.ec
-            .addSuperView(bodyView)
-            .makeConstraints {
-                $0.leading = (bodyView.leadingAnchor, 0)
-                $0.top = (bodyView.topAnchor, 0)
-            }
+        autoSizeView.addSuperView(bodyView)
+            .ec.make()
+            .leading(bodyView.leadingAnchor, 10)
+            .top(bodyView.topAnchor, 10)
 
 
         var hViews: [UIView] = []
@@ -129,30 +130,34 @@ class MakeLayoutController: UIViewController {
                 view.layer.cornerRadius = 10
                 view.layer.masksToBounds = true
 
-                view.ec.makeConstraints {
-                    $0.width = view.frame.width
-                    $0.height = view.frame.height
-                }
+                view.ec.make()
+                    .width(view.frame.width)
+                    .height(view.frame.height)
 
                 hSubViews.append(view)
             }
-            horizontal.addSubViewAutoLayout(subviews: hSubViews,
-                                            addType: .horizontal,
-                                            edgeInsets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10),
-                                            itemSpacing: 5,
-                                            equally: false)
+
+            horizontal.addSubViewAutoLayout(
+                subviews: hSubViews,
+                addType: .horizontal,
+                edgeInsets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10),
+                itemSpacing: 5,
+                equally: false
+            )
 
         }
 
 
-        autoSizeView.addSubViewAutoLayout(subviews: hViews,
-                                      addType: .vertical,
-                                      edgeInsets: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20),
-                                      itemSpacing: 20,
-                                      equally: false)
+        autoSizeView.addSubViewAutoLayout(
+            subviews: hViews,
+            addType: .vertical,
+            edgeInsets: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20),
+            itemSpacing: 20,
+            equally: false
+        )
 
 
-        let sizeCheckerView = UIView(frame: CGRect(x: 10, y: 700, width: 50, height: 50))
+        let sizeCheckerView = UIView(frame: CGRect(x: 10, y: 500, width: 50, height: 50))
         sizeCheckerView.backgroundColor = .green
         sizeCheckerView.isUserInteractionEnabled = true // 사용자 인터랙션 활성화
 
