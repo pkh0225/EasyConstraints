@@ -74,15 +74,16 @@ class AutoLayoutController: UIViewController {
 
         // test priority
         view3.ec.priority()
-            .bottom(.init(300))
+//            .bottom(.init(300))
+            .bottom(.defaultLow)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             self.view3.ec.priority()
-                .bottom(.init(700))
+                .bottom(.defaultHigh)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.view3.ec.priority()
-                .bottom(.init(300))
+                .bottom(.defaultLow)
         }
     }
 
