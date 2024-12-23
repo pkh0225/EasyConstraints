@@ -114,6 +114,9 @@ class MakeLayoutController: UIViewController {
             .ec.make()
             .leading(bodyView.leadingAnchor, 10)
             .top(bodyView.topAnchor, 10)
+//            .trailing(bodyView.trailingAnchor, -10)
+//            .width(100)
+//            .height(100)
 
         var hViews: [UIView] = []
         for _ in 0..<5 {
