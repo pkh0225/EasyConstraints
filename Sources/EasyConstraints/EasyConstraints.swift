@@ -1286,22 +1286,25 @@ extension UIView {
         }
     }
 
-    public func addSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets = .zero) {
+    @discardableResult
+    public func addSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets = .zero) -> Self {
         self.addSubview(subview)
-        self.setSubViewAutoLayout(subview, edgeInsets: edgeInsets)
+        return self.setSubViewAutoLayout(subview, edgeInsets: edgeInsets)
     }
 
-    public func addSubViewAutoLayout(insertView: UIView, subview: UIView, edgeInsets: UIEdgeInsets = .zero, isFront: Bool) {
+    @discardableResult
+    public func addSubViewAutoLayout(insertView: UIView, subview: UIView, edgeInsets: UIEdgeInsets = .zero, isFront: Bool) -> Self {
         if isFront {
             self.insertSubview(insertView, belowSubview: subview)
         }
         else {
             self.insertSubview(insertView, aboveSubview: subview)
         }
-        self.setSubViewAutoLayout(insertView, edgeInsets: edgeInsets)
+        return self.setSubViewAutoLayout(insertView, edgeInsets: edgeInsets)
     }
 
-    private func setSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) {
+    @discardableResult
+    private func setSubViewAutoLayout(_ subview: UIView, edgeInsets: UIEdgeInsets) -> Self {
         subview.translatesAutoresizingMaskIntoConstraints = false
 
         let views: Dictionary = ["subview": subview]
@@ -1321,14 +1324,16 @@ extension UIView {
                                                            options: NSLayoutConstraint.FormatOptions(rawValue: 0),
                                                            metrics: edgeInsetsDic,
                                                            views: views))
+        return self
     }
 
+    @discardableResult
     public func addSubViewAutoLayout(subviews: [UIView],
                                      addType: VIEW_ADD_TYPE,
+                                     equally: Bool,
                                      edgeInsets: UIEdgeInsets = .zero,
-                                     itemSpacing: CGFloat = 0.0,
-                                     equally: Bool = true) {
-        guard !subviews.isEmpty else { return }
+                                     itemSpacing: CGFloat = 0.0) -> Self {
+        guard !subviews.isEmpty else { return self }
 
         subviews.forEach {
             self.addSubview($0)
@@ -1387,20 +1392,24 @@ extension UIView {
                 subviews.last!.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -edgeInsets.bottom)
             ])
         }
+        return self
     }
 
-    public func removeSuperViewAllConstraints() {
-        guard let superview: UIView = self.superview else { return }
+    @discardableResult
+    public func removeSuperViewAllConstraints() -> Self {
+        guard let superview: UIView = self.superview else { return self }
 
         for c: NSLayoutConstraint in superview.constraints {
             if c.firstItem === self || c.secondItem === self {
                 superview.removeConstraint(c)
             }
         }
+        return self
     }
 
-    public func removeConstraint(attribute: NSLayoutConstraint.Attribute) {
-        guard let superview: UIView = self.superview else { return }
+    @discardableResult
+    public func removeConstraint(attribute: NSLayoutConstraint.Attribute) -> Self {
+        guard let superview: UIView = self.superview else { return self }
 
         for c: NSLayoutConstraint in superview.constraints {
             if c.firstItem === self && c.firstAttribute == attribute {
@@ -1410,15 +1419,18 @@ extension UIView {
                 superview.removeConstraint(c)
             }
         }
+        return self
     }
 
-    public func removeAllConstraints() {
+    @discardableResult
+    public func removeAllConstraints() -> Self {
         self.removeSuperViewAllConstraints()
         self.removeConstraints(self.constraints)
-        self.translatesAutoresizingMaskIntoConstraints = true
+        return self
     }
 
-    public func addSubViewSafeArea(subView: UIView, insets: UIEdgeInsets = .zero, safeBottom: Bool = true) {
+    @discardableResult
+    public func addSubViewSafeArea(subView: UIView, insets: UIEdgeInsets = .zero, safeBottom: Bool = true) -> Self {
         subView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(subView)
 
@@ -1438,7 +1450,7 @@ extension UIView {
                 self.bottomAnchor.constraint(equalTo: subView.bottomAnchor, constant: insets.bottom)
             ])
         }
-
+        return self
     }
 }
 

@@ -88,9 +88,9 @@ class MakeLayoutController: UIViewController {
             horizontal.addSubViewAutoLayout(
                 subviews: hSubViews,
                 addType: .horizontal,
+                equally: true,
                 edgeInsets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10),
-                itemSpacing: 5,
-                equally: true
+                itemSpacing: 5
             )
 
         }
@@ -98,9 +98,9 @@ class MakeLayoutController: UIViewController {
         bodyView.addSubViewAutoLayout(
             subviews: hViews,
             addType: .vertical,
+            equally: true,
             edgeInsets: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20),
-            itemSpacing: 20,
-            equally: true
+            itemSpacing: 20
         )
     }
 
@@ -140,9 +140,9 @@ class MakeLayoutController: UIViewController {
             horizontal.addSubViewAutoLayout(
                 subviews: hSubViews,
                 addType: .horizontal,
+                equally: false,
                 edgeInsets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10),
-                itemSpacing: 5,
-                equally: false
+                itemSpacing: 5
             )
 
         }
@@ -151,9 +151,9 @@ class MakeLayoutController: UIViewController {
         autoSizeView.addSubViewAutoLayout(
             subviews: hViews,
             addType: .vertical,
+            equally: false,
             edgeInsets: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20),
-            itemSpacing: 20,
-            equally: false
+            itemSpacing: 20
         )
 
 
