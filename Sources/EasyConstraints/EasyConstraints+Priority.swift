@@ -11,7 +11,7 @@ import UIKit
 extension EasyConstraints {
     @MainActor
     public struct ECPriority {
-        private weak var ec: EasyConstraints?
+        public weak var ec: EasyConstraints?
 
         init(ec: EasyConstraints?) {
             self.ec = ec

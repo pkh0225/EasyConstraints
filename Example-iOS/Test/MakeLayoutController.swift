@@ -115,7 +115,6 @@ class MakeLayoutController: UIViewController {
             .leading(bodyView.leadingAnchor, 10)
             .top(bodyView.topAnchor, 10)
 
-
         var hViews: [UIView] = []
         for _ in 0..<5 {
             let horizontal = UIView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
