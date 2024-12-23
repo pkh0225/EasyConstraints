@@ -14,7 +14,7 @@ class AutoLayoutController: UIViewController {
     @IBOutlet weak var view1: UIView!
     @IBOutlet weak var view2: UIView!
     @IBOutlet weak var view3: UIView!
-    
+    @IBOutlet weak var view4: UIView!
     
     @IBOutlet weak var textField1: UITextField!
     @IBOutlet weak var textField2: UITextField!
@@ -22,7 +22,8 @@ class AutoLayoutController: UIViewController {
     @IBOutlet weak var textField4: UITextField!
     @IBOutlet weak var textField5: UITextField!
     @IBOutlet weak var textField6: UITextField!
-    
+    @IBOutlet weak var textField7: UITextField!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,16 +39,39 @@ class AutoLayoutController: UIViewController {
     
     
     func setDefaultConstrains()  {
+        // default test
         textField1.text = "\(view1.ec.leadingDefault)"
         textField2.text = "\(view1.ec.trailingDefault)"
+        textField7.text = "\(view1.ec.bottom)"
         textField3.text = "\(view2.ec.topDefault)"
         textField4.text = "\(view2.ec.trailingDefault)"
         textField5.text = "\(view2.ec.widthDefault)"
         textField6.text = "\(view2.ec.heightDefault)"
-        
-        
+
+
+        // rest test
         view1.ec.reset(.leading, .trailing)
         view2.ec.reset(.top, .trailing, .width, .height)
+
+
+        // left test
+        let v = UIView()
+        v.translatesAutoresizingMaskIntoConstraints = false
+        v.backgroundColor = .red
+        v.addSuperView(self.view4)
+        v.ec.make()
+            .top(view4.topAnchor, 0)
+            .left(view4.leftAnchor, 10)
+            .width(50)
+            .height(50)
+
+        print(v.ec.left)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            v.ec.left(50)
+        }
+
+
     }
 
     /*
@@ -70,7 +94,13 @@ class AutoLayoutController: UIViewController {
             view1.ec.trailing = value
         }
     }
-    
+
+    @IBAction func onView1Bottom(_ sender: UITextField) {
+        if let value = sender.text?.toCGFloat() {
+            view1.ec.bottom = value
+        }
+    }
+
     @IBAction func onView2Top(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
             view2.ec.top = value

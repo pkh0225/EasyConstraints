@@ -54,10 +54,18 @@ view.ec.gone = true // Android view gone function
 
 view.ec.reset(.top, .trailing, .width, .height) // set Default Constraint Value
 
-view.viewDidDisappear = {
-    print("viewDidDisappear ")
-}
 
+/// make test
+let v = UIView()
+v.translatesAutoresizingMaskIntoConstraints = false
+v.backgroundColor = .red
+v.addSuperView(self.view)
+    .ec.make()
+    .top(view4.topAnchor, 10)
+    .leading(view4.leftAnchor, 10)
+    .width(50)
+    .height(50)
+    
 ```
 
 <br>

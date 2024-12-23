@@ -23,9 +23,11 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "EasyConstraints",
-            dependencies: []),
-        .testTarget(
-            name: "EasyConstraintsTests",
-            dependencies: ["EasyConstraints"]),
+            dependencies: [],
+            path: "Sources", // 소스 경로를 명시적으로 설정
+            exclude: [],     // 제외할 파일이나 디렉토리 설정
+            resources: [],   // 리소스 파일 추가 시 필요
+            swiftSettings: [] // Swift 관련 추가 설정),
+        )
     ]
 )

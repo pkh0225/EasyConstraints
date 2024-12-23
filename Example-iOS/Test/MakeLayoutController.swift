@@ -10,24 +10,27 @@ import UIKit
 import EasyConstraints
 
 class MakeLayoutController: UIViewController {
-    var safeView: UIView!
+    lazy var safeView: UIView = {
+        let v = UIView()
+        v.backgroundColor = .lightGray
+        return v
+    }()
 
     lazy var bodyView: DeinitTestView = {
         let v = DeinitTestView()
         v.backgroundColor = .gray
-        self.view.addSubViewSafeArea(subView: v, insets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
+
         return v
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-
-        safeView = UIView()
-        safeView.backgroundColor = .lightGray
-        self.view.addSubViewSafeArea(subView: safeView)
-
         addNavigationButtons()
+
+        self.view.addSubViewSafeArea(subView: safeView)
+        self.safeView.addSubViewAutoLayout(bodyView, edgeInsets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10))
+
 
         testEqually()
 //        testNonEqually()
@@ -155,7 +158,6 @@ class MakeLayoutController: UIViewController {
             edgeInsets: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20),
             itemSpacing: 20
         )
-
 
         let sizeCheckerView = UIView(frame: CGRect(x: 10, y: 500, width: 50, height: 50))
         sizeCheckerView.backgroundColor = .green
