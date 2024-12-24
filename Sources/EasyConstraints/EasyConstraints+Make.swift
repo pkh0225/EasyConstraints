@@ -18,61 +18,61 @@ extension EasyConstraints {
         }
         
         @discardableResult
-        public func leading(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat) -> Self {
+        public func leading(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.leadingAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
 
         @discardableResult
-        public func trailing(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat) -> Self {
+        public func trailing(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.trailingAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
 
         @discardableResult
-        public func left(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat) -> Self {
+        public func left(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.leftAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
 
         @discardableResult
-        public func right(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat) -> Self {
+        public func right(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.rightAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
 
         @discardableResult
-        public func top(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat) -> Self {
+        public func top(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.topAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
 
         @discardableResult
-        public func bottom(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat) -> Self {
+        public func bottom(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.bottomAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
 
         @discardableResult
-        public func centerX(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat) -> Self {
+        public func centerX(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.centerXAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
 
         @discardableResult
-        public func centerY(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat) -> Self {
+        public func centerY(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.centerYAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
 
         @discardableResult
-        public func firstBaseline(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat) -> Self {
+        public func firstBaseline(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.firstBaselineAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
 
         @discardableResult
-        public func lastBaseline(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat) -> Self {
+        public func lastBaseline(_ anchor: NSLayoutYAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.lastBaselineAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
             return self
         }
@@ -90,13 +90,13 @@ extension EasyConstraints {
         }
 
         @discardableResult
-        public func widthAnchor(_ anchor: NSLayoutDimension, multiplier: CGFloat) -> Self {
+        public func widthAnchor(_ anchor: NSLayoutDimension, multiplier: CGFloat = 1) -> Self {
             ec?.view?.widthAnchor.constraint(equalTo: anchor, multiplier: multiplier).isActive = true
             return self
         }
 
         @discardableResult
-        public func heightAnchor(_ anchor: NSLayoutDimension, multiplier: CGFloat) -> Self {
+        public func heightAnchor(_ anchor: NSLayoutDimension, multiplier: CGFloat = 1) -> Self {
             ec?.view?.heightAnchor.constraint(equalTo: anchor, multiplier: multiplier).isActive = true
             return self
         }
