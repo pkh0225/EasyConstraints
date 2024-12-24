@@ -109,6 +109,7 @@ class MakeLayoutController: UIViewController {
 
     func testAutoSize() {
         let autoSizeView = UIView()
+        autoSizeView.translatesAutoresizingMaskIntoConstraints = false
         autoSizeView.backgroundColor = .red
         autoSizeView.addSuperView(bodyView)
             .ec.make()
