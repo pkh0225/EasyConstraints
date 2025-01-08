@@ -46,7 +46,7 @@ import UIKit
 ///```
 @MainActor
 public class EasyConstraints {
-    private lazy var constraintInfo: ECConstraintInfo = { return ECConstraintInfo() }()
+    private lazy var constraintInfo: ECConstraintInfo = { return ECConstraintInfo(easyConstraints: self) }()
 
     lazy var goneInfo: GoneInfo = { return GoneInfo() }()
 
@@ -58,7 +58,7 @@ public class EasyConstraints {
 
     public var left: CGFloat {
         get {
-            return self.getConstraint(.left)
+            return self.getLayoutConstraint(.left)?.constant ?? 0
         }
         set {
             let constraint = self.getLayoutConstraint(.left)
@@ -79,7 +79,7 @@ public class EasyConstraints {
 
     public var right: CGFloat {
         get {
-            return self.getConstraint(.right)
+            return self.getLayoutConstraint(.right)?.constant ?? 0
         }
         set {
             let constraint = self.getLayoutConstraint(.right)
@@ -100,7 +100,7 @@ public class EasyConstraints {
 
     public var leading: CGFloat {
         get {
-            return self.getConstraint(.leading)
+            return self.getLayoutConstraint(.leading)?.constant ?? 0
         }
         set {
             let constraint = self.getLayoutConstraint(.leading)
@@ -121,7 +121,7 @@ public class EasyConstraints {
 
     public var trailing: CGFloat {
         get {
-            return self.getConstraint(.trailing)
+            return self.getLayoutConstraint(.trailing)?.constant ?? 0
         }
         set {
             let constraint = self.getLayoutConstraint(.trailing)
@@ -142,7 +142,7 @@ public class EasyConstraints {
 
     public var top: CGFloat {
         get {
-            return self.getConstraint(.top)
+            return self.getLayoutConstraint(.top)?.constant ?? 0
         }
         set {
             let constraint = self.getLayoutConstraint(.top)
@@ -163,7 +163,7 @@ public class EasyConstraints {
 
     public var bottom: CGFloat {
         get {
-            return self.getConstraint(.bottom)
+            return self.getLayoutConstraint(.bottom)?.constant ?? 0
         }
         set {
             let constraint = self.getLayoutConstraint(.bottom)
@@ -183,7 +183,7 @@ public class EasyConstraints {
     }
 
     public var width: CGFloat {
-        get { return self.getConstraint(.width) }
+        get { return self.getLayoutConstraint(.width)?.constant ?? 0 }
         set { self.setConstraint(.width, newValue) }
     }
 
@@ -194,7 +194,7 @@ public class EasyConstraints {
     }
 
     public var height: CGFloat {
-        get { return self.getConstraint(.height) }
+        get { return self.getLayoutConstraint(.height)?.constant ?? 0 }
         set { self.setConstraint(.height, newValue) }
     }
 
@@ -206,7 +206,7 @@ public class EasyConstraints {
 
     public var centerX: CGFloat {
         get {
-            return self.getConstraint(.centerX)
+            return self.getLayoutConstraint(.centerX)?.constant ?? 0
         }
         set {
             let constraint = self.getLayoutConstraint(.centerX)
@@ -227,7 +227,7 @@ public class EasyConstraints {
 
     public var centerY: CGFloat {
         get {
-            return self.getConstraint(.centerY)
+            return self.getLayoutConstraint(.centerY)?.constant ?? 0
         }
         set {
             let constraint = self.getLayoutConstraint(.centerY)
@@ -247,20 +247,6 @@ public class EasyConstraints {
     }
 
     //MARK: - main function
-    private func getConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
-        return self.getLayoutConstraint(layoutAttribute)?.constant ?? 0
-    }
-
-    private func getDefaultConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute) -> CGFloat {
-        self.getLayoutConstraint(layoutAttribute)
-        if let value = constraintInfo.getConstraintDefaultValue(attribute: layoutAttribute) {
-            return value
-        }
-
-        assertionFailure("Error getDefaultConstraint")
-        return 0.0
-    }
-
     private func setConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, _ value: CGFloat) {
         guard let view = self.view else { return }
         guard self.getLayoutConstraint(layoutAttribute)?.constant != value else { return }
@@ -371,7 +357,6 @@ public class EasyConstraints {
                 else {
                     subFuc(constraint: constraint, f: .left, s: .right)
                 }
-
             case .trailing, .right :
                 if layoutAttribute == .trailing {
                     subFuc(constraint: constraint, f: .trailing, s: .leading)
@@ -434,7 +419,7 @@ public class EasyConstraints {
     @discardableResult
     public func getLayoutConstraint(_ layoutAttribute: NSLayoutConstraint.Attribute, errorCheck: Bool = true) -> NSLayoutConstraint? {
         guard let view = self.view else { return nil }
-        if let value: NSLayoutConstraint = constraintInfo.getLayoutConstraint(attribute: layoutAttribute) {
+        if let value: NSLayoutConstraint = constraintInfo.getConstraint(layoutAttribute) {
             return value
         }
 
@@ -460,11 +445,8 @@ public class EasyConstraints {
 
         let result: NSLayoutConstraint? = constraintsSort.first
         if let result = result {
-            constraintInfo.setLayoutConstraint(attribute: layoutAttribute, value: result)
-
-            if constraintInfo.getConstraintDefaultValue(attribute: layoutAttribute) == nil {
-               constraintInfo.setConstraintDefaultValue(attribute: layoutAttribute, value: result.constant)
-            }
+            constraintInfo.setConstraint(layoutAttribute, value: result)
+            constraintInfo.setDefaultValue(layoutAttribute, value: result.constant)
         }
 
         return result
@@ -473,465 +455,345 @@ public class EasyConstraints {
 
 // MARK: - Check
 extension EasyConstraints {
-    public var isLeft: Bool {
-        get {
-            if let value = constraintInfo.isLeftConstraint {
-                return value
-            }
-            else {
-                if let _ = self.getLayoutConstraint(.left, errorCheck: false) {
-                    constraintInfo.isLeftConstraint = true
-                    return true
-                }
-                constraintInfo.isLeftConstraint = false
-                return false
-
-            }
-        }
-    }
-
-    public var isRight: Bool {
-        get {
-            if let value = constraintInfo.isRightConstraint {
-                return value
-            }
-            else {
-                if let _ = self.getLayoutConstraint(.right, errorCheck: false) {
-                    constraintInfo.isRightConstraint = true
-                    return true
-                }
-                constraintInfo.isRightConstraint = false
-                return false
-            }
-        }
-    }
-
-    public var isTop: Bool {
-        get {
-            if let value = constraintInfo.isTopConstraint {
-                return value
-            }
-            else {
-                if let _ = self.getLayoutConstraint(.top, errorCheck: false) {
-                    constraintInfo.isTopConstraint = true
-                    return true
-                }
-                constraintInfo.isTopConstraint = false
-                return false
-
-            }
-        }
-    }
-
-    public var isBottom: Bool {
-        get {
-            if let value = constraintInfo.isBottomConstraint {
-                return value
-            }
-            else {
-                if let _ = self.getLayoutConstraint(.bottom, errorCheck: false) {
-                    constraintInfo.isBottomConstraint = true
-                    return true
-                }
-                constraintInfo.isBottomConstraint = false
-                return false
-            }
-        }
-    }
-
-    public var isLeading: Bool {
-        get {
-            if let value = constraintInfo.isLeadingConstraint {
-                return value
-            }
-            else {
-                if let _ = self.getLayoutConstraint(.leading, errorCheck: false) {
-                    constraintInfo.isLeadingConstraint = true
-                    return true
-                }
-                constraintInfo.isLeadingConstraint = false
-                return false
-            }
-        }
-    }
-
-    public var isTrailing: Bool {
-        get {
-            if let value = constraintInfo.isTrailingConstraint {
-                return value
-            }
-            else {
-                if let _ = self.getLayoutConstraint(.trailing, errorCheck: false) {
-                    constraintInfo.isTrailingConstraint = true
-                    return true
-                }
-                constraintInfo.isTrailingConstraint = false
-                return false
-            }
-        }
-    }
-
-    public var isWidth: Bool {
-        get {
-            if let value = constraintInfo.isWidthConstraint {
-                return value
-            }
-            else {
-                guard let view = self.view else { return false }
-                let value = self.getAttributeConstrains(constraints: view.constraints, layoutAttribute: .width).count > 0
-                constraintInfo.isWidthConstraint = value
-                return value
-            }
-        }
-    }
-
-    public var isHeight: Bool {
-        get {
-            if let value = constraintInfo.isHeightConstraint {
-                return value
-            }
-            else {
-                guard let view = self.view else { return false }
-                let value = self.getAttributeConstrains(constraints: view.constraints, layoutAttribute: .height).count > 0
-                constraintInfo.isHeightConstraint = value
-                return value
-            }
-        }
-    }
-
-    public var isCenterX: Bool {
-        get {
-            if let value = constraintInfo.isCenterXConstraint {
-                return value
-            }
-            else {
-                if let _ = self.getLayoutConstraint(.centerX, errorCheck: false) {
-                    constraintInfo.isCenterXConstraint = true
-                    return true
-                }
-                constraintInfo.isCenterXConstraint = false
-                return false
-            }
-        }
-    }
-
-    public var isCenterY: Bool {
-        get {
-            if let value = constraintInfo.isCenterYConstraint {
-                return value
-            }
-            else {
-                if let _ = self.getLayoutConstraint(.centerY, errorCheck: false) {
-                    constraintInfo.isCenterYConstraint = true
-                    return true
-                }
-                constraintInfo.isCenterYConstraint = false
-                return false
-            }
-        }
-    }
+    public var isLeft: Bool { constraintInfo.checkConstraints(.left) }
+    public var isRight: Bool { constraintInfo.checkConstraints(.right) }
+    public var isTop: Bool { constraintInfo.checkConstraints(.top) }
+    public var isBottom: Bool { constraintInfo.checkConstraints(.bottom) }
+    public var isLeading: Bool { constraintInfo.checkConstraints(.leading) }
+    public var isTrailing: Bool { constraintInfo.checkConstraints(.trailing) }
+    public var isWidth: Bool { constraintInfo.checkConstraints(.width) }
+    public var isHeight: Bool { constraintInfo.checkConstraints(.height) }
+    public var isCenterX: Bool { constraintInfo.checkConstraints(.centerX) }
+    public var isCenterY: Bool { constraintInfo.checkConstraints(.centerY) }
 }
 
 // MARK: - Default
 extension EasyConstraints {
-    public var leftDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.left)
-        }
-    }
+    public var leftDefault: CGFloat { constraintInfo.getDefaultValue(.left) }
+    public var rightDefault: CGFloat { constraintInfo.getDefaultValue(.right) }
+    public var topDefault: CGFloat { constraintInfo.getDefaultValue(.top) }
+    public var bottomDefault: CGFloat { constraintInfo.getDefaultValue(.bottom) }
+    public var leadingDefault: CGFloat { constraintInfo.getDefaultValue(.leading) }
+    public var trailingDefault: CGFloat { constraintInfo.getDefaultValue(.trailing) }
+    public var widthDefault: CGFloat { constraintInfo.getDefaultValue(.width) }
+    public var heightDefault: CGFloat { constraintInfo.getDefaultValue(.height) }
+    public var centerXDefault: CGFloat { constraintInfo.getDefaultValue(.centerX) }
+    public var centerYDefault: CGFloat { constraintInfo.getDefaultValue(.centerY) }
 
-    public var rightDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.right)
-        }
-    }
-
-    public var topDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.top)
-        }
-    }
-
-    public var bottomDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.bottom)
-        }
-    }
-
-    public var leadingDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.leading)
-        }
-    }
-
-    public var trailingDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.trailing)
-        }
-    }
-
-    public var widthDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.width)
-        }
-    }
-
-    public var heightDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.height)
-        }
-    }
-
-    public var centerXDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.centerX)
-        }
-    }
-
-    public var centerYDefault: CGFloat {
-        get {
-            return self.getDefaultConstraint(.centerY)
-        }
-    }
-
-    public func reset(_ attribute: NSLayoutConstraint.Attribute...) {
-        attribute.forEach { att in
+    public func resetValue(_ attributes: NSLayoutConstraint.Attribute...) {
+        attributes.forEach { att in
             switch att {
-            case .left:
-                left = leftDefault
-            case .right:
-                right = rightDefault
-            case .top:
-                top = topDefault
-            case .bottom:
-                bottom = bottomDefault
-            case .leading:
-                leading = leadingDefault
-            case .trailing:
-                trailing = trailingDefault
-            case .width:
-                width = widthDefault
-            case .height:
-                height = heightDefault
-            case .centerX:
-                centerX = centerXDefault
-            case .centerY:
-                centerY = centerYDefault
-            default:
+            case .left: left = leftDefault
+            case .right: right = rightDefault
+            case .top: top = topDefault
+            case .bottom: bottom = bottomDefault
+            case .leading: leading = leadingDefault
+            case .trailing: trailing = trailingDefault
+            case .width: width = widthDefault
+            case .height: height = heightDefault
+            case .centerX: centerX = centerXDefault
+            case .centerY: centerY = centerYDefault
+            @unknown default:
                 return
             }
         }
     }
 }
 
-extension NSLayoutConstraint.Attribute {
+private extension NSLayoutConstraint.Attribute {
     var string: String {
         switch self {
-        case .left:
-            return "left"
-        case .right:
-            return "right"
-        case .top:
-            return "top"
-        case .bottom:
-            return "bottom"
-        case .leading:
-            return "leading"
-        case .trailing:
-            return "trailing"
-        case .width:
-            return "width"
-        case .height:
-            return "height"
-        case .centerX:
-            return "centerX"
-        case .centerY:
-            return "centerY"
-        case .lastBaseline:
-            return "lastBaseline"
-        case .firstBaseline:
-            return "firstBaseline"
-        case .leftMargin:
-            return "leftMargin"
-        case .rightMargin:
-            return "rightMargin"
-        case .topMargin:
-            return "topMargin"
-        case .bottomMargin:
-            return "bottomMargin"
-        case .leadingMargin:
-            return "leadingMargin"
-        case .trailingMargin:
-            return "trailingMargin"
-        case .centerXWithinMargins:
-            return "centerXWithinMargins"
-        case .centerYWithinMargins:
-            return "centerYWithinMargins"
-        case .notAnAttribute:
-            return "notAnAttribute"
+        case .left: return "left"
+        case .right: return "right"
+        case .top: return "top"
+        case .bottom: return "bottom"
+        case .leading: return "leading"
+        case .trailing: return "trailing"
+        case .width: return "width"
+        case .height: return "height"
+        case .centerX: return "centerX"
+        case .centerY: return "centerY"
         @unknown default:
-            return ""
+            return "unknown"
         }
     }
 }
 
+@MainActor
 private class ECConstraintInfo {
+    weak var easyConstraints: EasyConstraints?
+
     // check
-    var isLeftConstraint: Bool?
-    var isRightConstraint: Bool?
-    var isTopConstraint: Bool?
-    var isBottomConstraint: Bool?
+    private var isLeftConstraint: Bool?
+    private var isRightConstraint: Bool?
+    private var isTopConstraint: Bool?
+    private var isBottomConstraint: Bool?
 
-    var isLeadingConstraint: Bool?
-    var isTrailingConstraint: Bool?
+    private var isLeadingConstraint: Bool?
+    private var isTrailingConstraint: Bool?
 
-    var isWidthConstraint: Bool?
-    var isHeightConstraint: Bool?
+    private var isWidthConstraint: Bool?
+    private var isHeightConstraint: Bool?
 
-    var isCenterXConstraint: Bool?
-    var isCenterYConstraint: Bool?
+    private var isCenterXConstraint: Bool?
+    private var isCenterYConstraint: Bool?
 
     // constraint
-    var leftConstraint: NSLayoutConstraint?
-    var rightConstraint: NSLayoutConstraint?
-    var topConstraint: NSLayoutConstraint?
-    var bottomConstraint: NSLayoutConstraint?
+    private var leftConstraint: NSLayoutConstraint?
+    private var rightConstraint: NSLayoutConstraint?
+    private var topConstraint: NSLayoutConstraint?
+    private var bottomConstraint: NSLayoutConstraint?
 
-    var leadingConstraint: NSLayoutConstraint?
-    var trailingConstraint: NSLayoutConstraint?
+    private var leadingConstraint: NSLayoutConstraint?
+    private var trailingConstraint: NSLayoutConstraint?
 
-    var widthConstraint: NSLayoutConstraint?
-    var heightConstraint: NSLayoutConstraint?
+    private var widthConstraint: NSLayoutConstraint?
+    private var heightConstraint: NSLayoutConstraint?
 
-    var centerXConstraint: NSLayoutConstraint?
-    var centerYConstraint: NSLayoutConstraint?
+    private var centerXConstraint: NSLayoutConstraint?
+    private var centerYConstraint: NSLayoutConstraint?
 
     // default
-    var leftDefaultConstraint: CGFloat?
-    var rightDefaultConstraint: CGFloat?
-    var topDefaultConstraint: CGFloat?
-    var bottomDefaultConstraint: CGFloat?
+    private var leftDefault: CGFloat?
+    private var rightDefault: CGFloat?
+    private var topDefault: CGFloat?
+    private var bottomDefault: CGFloat?
 
-    var leadingDefaultConstraint: CGFloat?
-    var trailingDefaultConstraint: CGFloat?
+    private var leadingDefault: CGFloat?
+    private var trailingDefault: CGFloat?
 
-    var widthDefaultConstraint: CGFloat?
-    var heightDefaultConstraint: CGFloat?
+    private var widthDefault: CGFloat?
+    private var heightDefault: CGFloat?
 
-    var centerXDefaultConstraint: CGFloat?
-    var centerYDefaultConstraint: CGFloat?
+    private var centerXDefault: CGFloat?
+    private var centerYDefault: CGFloat?
 
-    func getLayoutConstraint(attribute: NSLayoutConstraint.Attribute) -> NSLayoutConstraint? {
-        var result: NSLayoutConstraint?
-        switch attribute {
-        case .left:
-            result = leftConstraint
-        case .right:
-            result = rightConstraint
-        case .top:
-            result = topConstraint
-        case .bottom:
-            result = bottomConstraint
-        case .leading:
-            result = leadingConstraint
-        case .trailing:
-            result = trailingConstraint
-        case .width:
-            result = widthConstraint
-        case .height:
-            result = heightConstraint
-        case .centerX:
-            result = centerXConstraint
-        case .centerY:
-            result = centerYConstraint
-        default:
-            break
-        }
-
-        return result
+    init(easyConstraints: EasyConstraints) {
+        self.easyConstraints = easyConstraints
     }
 
-    func setLayoutConstraint(attribute: NSLayoutConstraint.Attribute, value: NSLayoutConstraint) {
+    func checkConstraints(_ attribute: NSLayoutConstraint.Attribute) -> Bool {
         switch attribute {
         case .left:
-            leftConstraint = value
+            if let value = isLeftConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isLeftConstraint = true
+                    return true
+                }
+                else {
+                    isLeftConstraint = false
+                    return false
+                }
+            }
         case .right:
-            rightConstraint = value
+            if let value = isRightConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isRightConstraint = true
+                    return true
+                }
+                else {
+                    isRightConstraint = false
+                    return false
+                }
+            }
         case .top:
-            topConstraint = value
+            if let value = isTopConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isTopConstraint = true
+                    return true
+                }
+                else {
+                    isTopConstraint = false
+                    return false
+                }
+            }
         case .bottom:
-            bottomConstraint = value
+            if let value = isBottomConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isBottomConstraint = true
+                    return true
+                }
+                else {
+                    isBottomConstraint = false
+                    return false
+                }
+            }
         case .leading:
-            leadingConstraint = value
+            if let value = isLeadingConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isLeadingConstraint = true
+                    return true
+                }
+                else {
+                    isLeadingConstraint = false
+                    return false
+                }
+            }
         case .trailing:
-            trailingConstraint = value
+            if let value = isTrailingConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isTrailingConstraint = true
+                    return true
+                }
+                else {
+                    isTrailingConstraint = false
+                    return false
+                }
+            }
         case .width:
-            widthConstraint = value
+            if let value = isWidthConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isWidthConstraint = true
+                    return true
+                }
+                else {
+                    isWidthConstraint = false
+                    return false
+                }
+            }
         case .height:
-            heightConstraint = value
+            if let value = isHeightConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isHeightConstraint = true
+                    return true
+                }
+                else {
+                    isHeightConstraint = false
+                    return false
+                }
+            }
         case .centerX:
-            centerXConstraint = value
+            if let value = isCenterXConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isCenterXConstraint = true
+                    return true
+                }
+                else {
+                    isCenterXConstraint = false
+                    return false
+                }
+            }
         case .centerY:
-            centerYConstraint = value
-        default:
+            if let value = isCenterYConstraint {
+                return value
+            }
+            else {
+                if let _ = easyConstraints?.getLayoutConstraint(attribute, errorCheck: false) {
+                    isCenterYConstraint = true
+                    return true
+                }
+                else {
+                    isCenterYConstraint = false
+                    return false
+                }
+            }
+        @unknown default:
+            return false
+        }
+    }
+
+    func getConstraint(_ attribute: NSLayoutConstraint.Attribute) -> NSLayoutConstraint? {
+        switch attribute {
+        case .left: return leftConstraint
+        case .right:return rightConstraint
+        case .top: return topConstraint
+        case .bottom: return bottomConstraint
+        case .leading: return leadingConstraint
+        case .trailing: return trailingConstraint
+        case .width: return widthConstraint
+        case .height: return heightConstraint
+        case .centerX: return centerXConstraint
+        case .centerY: return centerYConstraint
+        @unknown default:
+            return nil
+        }
+    }
+
+    func setConstraint(_ attribute: NSLayoutConstraint.Attribute, value: NSLayoutConstraint) {
+        switch attribute {
+        case .left: leftConstraint = value
+        case .right: rightConstraint = value
+        case .top: topConstraint = value
+        case .bottom: bottomConstraint = value
+        case .leading: leadingConstraint = value
+        case .trailing: trailingConstraint = value
+        case .width: widthConstraint = value
+        case .height: heightConstraint = value
+        case .centerX: centerXConstraint = value
+        case .centerY: centerYConstraint = value
+        @unknown default:
             break
         }
     }
 
-    func getConstraintDefaultValue(attribute: NSLayoutConstraint.Attribute) -> CGFloat? {
-        var result: CGFloat?
+    private func getPrivateDefaultValue(_ attribute: NSLayoutConstraint.Attribute) -> CGFloat? {
         switch attribute {
-        case .left:
-            result = leftDefaultConstraint
-        case .right:
-            result = rightDefaultConstraint
-        case .top:
-            result = topDefaultConstraint
-        case .bottom:
-            result = bottomDefaultConstraint
-        case .leading:
-            result = leadingDefaultConstraint
-        case .trailing:
-            result = trailingDefaultConstraint
-        case .width:
-            result = widthDefaultConstraint
-        case .height:
-            result = heightDefaultConstraint
-        case .centerX:
-            result = centerXDefaultConstraint
-        case .centerY:
-            result = centerYDefaultConstraint
-        default:
-            break
+        case .left: return leftDefault
+        case .right: return rightDefault
+        case .top: return topDefault
+        case .bottom: return bottomDefault
+        case .leading: return leadingDefault
+        case .trailing: return trailingDefault
+        case .width: return widthDefault
+        case .height: return heightDefault
+        case .centerX: return centerXDefault
+        case .centerY: return centerYDefault
+        @unknown default:
+            return nil
         }
-
-        return result
     }
 
-    func setConstraintDefaultValue(attribute: NSLayoutConstraint.Attribute, value: CGFloat) {
+    func setDefaultValue(_ attribute: NSLayoutConstraint.Attribute, value: CGFloat) {
+        guard getPrivateDefaultValue(attribute) == nil else { return }
         switch attribute {
-        case .left:
-            leftDefaultConstraint = value
-        case .right:
-            rightDefaultConstraint = value
-        case .top:
-            topDefaultConstraint = value
-        case .bottom:
-            bottomDefaultConstraint = value
-        case .leading:
-            leadingDefaultConstraint = value
-        case .trailing:
-            trailingDefaultConstraint = value
-        case .width:
-            widthDefaultConstraint = value
-        case .height:
-            heightDefaultConstraint = value
-        case .centerX:
-            centerXDefaultConstraint = value
-        case .centerY:
-            centerYDefaultConstraint = value
-        default:
+        case .left: leftDefault = value
+        case .right: rightDefault = value
+        case .top: topDefault = value
+        case .bottom: bottomDefault = value
+        case .leading: leadingDefault = value
+        case .trailing: trailingDefault = value
+        case .width: widthDefault = value
+        case .height: heightDefault = value
+        case .centerX: centerXDefault = value
+        case .centerY: centerYDefault = value
+        @unknown default:
             break
         }
+    }
+
+    func getDefaultValue(_ attribute: NSLayoutConstraint.Attribute) -> CGFloat {
+        easyConstraints?.getLayoutConstraint(attribute)
+        if let value = getPrivateDefaultValue(attribute) {
+            return value
+        }
+        assertionFailure("Error getDefaultConstraint")
+        return 0.0
     }
 }

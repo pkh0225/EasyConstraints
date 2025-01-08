@@ -92,18 +92,6 @@ extension EasyConstraints {
         }
     }
 
-    /// 문자열을 파싱하는 함수
-    /// - Note: 이 함수는 **String**을 **Int**로 변환하며, 변환에 실패하면 `nil`을 반환합니다.
-    /// - Example:
-    /// ```swift
-    /// let value = parseToInt("123") // 123
-    /// let invalidValue = parseToInt("abc") // nil
-    /// ```
-    func parseToInt(_ string: String) -> Int? {
-        return Int(string)
-    }
-
-
     /// gone
     ///
     ///  - leading = GoneType(rawValue: 1 << 0)

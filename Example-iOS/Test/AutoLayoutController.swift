@@ -42,7 +42,7 @@ class AutoLayoutController: UIViewController {
         // default test
         textField1.text = "\(view1.ec.leadingDefault)"
         textField2.text = "\(view1.ec.trailingDefault)"
-        textField7.text = "\(view1.ec.bottom)"
+        textField7.text = "\(view1.ec.bottomDefault)"
         textField3.text = "\(view2.ec.topDefault)"
         textField4.text = "\(view2.ec.trailingDefault)"
         textField5.text = "\(view2.ec.widthDefault)"
@@ -50,8 +50,8 @@ class AutoLayoutController: UIViewController {
 
 
         // rest test
-        view1.ec.reset(.leading, .trailing)
-        view2.ec.reset(.top, .trailing, .width, .height)
+        view1.ec.resetValue(.leading, .trailing, .bottom)
+        view2.ec.resetValue(.top, .trailing, .width, .height)
 
 
         // left test
@@ -99,6 +99,7 @@ class AutoLayoutController: UIViewController {
     @IBAction func onView1Leading(_ sender: UITextField) {
         if let value = sender.text?.toCGFloat() {
             view1.ec.leading(value)
+
         }
     }
     
