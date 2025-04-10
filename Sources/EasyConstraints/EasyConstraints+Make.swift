@@ -14,6 +14,7 @@ extension EasyConstraints {
         public weak var ec: EasyConstraints?
 
         init(ec: EasyConstraints?) {
+            self.ec?.view?.translatesAutoresizingMaskIntoConstraints = false
             self.ec = ec
         }
         
