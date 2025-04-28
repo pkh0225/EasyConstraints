@@ -17,7 +17,16 @@ extension EasyConstraints {
             self.ec = ec
             self.ec?.view?.translatesAutoresizingMaskIntoConstraints = false
         }
-        
+
+        @discardableResult
+        public func edge(_ view: UIView, _ insets: UIEdgeInsets = .zero) -> Self {
+            leading(view.leadingAnchor, insets.left)
+            trailing(view.trailingAnchor, insets.right)
+            top(view.topAnchor, insets.top)
+            bottom(view.bottomAnchor, insets.bottom)
+            return self
+        }
+
         @discardableResult
         public func leading(_ anchor: NSLayoutXAxisAnchor, _ constant: CGFloat = 0) -> Self {
             ec?.view?.leadingAnchor.constraint(equalTo: anchor, constant: constant).isActive = true
