@@ -480,7 +480,8 @@ extension EasyConstraints {
     public var centerXDefault: CGFloat { constraintInfo.getDefaultValue(.centerX) }
     public var centerYDefault: CGFloat { constraintInfo.getDefaultValue(.centerY) }
 
-    public func resetValue(_ attributes: NSLayoutConstraint.Attribute...) {
+    @discardableResult
+    public func resetValue(_ attributes: NSLayoutConstraint.Attribute...) -> Self {
         attributes.forEach { att in
             switch att {
             case .left: left = leftDefault
@@ -497,6 +498,7 @@ extension EasyConstraints {
                 return
             }
         }
+        return self
     }
 }
 
