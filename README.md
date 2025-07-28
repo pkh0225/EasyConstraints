@@ -30,7 +30,7 @@
 ## USE like this
 
 
-```
+```swift
 // make constraints
 let testView = UIView()
 testView.backgroundColor = .red
@@ -75,7 +75,7 @@ v.addSuperView(self.view)
 ## Core Functions
 
 ### 👀 Check view is visible or not 
-```
+```swift
  public var isVisible: Bool {
         
         if self.window == nil {
@@ -102,7 +102,7 @@ v.addSuperView(self.view)
 
 ### 👉🏻 get Constraints
 
-```
+```swift
     @inline(__always) private func getAttributeConstrains(constraints: Set<NSLayoutConstraint>, layoutAttribute: NSLayoutConstraint.Attribute) -> Array<NSLayoutConstraint> {
         var constraintsTemp = Array<NSLayoutConstraint>()
         constraintsTemp.reserveCapacity(100)
